@@ -1,0 +1,115 @@
+.header {
+  background: rgb(255,40,79);
+  background: linear-gradient(160deg, rgba(255,40,79,1) 0%, rgba(21,71,201,1) 100%);
+  padding: 1.5rem;
+}
+
+.imageContainer {
+  position: relative;
+  z-index: 1;
+}
+
+.imagePlay {
+  cursor: pointer;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.title {
+  margin: 0;
+}
+
+.author {
+  font-size: 1rem;
+}
+
+.image {
+  display: block;
+  margin: 0 auto 1rem auto;
+  max-height: 300px;
+  max-width: 100%;
+}
+
+.version {
+  color: #999;
+  font-size: .75rem;
+}
+
+.tags {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.icon {
+  margin-right: .5rem;
+  width: 15px;
+}
+
+.tag {
+  margin-right: .25rem;
+}
+
+.options {
+  margin: 0 auto;
+  max-width: 1024px;
+  padding: 2rem 1.5rem;
+}
+
+.download,
+.install {
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  margin-right: .5rem;
+}
+
+.codeBox {
+  background-color: #111;
+  border-radius: .25rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  padding: 1rem 1.5rem;
+  white-space: normal;
+}
+
+@media (min-width: 48rem) {
+  .header {
+    padding-bottom: 5rem;
+    padding-top: 5rem;
+  }
+
+  .headerInner {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 1024px;
+  }
+
+  .image {
+    margin: 0;
+  }
+
+  .details {
+    margin-left: 3rem;
+  }
+
+  .row {
+    display: flex;
+  }
+  
+  .cell {
+    margin-right: 1rem;
+  }
+
+  .install {
+    border-left: 1px solid #666;
+    flex: 1;
+    padding-left: 2rem;
+  }
+}

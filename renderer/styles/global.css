@@ -1,0 +1,99 @@
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 70px;
+  /* scroll-snap-type: y proximity; */
+}
+
+body {
+  background-color: #000;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  margin: 0;
+  padding-top: 70px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  font-weight: 300;
+  line-height: 1.15em;
+  margin: 0 0 1.25rem 0;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.5em;
+}
+
+h1 {
+  font-size: 40px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+a {
+  border-bottom: 2px solid #0D51FF;
+  color: #fff;
+  display: inline-block;
+  padding-bottom: .15rem;
+  text-decoration: none;
+  transition: border-bottom .25s ease-out;
+}
+
+a:hover {
+  border-bottom: 2px solid #ffffff;
+}
+
+button,
+.button {
+  background-color: #0D51FF;
+  border: 0;
+  border-radius: .25rem;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 1rem 1.5rem;
+  text-decoration: none;
+  transition: background-color .25s ease-out;
+}
+
+button:hover,
+.button:hover {
+  background-color: #477BFF;
+  border: 0;
+}
+
+@media (min-width: 48rem) {
+  h1 {
+    font-size: 56px;
+  }
+  h2 {
+    font-size: 48px;
+  }
+  h3 {
+    font-size: 32px;
+  }
+  h4 {
+    font-size: 24px;
+  }
+}
+
+.active {
+  border-bottom-color:#fff !important;
+}

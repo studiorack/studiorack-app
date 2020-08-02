@@ -1,0 +1,38 @@
+.markdownH2,
+.markdown h2 {
+  margin-top: 3rem;
+}
+
+.markdownUl,
+.markdown ul {
+  margin: 0 0 1rem;
+  padding: 0 0 0 1.25rem;
+}
+
+.markdownLi,
+.markdown li {
+  margin: .5rem 0;
+}
+
+.markdownA,
+.markdown a {
+  display: inline-block;
+  margin: .25rem 0;
+}
+
+.markdownCode,
+.markdownPre,
+.markdown code,
+.markdown pre {
+  background-color: #111;
+  border-radius: .25rem;
+  font-size: 14px;
+  padding: .3rem .5rem;
+}
+
+.markdownPre,
+.markdown pre {
+  line-height: 1.25rem;
+  overflow: auto;
+  padding: 1rem 1.5rem;
+}
