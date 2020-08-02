@@ -1,7 +1,8 @@
 {
   "name": "studiorack-app",
-  "productName": "StudioRack",
   "version": "0.0.2",
+  "productName": "StudioRack",
+  "description": "Audio plugin app, searchable list of plugins to install and share",
   "main": "main/index.js",
   "scripts": {
     "clean": "rimraf dist main renderer/out renderer/.next",
@@ -20,8 +21,14 @@
     "files": [
       "main",
       "renderer/out"
-    ]
+    ],
+    "linux": {
+      "executableName": "desiredName",
+      "artifactName": "${productName}-${version}.${ext}"
+    }
   },
+  "author": "kmturley",
+  "license": "ISC",
   "devDependencies": {
     "@types/node": "^12.12.21",
     "@types/react": "^16.9.17",
