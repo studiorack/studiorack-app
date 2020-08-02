@@ -58,6 +58,11 @@ jobs:
         run: |
           npm run dist
 
+      - name: List
+        shell: bash
+        run: |
+          ls dist
+
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
