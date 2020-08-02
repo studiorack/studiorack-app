@@ -11,6 +11,8 @@ import prepareNext from 'electron-next'
 app.on('ready', async () => {
   await prepareNext('./renderer')
 
+  app.dock.setIcon(join(__dirname, '../renderer/out/icons/icon.png'))
+
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
