@@ -23,8 +23,8 @@
       "renderer/out"
     ],
     "linux": {
-      "executableName": "desiredName",
-      "artifactName": "${productName}-${version}.${ext}"
+      "executableName": "StudioRack",
+      "artifactName": "app-${os}.${ext}}"
     }
   },
   "author": "kmturley",

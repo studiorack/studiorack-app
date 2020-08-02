@@ -30,7 +30,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
-            file_name: app-linux
+            file_name: app-linux.AppImage
           - os: macos-latest
             file_name: app-mac.dmg
           - os: windows-latest
