@@ -22,6 +22,9 @@
       "main",
       "renderer/out"
     ],
+    "directories": {
+      "buildResources": "renderer/out/icons"
+    },
     "linux": {
       "executableName": "StudioRack",
       "artifactName": "app-${os}.${ext}"
