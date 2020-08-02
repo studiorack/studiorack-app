@@ -24,7 +24,7 @@
     ],
     "linux": {
       "executableName": "StudioRack",
-      "artifactName": "app-${os}.${ext}}"
+      "artifactName": "app-${os}.${ext}"
     }
   },
   "author": "kmturley",
