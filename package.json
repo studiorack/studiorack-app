@@ -11,7 +11,7 @@
     "build-electron": "tsc -p electron-src",
     "build": "npm run build-renderer && npm run build-electron",
     "pack-app": "npm run build && electron-builder --dir",
-    "dist": "npm run build && electron-builder",
+    "dist": "npm run build && electron-builder --publish never",
     "type-check": "tsc"
   },
   "build": {
