@@ -39,15 +39,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Install Linux dependencies
-      #   if: matrix.os == 'ubuntu-latest'
-
-      # - name: Install macOS dependencies
-      #   if: matrix.os == 'macOS-latest'
-
-      # - name: Install Windows dependencies
-      #   if: matrix.os == 'windows-latest'
-
       - name: Setup
         shell: bash
         run: |
@@ -57,11 +48,6 @@ jobs:
         shell: bash
         run: |
           npm run dist
-
-      - name: List
-        shell: bash
-        run: |
-          ls dist
 
       - name: Upload
         uses: actions/upload-release-asset@v1
