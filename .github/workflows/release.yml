@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+
+  build_release:
+    name: Build release
+    needs: create_release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            file_name: app-linux
+          - os: macos-latest
+            file_name: app-mac.dmg
+          - os: windows-latest
+            file_name: app-win.exe
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Install macOS dependencies
+        if: matrix.os == 'macOS-latest'
+
+      - name: Install Windows dependencies
+        if: matrix.os == 'windows-latest'
+
+      - name: Setup
+        shell: bash
+        run: |
+          npm install
+
+      - name: Build
+        shell: bash
+        run: |
+          npm run dist
+
+      - name: Upload
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./dist/${{ matrix.file_name }}
+          asset_name: ${{ matrix.file_name }}
+          asset_content_type: application/octet-stream

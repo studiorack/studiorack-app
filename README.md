@@ -28,11 +28,11 @@ View the app in the application window opened automatically
 Release an updated version on GitHub by simply creating a version tag:
 
     npm version patch
-    git push origin --tags
+    git push && git push origin --tags
 
 This will run an automated build and deploy process on GitHub Actions:
 
-    .github/workflows/workflow.yml
+    .github/workflows/release.yml
 
 
 ## Contact
