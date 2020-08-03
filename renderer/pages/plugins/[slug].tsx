@@ -3,19 +3,21 @@ import Layout from '../../components/layout'
 import { getAllPluginPaths, getPluginData, Plugin } from '../../lib/plugins'
 import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
-import { GetStaticProps, GetStaticPaths } from 'next'
+import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
 
-class PluginPage extends Component<{
+type PluginProps = {
   plugin: Plugin,
   router: Router
-}, {
+}
+
+class PluginPage extends Component<PluginProps, {
   isPlaying: Boolean,
   router: Router,
   plugin: Plugin
 }> {
 
-  constructor(props) {
+  constructor(props: PluginProps) {
     super(props)
     this.state = {
       isPlaying: false,
@@ -109,8 +111,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const plugin = await getPluginData(params.slug as string)
+type Params = {
+  params: {
+    slug: string
+  }
+}
+
+export async function getStaticProps({ params }: Params) {
+  const plugin = await getPluginData(params.slug)
   return {
     props: {
       plugin

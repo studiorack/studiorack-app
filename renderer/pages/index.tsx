@@ -4,14 +4,17 @@ import Layout, { siteTitle } from '../components/layout'
 import styles from '../styles/index.module.css'
 import { withRouter, Router } from 'next/router'
 
-class Home extends Component<{
+type HomeProps = {
+  router: Router,
+  query: string
+}
+
+class Home extends Component<HomeProps, {
   router: Router
-}, {
-  router: Router
-  query: string,
+  query: string
 }> {
 
-  constructor(props) {
+  constructor(props: HomeProps) {
     super(props)
     this.state = {
       router: props.router,

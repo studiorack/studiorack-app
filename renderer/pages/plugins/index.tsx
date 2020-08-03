@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component, ChangeEvent } from 'react'
 import Head from 'next/head'
 import Layout, { siteTitle } from '../../components/layout'
 import styles from '../../styles/index.module.css'
@@ -7,16 +7,18 @@ import { GetStaticProps } from 'next'
 import { getPlugins, Plugin } from '../../lib/plugins'
 import { withRouter, Router } from 'next/router'
 
-class PluginList extends Component<{
+type PluginListProps = {
   plugins: Plugin[],
   router: Router
-}, {
+}
+
+class PluginList extends Component<PluginListProps, {
   pluginsFiltered: Plugin[]
   router: Router
   query: string,
 }> {
 
-  constructor(props) {
+  constructor(props: PluginListProps) {
     super(props)
     this.state = {
       pluginsFiltered: props.plugins,
@@ -25,8 +27,9 @@ class PluginList extends Component<{
     }
   }
 
-  handleChange = (event) => {
-    const query = event.target.value.toLowerCase()
+  handleChange = (event: ChangeEvent) => {
+    const el = event.target as HTMLInputElement;
+    const query = el.value ? el.value.toLowerCase() : ''
     const filtered = this.props.plugins.filter((plugin) => {
       if (plugin.name.toLowerCase().indexOf(query) != -1 ||
         plugin.description.toLowerCase().indexOf(query) != -1 ||

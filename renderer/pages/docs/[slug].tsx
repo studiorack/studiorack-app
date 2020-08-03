@@ -8,17 +8,19 @@ import remark from 'remark'
 import html from 'remark-html'
 import { withRouter, Router } from 'next/router'
 
-class DocPage extends Component<{
-  allDocs,
-  doc,
+type DocProps = {
+  allDocs: Doc[],
+  doc: Doc,
   router: Router
-}, {
+}
+
+class DocPage extends Component<DocProps, {
   allDocs: Doc[]
   doc: Doc
   router: Router
 }> {
 
-  constructor(props) {
+  constructor(props: DocProps) {
     super(props)
     this.state = {
       allDocs: props.allDocs,
@@ -27,7 +29,7 @@ class DocPage extends Component<{
     }
   }
 
-  convertToSlug(text) {
+  convertToSlug(text: string) {
     return text
         .toLowerCase()
         .replace(/ /g,'-')

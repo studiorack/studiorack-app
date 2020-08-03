@@ -7,15 +7,17 @@ import Head from 'next/head'
 import Doc from '../../types/doc'
 import { withRouter, Router } from 'next/router'
 
-class DocList extends Component<{
-  allDocs,
+type DocListProps = {
+  allDocs: Doc[],
   router: Router
-}, {
+}
+
+class DocList extends Component<DocListProps, {
   allDocs: Doc[]
   router: Router
 }> {
 
-  constructor(props) {
+  constructor(props: DocListProps) {
     super(props)
     this.state = {
       allDocs: props.allDocs,

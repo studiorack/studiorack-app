@@ -8,7 +8,7 @@ export function getDocSlugs() {
   return fs.readdirSync(docsDirectory)
 }
 
-export function getDocBySlug(slug: string, fields = []) {
+export function getDocBySlug(slug: string, fields: string[]) {
   const realSlug = slug.replace(/\.md$/, '')
   const fullPath = join(docsDirectory, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
@@ -33,7 +33,7 @@ export function getDocBySlug(slug: string, fields = []) {
   return items
 }
 
-export function getAllDocs(fields = []) {
+export function getAllDocs(fields: string[]) {
   const slugs = getDocSlugs()
   const docs = slugs
     .map((slug) => getDocBySlug(slug, fields))
