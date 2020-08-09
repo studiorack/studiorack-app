@@ -1,4 +1,4 @@
-import { Component, ChangeEvent } from 'react'
+import { Component, ChangeEvent, MouseEvent } from 'react'
 import Head from 'next/head'
 import Layout, { siteTitle } from '../../components/layout'
 import styles from '../../styles/index.module.css'
@@ -8,11 +8,13 @@ import { getPlugins, Plugin } from '../../lib/plugins'
 import { withRouter, Router } from 'next/router'
 
 type PluginListProps = {
+  category: string,
   plugins: Plugin[],
   router: Router
 }
 
 class PluginList extends Component<PluginListProps, {
+  category: string,
   pluginsFiltered: Plugin[]
   router: Router
   query: string,
@@ -21,6 +23,7 @@ class PluginList extends Component<PluginListProps, {
   constructor(props: PluginListProps) {
     super(props)
     this.state = {
+      category: props.category,
       pluginsFiltered: props.plugins,
       router: props.router,
       query: ''
@@ -44,6 +47,16 @@ class PluginList extends Component<PluginListProps, {
     })
   }
 
+  isSelected = (path: string) => {
+    return this.state.category === path ? 'active' : ''
+  }
+
+  selectCategory = (event: MouseEvent) => {
+    this.setState({
+      category: event.currentTarget.getAttribute('data-category') || '',
+    })
+  }
+
   render() {
     return (
       <Layout>
@@ -51,8 +64,13 @@ class PluginList extends Component<PluginListProps, {
           <title>{siteTitle}</title>
         </Head>
         <section className={styles.plugins}>
+          <h3 className={styles.pluginsTitle}>Plugins</h3>
           <div className={styles.pluginsHeader}>
-            <h3 className={styles.pluginsTitle}>Plugins</h3>
+            <ul className={styles.pluginsCategory}>
+              <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
+              <li><a data-category="installed" onClick={this.selectCategory} className={this.isSelected('installed')}>Installed</a></li>
+              <li><a data-category="updates" onClick={this.selectCategory} className={this.isSelected('updates')}>Updates</a></li>
+            </ul>
             <input className={styles.pluginsSearch} placeholder="Filter by keyword" value={this.state.query} onChange={this.handleChange} />
           </div>
           <div className={styles.pluginsList}>

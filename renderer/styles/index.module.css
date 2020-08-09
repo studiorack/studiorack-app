@@ -33,8 +33,28 @@
   margin-bottom: 1rem;
 }
 
+.pluginsHeader li {
+  display: inline-block;
+}
+
+.pluginsHeader a {
+  display: inline-block;
+  padding: 1rem;
+}
+
+.pluginsHeader .active {
+  background-color: #fff;
+  color: #000;
+}
+
 .pluginsTitle {
   margin: 0;
+}
+
+.pluginsCategory {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .pluginsSearch {

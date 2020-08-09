@@ -22,6 +22,11 @@ app.on('ready', async () => {
     },
   })
 
+  // If developing locally, open developer tools
+  if (isDev) {
+    mainWindow.webContents.openDevTools()
+  }
+
   const url = isDev
     ? 'http://localhost:8000/'
     : format({
