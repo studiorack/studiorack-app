@@ -1,7 +1,7 @@
 import { Component, ChangeEvent, MouseEvent } from 'react'
 import Head from 'next/head'
 import Layout, { siteTitle } from '../../components/layout'
-import styles from '../../styles/index.module.css'
+import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { getPlugins, Plugin } from '../../lib/plugins'
@@ -23,7 +23,7 @@ class PluginList extends Component<PluginListProps, {
   constructor(props: PluginListProps) {
     super(props)
     this.state = {
-      category: props.category,
+      category: 'all',
       pluginsFiltered: props.plugins,
       router: props.router,
       query: ''
@@ -48,7 +48,7 @@ class PluginList extends Component<PluginListProps, {
   }
 
   isSelected = (path: string) => {
-    return this.state.category === path ? 'active' : ''
+    return this.state.category === path ? 'selected' : ''
   }
 
   selectCategory = (event: MouseEvent) => {

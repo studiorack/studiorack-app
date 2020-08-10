@@ -22,98 +22,6 @@
   margin: 0 0 0 auto;
 }
 
-.plugins {
-  padding: 2rem 1.5rem;
-}
-
-.pluginsHeader {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.pluginsHeader li {
-  display: inline-block;
-}
-
-.pluginsHeader a {
-  display: inline-block;
-  padding: 1rem;
-}
-
-.pluginsHeader .active {
-  background-color: #fff;
-  color: #000;
-}
-
-.pluginsTitle {
-  margin: 0;
-}
-
-.pluginsCategory {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.pluginsSearch {
-  background-color: #111;
-  border-radius: .25rem;
-  border: 0;
-  color: #999;
-  padding: .75rem 1rem;
-}
-
-.plugin {
-  background-color: #222;
-  border-radius: .25rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  transition: background-color .25s ease-out;
-}
-
-.plugin:hover {
-  background-color: #333;
-}
-
-.pluginImage {
-  display: block;
-  margin: 0 auto;
-  max-height: 300px;
-  max-width: 100%;
-}
-
-.pluginDetails {
-  border-radius: 0 0 .25rem .25rem;
-  padding: 1rem;
-}
-
-.pluginTitle {
-  margin: 0;
-}
-
-.pluginVersion {
-  color: #666;
-  font-size: .75rem;
-}
-
-.pluginTags {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.pluginIcon {
-  margin-right: .5rem;
-  width: 15px;
-}
-
-.pluginTag {
-  margin-right: .25rem;
-}
-
 @media (min-width: 48rem) {
   .section {
     padding-bottom: 15rem;
@@ -130,12 +38,5 @@
 
   .sectionImage {
     display: none;
-  }
-
-  .pluginsList {
-    display: grid;
-    grid-auto-rows: minmax(100px, auto);
-    grid-gap: 1.5rem;
-    grid-template-columns: repeat(3, 1fr);
   }
 }
