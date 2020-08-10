@@ -30,20 +30,22 @@ class PluginList extends Component<PluginListProps, {
     }
   }
 
-  handleChange = (event: ChangeEvent) => {
-    const el = event.target as HTMLInputElement;
-    const query = el.value ? el.value.toLowerCase() : ''
-    const filtered = this.props.plugins.filter((plugin) => {
-      if (plugin.name.toLowerCase().indexOf(query) != -1 ||
-        plugin.description.toLowerCase().indexOf(query) != -1 ||
-        plugin.tags.includes(query)) {
+  filterPlugins = () => {
+    return this.props.plugins.filter((plugin) => {
+      if (plugin.name.toLowerCase().indexOf(this.state.query) != -1 ||
+        plugin.description.toLowerCase().indexOf(this.state.query) != -1 ||
+        plugin.tags.includes(this.state.query)) {
         return plugin
       }
       return false
     })
-    this.setState({
-      pluginsFiltered: filtered,
-      query: query
+  }
+
+  handleChange = (event: ChangeEvent) => {
+    const el = event.target as HTMLInputElement;
+    const query = el.value ? el.value.toLowerCase() : ''
+    this.setState({ query: query }, () => {
+      this.setState({ pluginsFiltered: this.filterPlugins() })
     })
   }
 
@@ -52,8 +54,9 @@ class PluginList extends Component<PluginListProps, {
   }
 
   selectCategory = (event: MouseEvent) => {
-    this.setState({
-      category: event.currentTarget.getAttribute('data-category') || '',
+    const category = event.currentTarget.getAttribute('data-category') || ''
+    this.setState({ category: category }, () => {
+      this.setState({ pluginsFiltered: this.filterPlugins() })
     })
   }
 
@@ -77,9 +80,13 @@ class PluginList extends Component<PluginListProps, {
             {this.state.pluginsFiltered.map(({ id, slug, name, tags, version}) => (
               <Link href="/plugins/[slug]" as={`/plugins/${slug}`} key={name}>
                 <div className={styles.plugin}>
-                  <img className={styles.pluginImage} src={`https://github.com/${id}/releases/latest/download/plugin.png`} alt={name} />
                   <div className={styles.pluginDetails}>
-                    <h4 className={styles.pluginTitle}>{name} <span className={styles.pluginVersion}>v{version}</span></h4>
+                    <div className={styles.pluginHead}>
+                      <h4 className={styles.pluginTitle}>{name} <span className={styles.pluginVersion}>v{version}</span></h4>
+                      <span className={styles.pluginButton}>
+                        <img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-download.svg`} alt="Download" />
+                      </span>
+                    </div>
                     <ul className={styles.pluginTags}>
                       <img className={styles.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
                       {tags.map((tag) => (
@@ -87,6 +94,7 @@ class PluginList extends Component<PluginListProps, {
                       ))}
                     </ul>
                   </div>
+                  <img className={styles.pluginImage} src={`https://github.com/${id}/releases/latest/download/plugin.png`} alt={name} />
                 </div>
               </Link>
             ))}

@@ -9,6 +9,10 @@
   margin-bottom: 1rem;
 }
 
+.pluginsTitle {
+  margin-bottom: .5rem;
+}
+
 .pluginsHeader li {
   display: inline-block;
 }
@@ -24,7 +28,7 @@
 }
 
 .pluginsHeader a:hover {
-  background-color: #111;
+  background-color: #222;
 }
 
 .pluginsHeader :global(.selected) {
@@ -52,31 +56,42 @@
 }
 
 .plugin {
-  background-color: #222;
-  border-radius: .25rem;
+  background-color: #111;
+  border-radius: .5rem;
   cursor: pointer;
+  height: 200px;
+  overflow: hidden;
+  padding: 1.5rem 1.5rem 0 1.5rem;
   margin-bottom: 1rem;
   transition: background-color .25s ease-out;
 }
 
 .plugin:hover {
-  background-color: #333;
-}
-
-.pluginImage {
-  display: block;
-  margin: 0 auto;
-  max-height: 300px;
-  max-width: 100%;
+  background-color: #222;
 }
 
 .pluginDetails {
-  border-radius: 0 0 .25rem .25rem;
-  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pluginHead {
+  display: flex;
+  justify-content: space-between;
 }
 
 .pluginTitle {
+  flex-shrink: 1;
   margin: 0;
+}
+
+.pluginButton {
+  background-color: #0d51ff;
+  border-radius: 100%;
+  display: flex;
+  flex-shrink: 0;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
 }
 
 .pluginVersion {
@@ -98,6 +113,11 @@
 
 .pluginTag {
   margin-right: .25rem;
+}
+
+.pluginImage {
+  display: cover;
+  max-width: 100%;
 }
 
 @media (min-width: 48rem) {
