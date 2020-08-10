@@ -7,6 +7,14 @@ import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 
+// custom code
+import { File } from './file'
+
+const file = new File()
+const folder = `${file.getPluginFolder(true)}/**/*.{vst,vst3}`
+console.log(folder)
+console.log(file.readDir(folder))
+
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
   await prepareNext('./renderer')
