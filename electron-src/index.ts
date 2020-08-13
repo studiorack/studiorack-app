@@ -53,5 +53,11 @@ ipcMain.on('message', (event: IpcMainEvent, message: any) => {
 })
 
 ipcMain.handle('get-plugins', async () => {
-  return await file.readDir(folder)
+  const list: Array<object> = []
+  const paths = file.readDir(folder)
+  paths.forEach((path: string) => {
+    list.push(file.readPlugin(path));
+  })
+  console.log(list)
+  return list
 })
