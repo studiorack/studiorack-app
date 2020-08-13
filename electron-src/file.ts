@@ -26,8 +26,7 @@ export class File {
       const sdout = execSync(`./electron-src/bin/validator "${path}"`).toString()
       return this.processLineByLine(path, sdout)
     } catch (error) {
-      console.log(error)
-      return {}
+      return this.processLineByLine(path, error.stdout.toString())
     }
   }
 
