@@ -6,6 +6,15 @@ import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { getPlugins, Plugin } from '../../lib/plugins'
 import { withRouter, Router } from 'next/router'
+import { IpcRenderer } from 'electron'
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      ipcRenderer: IpcRenderer
+    }
+  }
+}
 
 type PluginListProps = {
   category: string,
@@ -22,6 +31,11 @@ class PluginList extends Component<PluginListProps, {
 
   constructor(props: PluginListProps) {
     super(props)
+    if (global && global.ipcRenderer) {
+      global.ipcRenderer.invoke('get-plugins').then((result) => {
+        console.log(result)
+      })
+    }
     this.state = {
       category: 'all',
       pluginsFiltered: props.plugins,

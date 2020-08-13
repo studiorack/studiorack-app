@@ -12,8 +12,6 @@ import { File } from './file'
 
 const file = new File()
 const folder = `${file.getPluginFolder(true)}/**/*.{vst,vst3}`
-console.log(folder)
-console.log(file.readDir(folder))
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
@@ -30,11 +28,6 @@ app.on('ready', async () => {
     },
   })
 
-  // If developing locally, open developer tools
-  if (isDev) {
-    mainWindow.webContents.openDevTools()
-  }
-
   const url = isDev
     ? 'http://localhost:8000/'
     : format({
@@ -44,6 +37,11 @@ app.on('ready', async () => {
       })
 
   mainWindow.loadURL(url)
+
+  // If developing locally, open developer tools
+  if (isDev) {
+    mainWindow.webContents.openDevTools()
+  }
 })
 
 // Quit the app once all windows are closed
@@ -52,4 +50,8 @@ app.on('window-all-closed', app.quit)
 // listen the channel `message` and resend the received message to the renderer process
 ipcMain.on('message', (event: IpcMainEvent, message: any) => {
   event.sender.send('message', message)
+})
+
+ipcMain.handle('get-plugins', async () => {
+  return await file.readDir(folder)
 })
