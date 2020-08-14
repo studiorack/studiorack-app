@@ -47,6 +47,7 @@
     "electron-next": "^3.1.5",
     "glob": "^7.1.6",
     "gray-matter": "^4.0.2",
+    "nodejs-fs-utils": "^1.2.5",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "remark": "^12.0.0",

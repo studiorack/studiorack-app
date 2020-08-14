@@ -58,6 +58,5 @@ ipcMain.handle('get-plugins', async () => {
   paths.forEach((path: string) => {
     list.push(file.readPlugin(path));
   })
-  console.log(list)
   return list
 })

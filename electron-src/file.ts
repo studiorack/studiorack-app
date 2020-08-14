@@ -1,6 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 const { execSync } = require('child_process');
+const fsUtils = require('nodejs-fs-utils');
 const glob = require('glob')
 
 const HOME_DIR = os.homedir()
@@ -24,9 +25,9 @@ export class File {
   readPlugin(path: string) {
     try {
       const sdout = execSync(`./electron-src/bin/validator "${path}"`).toString()
-      return this.processLineByLine(path, sdout)
+      return this.processLog(path, sdout)
     } catch (error) {
-      return this.processLineByLine(path, error.stdout.toString())
+      return this.processLog(path, error.stdout.toString())
     }
   }
 
@@ -48,7 +49,7 @@ export class File {
     }
   }
 
-  processLineByLine(path: string, logs: string) {
+  processLog(path: string, logs: string) {
     const json:{ [key: string]: any; } = {};
     // loop through validator output
     for (let line of logs.split('\n')) {
@@ -76,9 +77,9 @@ export class File {
       }
     }
     // if we can get filesize then add to json
-    const stats = fs.statSync(path);
-    if (stats.size) {
-      json.size = stats.size;
+    const size = fsUtils.fsizeSync(path);
+    if (size) {
+      json.size = size;
     }
     // if image exists add to json
     if (fs.existsSync('./plugin.png')) {
