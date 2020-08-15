@@ -97,20 +97,22 @@ class PluginPage extends Component<PluginProps, {
             </div>
           </div>
         </div>
-        <div className={styles.options}>
-          <div className={styles.row}>
-            <div className={`${styles.cell} ${styles.download}`}>
-              <p>Download .zip file:</p>
-              <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-linux.zip`}>Linux</a>
-              <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-mac.zip`}>MacOS</a>
-              <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-win.zip`}>Windows</a>
-            </div>
-            <div className={`${styles.cell} ${styles.install}`}>
-              <p>Install via command line:</p>
-              <pre className={styles.codeBox}>studiorack install {this.state.plugin.id}</pre>
+        {this.state.plugin.status !== 'installed' && 
+          <div className={styles.options}>
+            <div className={styles.row}>
+              <div className={`${styles.cell} ${styles.download}`}>
+                <p>Download .zip file:</p>
+                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-linux.zip`}>Linux</a>
+                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-mac.zip`}>MacOS</a>
+                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-win.zip`}>Windows</a>
+              </div>
+              <div className={`${styles.cell} ${styles.install}`}>
+                <p>Install via command line:</p>
+                <pre className={styles.codeBox}>studiorack install {this.state.plugin.id}</pre>
+              </div>
             </div>
           </div>
-        </div>
+        }
       </article>
     </Layout>
     )
