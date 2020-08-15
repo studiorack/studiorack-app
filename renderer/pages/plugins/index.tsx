@@ -7,6 +7,7 @@ import { GetStaticProps } from 'next'
 import { getPlugins, Plugin } from '../../lib/plugins'
 import { withRouter, Router } from 'next/router'
 import { IpcRenderer } from 'electron'
+import slugify from 'slugify'
 
 declare global {
   namespace NodeJS {
@@ -31,16 +32,22 @@ class PluginList extends Component<PluginListProps, {
 
   constructor(props: PluginListProps) {
     super(props)
-    if (global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('get-plugins').then((result) => {
-        console.log(result)
-      })
-    }
     this.state = {
       category: 'all',
       pluginsFiltered: props.plugins,
       router: props.router,
       query: ''
+    }
+    if (global && global.ipcRenderer) {
+      global.ipcRenderer.invoke('get-plugins').then((plugins) => {
+        plugins = plugins.map((plugin: Plugin) => {
+          plugin.id = 'studiorack/studiorack-plugin'
+          plugin.slug = slugify(plugin.name, { lower: true })
+          return plugin
+        })
+        console.log(plugins)
+        this.setState({ pluginsFiltered: plugins })
+      })
     }
   }
 

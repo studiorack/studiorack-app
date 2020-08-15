@@ -89,6 +89,7 @@ export class File {
     if (fs.existsSync('./plugin.wav')) {
       json.audio = 'plugin.wav';
     }
+    json.status = 'installed';
     return json;
   }
 }

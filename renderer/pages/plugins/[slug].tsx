@@ -5,10 +5,12 @@ import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
+import slugify from 'slugify'
 
 type PluginProps = {
   plugin: Plugin,
-  router: Router
+  router: Router,
+  slug: string
 }
 
 class PluginPage extends Component<PluginProps, {
@@ -23,6 +25,17 @@ class PluginPage extends Component<PluginProps, {
       isPlaying: false,
       plugin: props.plugin,
       router: props.router
+    }
+    if (global && global.ipcRenderer) {
+      global.ipcRenderer.invoke('get-plugins').then((plugins) => {
+        plugins = plugins.forEach((plugin: Plugin) => {
+          plugin.id = 'studiorack/studiorack-plugin'
+          plugin.slug = slugify(plugin.name, { lower: true })
+          if (plugin.slug === props.slug) {
+            this.setState({ plugin: plugin })
+          }
+        })
+      })
     }
   }
 
@@ -53,7 +66,7 @@ class PluginPage extends Component<PluginProps, {
     return (
     <Layout>
       <Head>
-        <title>{this.state.plugin.name}</title>
+        <title>{this.state.plugin.name || ''}</title>
       </Head>
       <article>
         <div className={styles.header}>
@@ -75,9 +88,11 @@ class PluginPage extends Component<PluginProps, {
               <p>{this.state.plugin.description}</p>
               <ul className={styles.tags}>
                 <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                {this.state.plugin.tags.map((tag) => (
-                  <li className={styles.tag} key={tag}>{tag},</li>
-                ))}
+                {this.state.plugin.tags && 
+                  this.state.plugin.tags.map((tag) => (
+                    <li className={styles.tag} key={tag}>{tag},</li>
+                  ))
+                }
               </ul>
             </div>
           </div>
@@ -118,10 +133,12 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
+  console.log('getStaticProps', params.slug);
   const plugin = await getPluginData(params.slug)
   return {
     props: {
-      plugin
+      slug: params.slug,
+      plugin: plugin
     }
   }
 }
