@@ -25,19 +25,23 @@ type PluginListProps = {
 
 class PluginList extends Component<PluginListProps, {
   category: string,
+  plugins: Plugin[]
   pluginsFiltered: Plugin[]
   router: Router
   query: string,
 }> {
+  list: Plugin[]
 
   constructor(props: PluginListProps) {
     super(props)
     this.state = {
       category: 'all',
+      plugins: props.plugins,
       pluginsFiltered: props.plugins,
       router: props.router,
       query: ''
     }
+    this.list = props.plugins;
     if (global && global.ipcRenderer) {
       global.ipcRenderer.invoke('get-plugins').then((plugins) => {
         plugins = plugins.map((plugin: Plugin) => {
@@ -45,17 +49,30 @@ class PluginList extends Component<PluginListProps, {
           plugin.slug = slugify(plugin.name, { lower: true })
           return plugin
         })
+        this.list = this.list.concat(plugins)
         console.log(plugins)
-        this.setState({ pluginsFiltered: plugins })
+        this.setState({
+          plugins: this.list,
+          pluginsFiltered: this.list
+        })
       })
     }
   }
 
   filterPlugins = () => {
-    return this.props.plugins.filter((plugin) => {
-      if (plugin.name.toLowerCase().indexOf(this.state.query) != -1 ||
-        plugin.description.toLowerCase().indexOf(this.state.query) != -1 ||
-        plugin.tags.includes(this.state.query)) {
+    console.log('filterPlugins', this.state);
+    return this.state.plugins.filter((plugin) => {
+      if (
+          (
+            this.state.category === 'all' ||
+            this.state.category === plugin.status
+          )
+          &&
+          (
+            plugin.name.toLowerCase().indexOf(this.state.query) !== -1 ||
+            plugin.description.toLowerCase().indexOf(this.state.query) !== -1 ||
+            plugin.tags.includes(this.state.query)
+          )) {
         return plugin
       }
       return false
@@ -98,24 +115,22 @@ class PluginList extends Component<PluginListProps, {
             <input className={styles.pluginsSearch} placeholder="Filter by keyword" value={this.state.query} onChange={this.handleChange} />
           </div>
           <div className={styles.pluginsList}>
-            {this.state.pluginsFiltered.map((plugin) => (
-              <Link href="/plugins/[slug]" as={`/plugins/${plugin.slug}`} key={plugin.name}>
+            {this.state.pluginsFiltered.map((plugin, pluginIndex) => (
+              <Link href="/plugins/[slug]" as={`/plugins/${plugin.slug}`} key={`${plugin.name}-${pluginIndex}`}>
                 <div className={styles.plugin}>
                   <div className={styles.pluginDetails}>
                     <div className={styles.pluginHead}>
                       <h4 className={styles.pluginTitle}>{plugin.name} <span className={styles.pluginVersion}>v{plugin.version}</span></h4>
-                      <span className={styles.pluginButton}>
                       {plugin.status === 'installed' ?
-                        <img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-installed.svg`} alt="Installed" />
+                        <span className={styles.pluginButtonInstalled}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-installed.svg`} alt="Installed" /></span>
                         :
-                        <img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-download.svg`} alt="Download" />
+                        <span className={styles.pluginButton}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-download.svg`} alt="Download" /></span>
                       }
-                      </span>
                     </div>
                     <ul className={styles.pluginTags}>
                       <img className={styles.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                      {plugin.tags.map((tag) => (
-                        <li className={styles.pluginTag} key={tag}>{tag},</li>
+                      {plugin.tags.map((tag, tagIndex) => (
+                        <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
                       ))}
                     </ul>
                   </div>

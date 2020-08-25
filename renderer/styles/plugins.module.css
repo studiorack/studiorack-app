@@ -78,7 +78,8 @@
   margin: 0;
 }
 
-.pluginButton {
+.pluginButton,
+.pluginButtonInstalled {
   background-color: #0d51ff;
   border-radius: 100%;
   display: flex;
@@ -86,6 +87,10 @@
   height: 40px;
   justify-content: center;
   width: 40px;
+}
+
+.pluginButtonInstalled {
+  background-color: #48ad6a;
 }
 
 .pluginVersion {
