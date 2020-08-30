@@ -1,11 +1,13 @@
-import repos from './repos.json'
+const REGISTRY_PATH = process.env.REGISTRY_PATH || 'https://studiorack.github.io/studiorack-registry/';
 
 export interface Plugin {
   author: string,
+  date: string,
   description: string,
   homepage: string,
   id: string,
   name: string,
+  size: number,
   slug: string,
   status: string,
   tags: Array<string>,
@@ -21,46 +23,45 @@ function fromSlug(input: string) {
 }
 
 export async function getPlugins() {
-  return await Promise.all(repos.map(async (repo) => {
-    const url = `https://github.com/${repo}/releases/latest/download/plugin.json`
-    const res = await fetch(url)
-    return res.json().then((plugin) => {
-      plugin.id = repo
-      plugin.slug = toSlug(repo)
-      return plugin
-    }).catch(() => {
-      return false
-    })
-  })).then((results) => {
-    return results.filter((result) => {
-      return result
-    })
+  const res = await fetch(REGISTRY_PATH)
+  return res.json().then((registry) => {
+    const list = []
+    for (const pluginId in registry.objects) {
+      const plugin = registry.objects[pluginId]
+      const version = plugin.versions[plugin.version]
+      version.id = pluginId
+      version.slug = toSlug(pluginId)
+      version.version = plugin.version
+      list.push(version)
+    }
+    return list
   })
 }
 
-export function getAllPluginPaths() {
-  return repos.map((repo) => {
-    return {
-      params: {
-        slug: toSlug(repo)
-      }
+export async function getAllPluginPaths() {
+  const res = await fetch(REGISTRY_PATH)
+  return res.json().then((registry) => {
+    const list = []
+    for (const pluginId in registry.objects) {
+      list.push({
+        params: {
+          slug: toSlug(pluginId)
+        }
+      })
     }
+    return list
   })
 }
 
 export async function getPluginData(slug: string) {
-  const repo = fromSlug(slug)
-  const url = `https://github.com/${repo}/releases/latest/download/plugin.json`
-  const res = await fetch(url)
-  return res.json().then((plugin) => {
-    plugin.id = repo
-    plugin.slug = toSlug(repo)
-    return plugin
-  }).catch(() => {
-    return {
-      id: repo,
-      slug: toSlug(repo),
-      tags: []
-    }
+  const pluginId = fromSlug(slug)
+  const res = await fetch(REGISTRY_PATH)
+  return res.json().then((registry) => {
+    const plugin = registry.objects[pluginId]
+    const version = plugin.versions[plugin.version]
+    version.id = pluginId
+    version.slug = toSlug(pluginId)
+    version.version = plugin.version
+    return version
   })
 }

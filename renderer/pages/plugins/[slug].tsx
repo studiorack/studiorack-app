@@ -78,9 +78,9 @@ class PluginPage extends Component<PluginProps, {
                 :
                 <img className={styles.imagePlay} src={`${this.state.router.basePath}/images/icon-play.svg`} alt="Play" onClick={this.play} />
               }
-                <img className={styles.image} src={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin.png`} alt={this.state.plugin.name} />
+                <img className={styles.image} src={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin.png`} alt={this.state.plugin.name} />
               </div>
-              <audio src={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin.wav`} id="audio">Your browser does not support the audio element.</audio>
+              <audio src={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin.wav`} id="audio">Your browser does not support the audio element.</audio>
             </div>
             <div className={styles.details}>
               <h3 className={styles.title}>{this.state.plugin.name} <span className={styles.version}>v{this.state.plugin.version}</span></h3>
@@ -102,9 +102,9 @@ class PluginPage extends Component<PluginProps, {
             <div className={styles.row}>
               <div className={`${styles.cell} ${styles.download}`}>
                 <p>Download .zip file:</p>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-linux.zip`}>Linux</a>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-mac.zip`}>MacOS</a>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/latest/download/plugin-win.zip`}>Windows</a>
+                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-linux.zip`}>Linux</a>
+                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-mac.zip`}>MacOS</a>
+                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-win.zip`}>Windows</a>
               </div>
               <div className={`${styles.cell} ${styles.install}`}>
                 <p>Install via command line:</p>
@@ -121,7 +121,7 @@ class PluginPage extends Component<PluginProps, {
 export default withRouter(PluginPage)
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = getAllPluginPaths()
+  const paths = await getAllPluginPaths()
   return {
     paths,
     fallback: false
