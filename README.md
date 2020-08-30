@@ -1,4 +1,5 @@
 # studiorack-app
+![Release](https://github.com/studiorack/studiorack-app/workflows/Release/badge.svg)
 
 Audio plugin app, searchable list of plugins to install and share using:
 
