@@ -56,7 +56,7 @@ ipcMain.handle('get-plugins', async () => {
   const list: Array<object> = []
   const paths = file.readDir(folder)
   paths.forEach((path: string) => {
-    list.push(file.readPlugin(path));
+    list.push(file.readPlugin(path, true));
   })
   return list
 })

@@ -6,6 +6,7 @@ const glob = require('glob')
 
 const HOME_DIR = os.homedir()
 const PLUGIN_DIR = './plugins'
+const VALIDATOR_PATH = './electron-src/bin'
 
 const map: { [key: string]: string; } = {
   category: 'description',
@@ -22,12 +23,22 @@ export class File {
     return glob.sync(path)
   }
 
-  readPlugin(path: string) {
+  readPlugin(path: string, metadata: boolean) {
+    console.log(`Reading: ${path}`);
+    let output = this.run(path);
+    if (metadata) {
+      output = this.processLog(path, output);
+    }
+    return output;
+  }
+
+  run(path: string) {
+    // Run Steinberg VST3 SDK validator binary
     try {
-      const sdout = execSync(`./electron-src/bin/validator "${path}"`).toString()
-      return this.processLog(path, sdout)
+      const sdout = execSync(`${VALIDATOR_PATH}/validator "${path}"`);
+      return sdout.toString();
     } catch (error) {
-      return this.processLog(path, error.stdout.toString())
+      return error.output ? error.output.toString() : error.toString();
     }
   }
 
