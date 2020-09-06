@@ -42,24 +42,24 @@ class PluginPage extends Component<PluginProps, {
   play = () => {
     const el = document.getElementById('audio') as HTMLAudioElement
     if (el.paused) {
-      el.removeEventListener('ended', this.ended);
-      el.addEventListener('ended', this.ended);
-      el.currentTime = 0;
-      el.play();
-      this.setState({ isPlaying: true });
+      el.removeEventListener('ended', this.ended)
+      el.addEventListener('ended', this.ended)
+      el.currentTime = 0
+      el.play()
+      this.setState({ isPlaying: true })
     }
   }
 
   pause = () => {
     const el = document.getElementById('audio') as HTMLAudioElement
     if (!el.paused) {
-      el.pause();
-      this.setState({ isPlaying: false });
+      el.pause()
+      this.setState({ isPlaying: false })
     }
   }
 
   ended = () => {
-    this.setState({ isPlaying: false });
+    this.setState({ isPlaying: false })
   }
 
   render() {
@@ -135,7 +135,7 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
-  console.log('getStaticProps', params.slug);
+  console.log('getStaticProps', params.slug)
   const plugin = await getPluginData(params.slug)
   return {
     props: {

@@ -7,7 +7,6 @@ import { GetStaticProps } from 'next'
 import { getPlugins, Plugin } from '../../lib/plugins'
 import { withRouter, Router } from 'next/router'
 import { IpcRenderer } from 'electron'
-import slugify from 'slugify'
 
 declare global {
   namespace NodeJS {
@@ -41,14 +40,14 @@ class PluginList extends Component<PluginListProps, {
       router: props.router,
       query: ''
     }
-    this.list = props.plugins;
+    this.list = props.plugins
     if (global && global.ipcRenderer) {
       global.ipcRenderer.invoke('get-plugins').then((plugins) => {
-        plugins = plugins.map((plugin: Plugin) => {
-          plugin.id = 'studiorack/studiorack-plugin'
-          plugin.slug = slugify(plugin.name, { lower: true })
-          return plugin
-        })
+        // plugins = plugins.map((plugin: Plugin) => {
+        //   plugin.id = 'studiorack/studiorack-plugin'
+        //   plugin.slug = slugify(plugin.name, { lower: true })
+        //   return plugin
+        // })
         this.list = this.list.concat(plugins)
         console.log(plugins)
         this.setState({
@@ -60,7 +59,7 @@ class PluginList extends Component<PluginListProps, {
   }
 
   filterPlugins = () => {
-    console.log('filterPlugins', this.state);
+    console.log('filterPlugins', this.state)
     return this.state.plugins.filter((plugin) => {
       if (
           (
@@ -80,7 +79,7 @@ class PluginList extends Component<PluginListProps, {
   }
 
   handleChange = (event: ChangeEvent) => {
-    const el = event.target as HTMLInputElement;
+    const el = event.target as HTMLInputElement
     const query = el.value ? el.value.toLowerCase() : ''
     this.setState({ query: query }, () => {
       this.setState({ pluginsFiltered: this.filterPlugins() })
@@ -110,7 +109,7 @@ class PluginList extends Component<PluginListProps, {
             <ul className={styles.pluginsCategory}>
               <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
               <li><a data-category="installed" onClick={this.selectCategory} className={this.isSelected('installed')}>Installed</a></li>
-              <li><a data-category="updates" onClick={this.selectCategory} className={this.isSelected('updates')}>Updates</a></li>
+              <li><a data-category="available" onClick={this.selectCategory} className={this.isSelected('available')}>Available</a></li>
             </ul>
             <input className={styles.pluginsSearch} placeholder="Filter by keyword" value={this.state.query} onChange={this.handleChange} />
           </div>

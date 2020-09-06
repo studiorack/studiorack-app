@@ -1,4 +1,4 @@
-const REGISTRY_PATH = process.env.REGISTRY_PATH || 'https://studiorack.github.io/studiorack-registry/';
+const REGISTRY_PATH = process.env.REGISTRY_PATH || 'https://studiorack.github.io/studiorack-registry/'
 
 export interface Plugin {
   author: string,
@@ -31,6 +31,7 @@ export async function getPlugins() {
       const version = plugin.versions[plugin.version]
       version.id = pluginId
       version.slug = toSlug(pluginId)
+      version.status = 'available'
       version.version = plugin.version
       list.push(version)
     }

@@ -9,6 +9,7 @@ import prepareNext from 'electron-next'
 
 // custom code
 import { File } from './file'
+const path = require('path')
 
 const file = new File()
 const folder = `${file.getPluginFolder(true)}/**/*.{vst,vst3}`
@@ -54,9 +55,33 @@ ipcMain.on('message', (event: IpcMainEvent, message: any) => {
 
 ipcMain.handle('get-plugins', async () => {
   const list: Array<object> = []
-  const paths = file.readDir(folder)
-  paths.forEach((path: string) => {
-    list.push(file.readPlugin(path, true));
+  const pluginPaths = file.readDir(folder)
+  pluginPaths.forEach((pluginPath: string) => {
+    // Prototype for now, will write this properly later
+    const folderPath = path.dirname(folder).replace('**', '')
+    const folderId = pluginPath.substring(folderPath.length, pluginPath.lastIndexOf('/'))
+    const [accountId, repoId, versionId] = folderId.split('/')
+    const pluginId = accountId !== '' ? [accountId, repoId].join('/') : 'studiorack/studiorack-plugin'
+    const jsonPath = pluginPath.substring(0, pluginPath.lastIndexOf('.')) + '.json'
+    let plugin = file.loadFileJson(jsonPath)
+    if (!plugin) {
+      plugin = file.readPlugin(pluginPath)
+    }
+    plugin.id = pluginId
+    plugin.slug = toSlug(pluginId)
+    plugin.status = 'installed'
+    plugin.version = versionId || '0.0.5'
+    console.log('folderPath', folderPath)
+    console.log('pluginPath', pluginPath)
+    console.log('folderId', folderId)
+    console.log('accountId', accountId, repoId, versionId)
+    console.log('pluginId', pluginId)
+    console.log('plugin', plugin)
+    list.push(plugin)
   })
   return list
 })
+
+function toSlug(input: string) {
+  return input.replace('/', '_')
+}
