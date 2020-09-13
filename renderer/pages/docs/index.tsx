@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import Container from '../../components/container'
 import Layout from '../../components/layout'
+import Link from 'next/link'
 import styles from '../../styles/doc.module.css'
 import { getAllDocs } from '../../lib/api'
 import Head from 'next/head'
@@ -45,10 +46,18 @@ class DocList extends Component<DocListProps, {
           <pre className={styles.markdownPre}>studiorack --version</pre>
           <h2 className={styles.markdownH2}>Music producers</h2>
           <p>Follow our guide on how to start a music project and install plugins:</p>
-          <p><a href={`${this.state.router.basePath}/docs/02-create-a-project-config`} className={styles.markdownA}>Create a project config &gt;</a></p>
+          <p>
+            <Link href={`${this.state.router.basePath}/docs/02-create-a-project-config`}>
+              <a className={styles.markdownA}>Create a project config &gt;</a>
+            </Link>
+          </p>
           <h2 className={styles.markdownH2}>Plugin developers</h2>
           <p>Jump straight to the advanced guide on how to create your own audio plugins:</p>
-          <p><a href={`${this.state.router.basePath}/docs/05-develop-new-plugins`} className={styles.markdownA}>Develop new plugins &gt;</a></p>
+          <p>
+            <Link href={`${this.state.router.basePath}/docs/05-develop-new-plugins`}>
+              <a className={styles.markdownA}>Develop new plugins &gt;</a>
+            </Link>
+          </p>
         </Container>
       </Layout>
     </>

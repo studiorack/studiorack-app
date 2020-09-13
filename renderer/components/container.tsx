@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import Doc from '../types/doc'
+import Link from 'next/link'
 import styles from '../styles/docs.module.css'
 import { withRouter, Router } from 'next/router'
 
@@ -42,12 +43,20 @@ class Container extends Component<{
         <h4>Documentation</h4>
         <ul className={styles.menu}>
           {this.state.docs.map((doc) => (
-            <li className={styles.menuItem} key={doc.slug}><a href={`${this.state.router.basePath}/docs/${doc.slug}`} className={this.isSelected(`/docs/${doc.slug}`)}>{doc.title}</a></li>
+            <li className={styles.menuItem} key={doc.slug}>
+              <Link href={`${this.state.router.basePath}/docs/${doc.slug}`}>
+                <a className={this.isSelected(`/docs/${doc.slug}`)}>{doc.title}</a>
+              </Link>
+            </li>
           ))}
         </ul>
         <h4>API Reference</h4>
         <ul className={styles.menu}>
-          <li className={styles.menuItem} key="06-command-line"><a href={`${this.state.router.basePath}/docs/06-command-line`} className={this.isSelected(`/docs/06-command-line`)}>Command line</a></li>
+          <li className={styles.menuItem} key="06-command-line">
+            <Link href={`${this.state.router.basePath}/docs/06-command-line`}>
+              <a className={this.isSelected(`/docs/06-command-line`)}>Command line</a>
+            </Link>
+          </li>
         </ul>
       </div>
       <div className={styles.content}>

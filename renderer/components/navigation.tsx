@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import Link from 'next/link'
 import styles from '../styles/layout.module.css'
 import { withRouter, Router } from 'next/router'
 
@@ -33,9 +34,9 @@ class Navigation extends Component<{
   render() {
     return (
     <ul className={styles.navigation}>
-      <li><a href={`${this.state.router.basePath}/`} className={this.isSelected('/')}>Tools</a></li>
-      <li><a href={`${this.state.router.basePath}/plugins`} className={this.isSelected('/plugins')}>Plugins</a></li>
-      <li><a href={`${this.state.router.basePath}/docs`} className={this.isSelected('/docs')}>Docs</a></li>
+      <li><Link href={`${this.state.router.basePath}/`}><a className={this.isSelected('/')}>Tools</a></Link></li>
+      <li><Link href={`${this.state.router.basePath}/plugins`}><a className={this.isSelected('/plugins')}>Plugins</a></Link></li>
+      <li><Link href={`${this.state.router.basePath}/docs`}><a className={this.isSelected('/docs')}>Docs</a></Link></li>
     </ul>
     )
   }

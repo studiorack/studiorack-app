@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import Navigation from './navigation'
 import styles from '../styles/layout.module.css'
 import { useRouter } from 'next/router'
@@ -26,10 +27,12 @@ export default function Layout({
         <link rel="manifest" href={`${basePath}/icons/site.webmanifest`}></link>
       </Head>
       <header className={styles.header}>
-        <a href={`${basePath}/`} className={styles.headerLink}>
-          <img className={styles.logoImage} src={`${basePath}/images/studio-rack-logo.svg`} alt={siteTitle} />
-          <span className={styles.logoText}>Studio<span className={styles.logoTextBold}>Rack</span></span>
-        </a>
+        <Link href={`${basePath}/`}>
+          <a className={styles.headerLink}>
+            <img className={styles.logoImage} src={`${basePath}/images/studio-rack-logo.svg`} alt={siteTitle} />
+            <span className={styles.logoText}>Studio<span className={styles.logoTextBold}>Rack</span></span>
+          </a>
+        </Link>
         <Navigation></Navigation>
       </header>
       <main>{children}</main>
