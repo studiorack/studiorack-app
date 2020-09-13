@@ -1,4 +1,5 @@
 .section {
+  background-position: center;
   background-size: cover;
   padding: 1.5rem;
   scroll-snap-align: start;
@@ -28,6 +29,10 @@
     padding-top: 15rem;
   }
 
+  .sectionOpenSource {
+    background-image: url(../public/images/studio-audio-rack.jpg);
+  }
+
   .sectionCreators {
     background-image: url(../public/images/creators.jpg);
   }
@@ -39,4 +44,9 @@
   .sectionImage {
     display: none;
   }
+
+  .sectionProducers .inner {
+    margin: 0 0 0 auto;
+  }
+  
 }
