@@ -17,7 +17,7 @@ export default function Layout({
     <div className={styles.container}>
       <Head>
         <meta name="description" content={siteDesc} />
-        <meta property="og:image" content={`${basePath}/images/creators-mobile.jpg`} />
+        <meta property="og:image" content={`${basePath}/static/creators-mobile.jpg`} />
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&amp;display=swap" rel="stylesheet"></link>
@@ -29,7 +29,7 @@ export default function Layout({
       <header className={styles.header}>
         <Link href={`${basePath}/`}>
           <a className={styles.headerLink}>
-            <img className={styles.logoImage} src={`${basePath}/images/studio-rack-logo.svg`} alt={siteTitle} />
+            <img className={styles.logoImage} src={`${basePath}/static/studio-rack-logo.svg`} alt={siteTitle} />
             <span className={styles.logoText}>Studio<span className={styles.logoTextBold}>Rack</span></span>
           </a>
         </Link>

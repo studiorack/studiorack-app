@@ -74,9 +74,9 @@ class PluginPage extends Component<PluginProps, {
             <div className={styles.media}>
               <div className={styles.imageContainer}>
               {this.state.isPlaying ?
-                <img className={styles.imagePlay} src={`${this.state.router.basePath}/images/icon-pause.svg`} alt="Pause" onClick={this.pause} />
+                <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-pause.svg`} alt="Pause" onClick={this.pause} />
                 :
-                <img className={styles.imagePlay} src={`${this.state.router.basePath}/images/icon-play.svg`} alt="Play" onClick={this.play} />
+                <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-play.svg`} alt="Play" onClick={this.play} />
               }
                 <img className={styles.image} src={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin.png`} alt={this.state.plugin.name} />
               </div>
@@ -87,7 +87,7 @@ class PluginPage extends Component<PluginProps, {
               <p className={styles.author}>By <a href={this.state.plugin.homepage} target="_blank">{this.state.plugin.author}</a></p>
               <p>{this.state.plugin.description}</p>
               <ul className={styles.tags}>
-                <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
+                <img className={styles.icon} src={`${this.state.router.basePath}/static/icon-tag.svg`} alt="Tags" />
                 {this.state.plugin.tags && 
                   this.state.plugin.tags.map((tag) => (
                     <li className={styles.tag} key={tag}>{tag},</li>

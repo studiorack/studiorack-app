@@ -121,13 +121,13 @@ class PluginList extends Component<PluginListProps, {
                     <div className={styles.pluginHead}>
                       <h4 className={styles.pluginTitle}>{plugin.name} <span className={styles.pluginVersion}>v{plugin.version}</span></h4>
                       {plugin.status === 'installed' ?
-                        <span className={styles.pluginButtonInstalled}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-installed.svg`} alt="Installed" /></span>
+                        <span className={styles.pluginButtonInstalled}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/static/icon-installed.svg`} alt="Installed" /></span>
                         :
-                        <span className={styles.pluginButton}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-download.svg`} alt="Download" /></span>
+                        <span className={styles.pluginButton}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/static/icon-download.svg`} alt="Download" /></span>
                       }
                     </div>
                     <ul className={styles.pluginTags}>
-                      <img className={styles.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
+                      <img className={styles.pluginIcon} src={`${this.state.router.basePath}/static/icon-tag.svg`} alt="Tags" />
                       {plugin.tags.map((tag, tagIndex) => (
                         <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
                       ))}

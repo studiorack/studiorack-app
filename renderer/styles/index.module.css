@@ -30,15 +30,15 @@
   }
 
   .sectionOpenSource {
-    background-image: url(../public/images/studio-audio-rack.jpg);
+    background-image: url(../public/static/studio-audio-rack.jpg);
   }
 
   .sectionCreators {
-    background-image: url(../public/images/creators.jpg);
+    background-image: url(../public/static/creators.jpg);
   }
 
   .sectionProducers {
-    background-image: url(../public/images/producers.jpg);
+    background-image: url(../public/static/producers.jpg);
   }
 
   .sectionImage {
