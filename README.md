@@ -6,6 +6,7 @@ Audio plugin app, searchable list of plugins to install and share using:
 * NodeJS 14.4.x
 * NextJS 9.5.x
 * React 16.12.x
+* Electron 7.1.x
 
 
 ## Installation
