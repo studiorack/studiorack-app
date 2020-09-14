@@ -42,7 +42,7 @@ app.on('ready', async () => {
     width: 800,
     height: 600,
     webPreferences: {
-      contextIsolation: true,
+      // contextIsolation: true,
       nodeIntegration: false,
       preload: join(__dirname, 'preload.js'),
     },
