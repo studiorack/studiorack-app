@@ -1,4 +1,4 @@
-import { Component, ChangeEvent, MouseEvent } from 'react'
+import { Component, ChangeEvent, MouseEvent, SyntheticEvent } from 'react'
 import Head from 'next/head'
 import Layout, { siteTitle } from '../../components/layout'
 import styles from '../../styles/plugins.module.css'
@@ -97,6 +97,15 @@ class PluginList extends Component<PluginListProps, {
     })
   }
 
+  imageError = (event: SyntheticEvent) => {
+    const el = event.target as HTMLImageElement
+    const fallback = `${this.state.router.basePath}/static/plugin.png`
+    if (el.getAttribute('src') !== fallback) {
+      el.setAttribute('src', fallback)
+    }
+    return undefined
+  }
+
   render() {
     return (
       <Layout>
@@ -133,7 +142,7 @@ class PluginList extends Component<PluginListProps, {
                       ))}
                     </ul>
                   </div>
-                  <img className={styles.pluginImage} src={`https://github.com/${plugin.id}/releases/download/v${plugin.version}/plugin.png`} alt={plugin.name} />
+                  <img className={styles.pluginImage} src={`https://github.com/${plugin.id}/releases/download/v${plugin.version}/plugin.png`} alt={plugin.name} onError={this.imageError} />
                 </div>
               </Link>
             ))}
