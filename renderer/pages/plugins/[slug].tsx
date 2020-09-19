@@ -1,11 +1,9 @@
 import { Component } from 'react'
 import Layout from '../../components/layout'
-import { getAllPluginPaths, getPluginData, Plugin } from '../../lib/plugins'
+import { getPluginData, Plugin } from '../../lib/plugins'
 import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
-import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import slugify from 'slugify'
 
 type PluginProps = {
   plugin: Plugin,
@@ -21,22 +19,26 @@ class PluginPage extends Component<PluginProps, {
 
   constructor(props: PluginProps) {
     super(props)
+    console.log('props', props);
     this.state = {
       isPlaying: false,
-      plugin: props.plugin,
+      plugin: {} as Plugin,
       router: props.router
     }
-    if (global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('get-plugins').then((plugins) => {
-        plugins = plugins.forEach((plugin: Plugin) => {
-          plugin.id = 'studiorack/studiorack-plugin'
-          plugin.slug = slugify(plugin.name, { lower: true })
-          if (plugin.slug === props.slug) {
+
+    console.log('slug', props.router.query.slug);
+    // check if registry has plugin metadata
+    getPluginData(props.router.query.slug as string).then((plugin: Plugin) => {
+      if (plugin) {
+        this.setState({ plugin: plugin })
+      // otherwise fallback to auto-generated local metadata
+      } else if (global && global.ipcRenderer) {
+          global.ipcRenderer.invoke('get-plugin', props.router.query.slug).then((plugin) => {
+            console.log('get-plugin-result', plugin)
             this.setState({ plugin: plugin })
-          }
-        })
+          })
+        }
       })
-    }
   }
 
   play = () => {
@@ -119,28 +121,3 @@ class PluginPage extends Component<PluginProps, {
   }
 }
 export default withRouter(PluginPage)
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await getAllPluginPaths()
-  return {
-    paths,
-    fallback: false
-  }
-}
-
-type Params = {
-  params: {
-    slug: string
-  }
-}
-
-export async function getStaticProps({ params }: Params) {
-  console.log('getStaticProps', params.slug)
-  const plugin = await getPluginData(params.slug)
-  return {
-    props: {
-      slug: params.slug,
-      plugin: plugin
-    }
-  }
-}

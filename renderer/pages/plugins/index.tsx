@@ -43,13 +43,8 @@ class PluginList extends Component<PluginListProps, {
     this.list = props.plugins
     if (global && global.ipcRenderer) {
       global.ipcRenderer.invoke('get-plugins').then((plugins) => {
-        // plugins = plugins.map((plugin: Plugin) => {
-        //   plugin.id = 'studiorack/studiorack-plugin'
-        //   plugin.slug = slugify(plugin.name, { lower: true })
-        //   return plugin
-        // })
         this.list = this.list.concat(plugins)
-        console.log(plugins)
+        console.log(this.list)
         this.setState({
           plugins: this.list,
           pluginsFiltered: this.list

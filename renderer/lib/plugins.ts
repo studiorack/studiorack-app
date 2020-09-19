@@ -1,3 +1,5 @@
+import slugify from 'slugify'
+
 const REGISTRY_PATH = process.env.REGISTRY_PATH || 'https://studiorack.github.io/studiorack-registry/'
 
 export interface Plugin {
@@ -15,11 +17,11 @@ export interface Plugin {
 }
 
 function toSlug(input: string) {
-  return input.replace('/', '_')
+  return slugify(input.replace(/\//g, '_'), { lower: true })
 }
 
 function fromSlug(input: string) {
-  return input.replace('_', '/')
+  return input.replace(/_/g, '/')
 }
 
 export async function getPlugins() {
@@ -59,6 +61,9 @@ export async function getPluginData(slug: string) {
   const res = await fetch(REGISTRY_PATH)
   return res.json().then((registry) => {
     const plugin = registry.objects[pluginId]
+    if (!plugin) {
+      return false;
+    }
     const version = plugin.versions[plugin.version]
     version.id = pluginId
     version.slug = toSlug(pluginId)
