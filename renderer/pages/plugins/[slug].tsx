@@ -96,6 +96,11 @@ class PluginPage extends Component<PluginProps, {
                   ))
                 }
               </ul>
+              {this.state.plugin.status === 'installed' ?
+                <a className={`button ${styles.button}`}>Uninstall</a>
+                :
+                <a className={`button ${styles.button}`}>Install</a>
+              }
             </div>
           </div>
         </div>
