@@ -46,7 +46,8 @@ class PluginPage extends Component<PluginProps, {
     console.log('install', this.state.plugin)
     if (global && global.ipcRenderer) {
       global.ipcRenderer.invoke('installPlugin', this.state.plugin).then((plugin) => {
-        console.log('installPlugin', plugin)
+        console.log('installPlugin response', plugin)
+        this.setState({ plugin: plugin })
       })
     }
   }
@@ -55,7 +56,8 @@ class PluginPage extends Component<PluginProps, {
     console.log('uninstall', this.state.plugin)
     if (global && global.ipcRenderer) {
       global.ipcRenderer.invoke('uninstallPlugin', this.state.plugin).then((plugin) => {
-        console.log('uninstallPlugin', plugin)
+        console.log('uninstallPlugin response', plugin)
+        this.setState({ plugin: plugin })
       })
     }
   }
@@ -116,9 +118,9 @@ class PluginPage extends Component<PluginProps, {
                 }
               </ul>
               {this.state.plugin.status !== 'installed' ?
-                <a className={`button ${styles.button}`} onClick={this.install}>Install</a>
+                <a className="button" onClick={this.install}>Install</a>
                 :
-                <a className={`button ${styles.button}`} onClick={this.uninstall}>Uninstall</a>
+                <a className="button button-clear" onClick={this.uninstall}>Uninstall</a>
               }
             </div>
           </div>
@@ -128,9 +130,9 @@ class PluginPage extends Component<PluginProps, {
             <div className={styles.row}>
               <div className={`${styles.cell} ${styles.download}`}>
                 <p>Download .zip file:</p>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-linux.zip`}>Linux</a>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-mac.zip`}>MacOS</a>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-win.zip`}>Windows</a>
+                <a className="button" href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-linux.zip`}>Linux</a>
+                <a className="button" href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-mac.zip`}>MacOS</a>
+                <a className="button" href={`https://github.com/${this.state.plugin.id}/releases/download/v${this.state.plugin.version}/plugin-win.zip`}>Windows</a>
               </div>
               <div className={`${styles.cell} ${styles.install}`}>
                 <p>Install via command line:</p>

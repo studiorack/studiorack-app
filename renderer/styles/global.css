@@ -68,6 +68,7 @@ button,
   display: inline-block;
   font-size: 1rem;
   font-weight: 400;
+  margin-right: .5rem;
   padding: 1rem 1.5rem;
   text-decoration: none;
   transition: background-color .25s ease-out;
@@ -77,6 +78,14 @@ button:hover,
 .button:hover {
   background-color: #477BFF;
   border: 0;
+}
+
+.button-clear {
+  background: transparent;
+}
+
+.button-clear:hover {
+  background: rgba(255, 255, 255, .1);
 }
 
 @media (min-width: 48rem) {

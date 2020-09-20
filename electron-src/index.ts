@@ -125,12 +125,17 @@ ipcMain.handle('installPlugin', async (_event, plugin) => {
   const data = await getRaw(source);
   file.createDirectory(`${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`);
   file.extractZip(data, `${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`);
+  plugin.path = `${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`
+  plugin.status = 'installed'
+  return plugin
 })
 
 ipcMain.handle('uninstallPlugin', async (_event, plugin) => {
   // prototyping this quickly, will rewrite this properly later
   console.log('uninstallPlugin', plugin)
   file.deleteDirectory(plugin.path)
+  file.deleteDirectory(plugin.path.substring(0, plugin.path.lastIndexOf('.')) + '.txt')
+  file.deleteDirectory(plugin.path.substring(0, plugin.path.lastIndexOf('.')) + '.json')
   const pluginDir = plugin.path.substring(0, plugin.path.lastIndexOf('/'))
   if (file.directoryEmpty(pluginDir)) {
     file.deleteDirectory(pluginDir)
@@ -139,6 +144,9 @@ ipcMain.handle('uninstallPlugin', async (_event, plugin) => {
   if (file.directoryEmpty(parentDir)) {
     file.deleteDirectory(parentDir)
   }
+  delete plugin.path
+  plugin.status = 'available'
+  return plugin
 })
 
 function toSlug(input: string) {
