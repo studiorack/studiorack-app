@@ -30,15 +30,15 @@ class DocPage extends Component<DocProps, {
   }
 
   convertToSlug(text: string) {
-    return text
+    return text ? text
         .toLowerCase()
         .replace(/ /g,'-')
-        .replace(/[^\w-]+/g,'')
+        .replace(/[^\w-]+/g,'') : text
   }
 
   render() {
-    let content = this.state.doc.content.replace('/docs', `${this.state.router.basePath}/docs`)
-    content = content.replace(/<h2>(.*?)<\/h2>/g, (tag, title) => `<span id="${this.convertToSlug(title)}"></span>${tag}`)
+    let content = this.state.doc.content ? this.state.doc.content.replace('/docs', `${this.state.router.basePath}/docs`) : this.state.doc.content
+    content = content ? content.replace(/<h2>(.*?)<\/h2>/g, (tag, title) => `<span id="${this.convertToSlug(title)}"></span>${tag}`) : content
     return (
     <Layout>
       <Container docs={this.state.allDocs}>

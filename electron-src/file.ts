@@ -1,5 +1,6 @@
 import fs from 'fs'
 import os from 'os'
+const AdmZip = require('adm-zip');
 const { execSync } = require('child_process')
 const fsUtils = require('nodejs-fs-utils')
 const glob = require('glob')
@@ -19,6 +20,12 @@ const map: { [key: string]: string } = {
 
 export class File {
 
+  createDirectory(path: string) {
+    if (!fs.existsSync(path)) {
+      return fs.mkdirSync(path, { recursive: true });
+    }
+  }
+
   createFile(path: string, data: any) {
     return fs.writeFileSync(path, data)
   }
@@ -27,8 +34,24 @@ export class File {
     return this.createFile(path, JSON.stringify(data, null, 2))
   }
 
+  deleteDirectory(path: string) {
+    if (fs.existsSync(path)) {
+      return fs.rmdirSync(path, { recursive: true });
+    }
+  }
+
+  directoryEmpty(path: string) {
+    const files = fs.readdirSync(path);
+    return files.length === 0 || (files.length === 1 && files[0] === '.DS_Store');
+  }
+
   exists(path: string) {
     return fs.existsSync(path)
+  }
+
+  extractZip(content: any, path: string) {
+    const zip = new AdmZip(content);
+    return zip.extractAllTo(path);
   }
 
   loadFileJson(path: string) {
@@ -90,6 +113,23 @@ export class File {
     } else {
       return PLUGIN_DIR
     }
+  }
+
+  getSource(id: string, version: string) {
+    var supported:any = {
+      'aix': 'linux',
+      'darwin': 'mac',
+      'freebsd': 'linux',
+      'linux': 'linux',
+      'openbsd': 'linux',
+      'sunos': 'linux',
+      'win32': 'win',
+      'win64': 'win'
+    }
+    if (supported[process.platform]) {
+      return `https://github.com/${id}/releases/download/v${version}/plugin-${supported[process.platform]}.zip`;
+    }
+    return false;
   }
 
   processLog(path: string, logs: string) {

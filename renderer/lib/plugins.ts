@@ -8,6 +8,7 @@ export interface Plugin {
   description: string,
   homepage: string,
   id: string,
+  path?: string,
   name: string,
   size: number,
   slug: string,
@@ -17,11 +18,11 @@ export interface Plugin {
 }
 
 function toSlug(input: string) {
-  return slugify(input.replace(/\//g, '_'), { lower: true })
+  return slugify(input ? input.replace(/\//g, '_') : input, { lower: true })
 }
 
 function fromSlug(input: string) {
-  return input.replace(/_/g, '/')
+  return input ? input.replace(/_/g, '/') : input
 }
 
 export async function getPlugins() {
@@ -67,6 +68,7 @@ export async function getPluginData(slug: string) {
     const version = plugin.versions[plugin.version]
     version.id = pluginId
     version.slug = toSlug(pluginId)
+    version.status = 'available'
     version.version = plugin.version
     return version
   })

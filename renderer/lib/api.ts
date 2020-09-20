@@ -9,7 +9,7 @@ export function getDocSlugs() {
 }
 
 export function getDocBySlug(slug: string, fields: string[]) {
-  const realSlug = slug.replace(/\.md$/, '')
+  const realSlug = slug ? slug.replace(/\.md$/, '') : slug
   const fullPath = join(docsDirectory, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)

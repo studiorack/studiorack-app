@@ -10,6 +10,7 @@ import prepareNext from 'electron-next'
 // custom code
 import { File } from './file'
 const path = require('path')
+import { getRaw } from './api'
 
 const file = new File()
 const folder = `${file.getPluginFolder(true)}/**/*.{vst,vst3}`
@@ -87,6 +88,7 @@ ipcMain.handle('get-plugins', async () => {
       plugin = file.readPlugin(pluginPath)
     }
     plugin.id = pluginId
+    plugin.path = pluginPath
     plugin.slug = toSlug(pluginId)
     plugin.status = 'installed'
     plugin.version = versionId ? versionId[0] : plugin.version
@@ -95,24 +97,54 @@ ipcMain.handle('get-plugins', async () => {
   return list
 })
 
-ipcMain.handle('get-plugin', async (event, path) => {
+ipcMain.handle('get-plugin', async (_event, path) => {
   // Prototype for now, will write this properly later
-  console.log('get-plugin', event, path)
+  console.log('get-plugin', path)
   const jsonPath = `${file.getPluginFolder(true)}/${fromSlug(path)}.json`
   const versionId = path.match(/([0-9]+)\.([0-9]+)\.([0-9]+)/)
   console.log('jsonPath', jsonPath)
   let plugin = file.loadFileJson(jsonPath)
   plugin.id = fromSlug(path)
+  plugin.path = `${file.getPluginFolder(true)}/${fromSlug(path)}.vst3`
   plugin.slug = path
   plugin.status = 'installed'
   plugin.version = versionId ? versionId[0] : plugin.version
   return plugin
 })
 
+ipcMain.handle('installPlugin', async (_event, plugin) => {
+  // prototyping this quickly, will rewrite this properly later
+  console.log('installPlugin', plugin)
+  const source = file.getSource(plugin.id, plugin.version);
+  if (!source) {
+    return console.error(`Plugin not available for your system ${plugin.id}`);
+  }
+  if (source.slice(-4) !== '.zip') {
+    return console.error(`Unsupported file type ${source.slice(-4)}`);
+  }
+  const data = await getRaw(source);
+  file.createDirectory(`${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`);
+  file.extractZip(data, `${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`);
+})
+
+ipcMain.handle('uninstallPlugin', async (_event, plugin) => {
+  // prototyping this quickly, will rewrite this properly later
+  console.log('uninstallPlugin', plugin)
+  file.deleteDirectory(plugin.path)
+  const pluginDir = plugin.path.substring(0, plugin.path.lastIndexOf('/'))
+  if (file.directoryEmpty(pluginDir)) {
+    file.deleteDirectory(pluginDir)
+  }
+  const parentDir = pluginDir.substring(0, pluginDir.lastIndexOf('/'))
+  if (file.directoryEmpty(parentDir)) {
+    file.deleteDirectory(parentDir)
+  }
+})
+
 function toSlug(input: string) {
-  return input.replace(/\//g, '_')
+  return input ? input.replace(/\//g, '_') : input
 }
 
 function fromSlug(input: string) {
-  return input.replace(/_/g, '/')
+  return input ? input.replace(/_/g, '/') : input
 }

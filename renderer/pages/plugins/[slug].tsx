@@ -30,15 +30,34 @@ class PluginPage extends Component<PluginProps, {
     // check if registry has plugin metadata
     getPluginData(props.router.query.slug as string).then((plugin: Plugin) => {
       if (plugin) {
+        console.log('getPluginData', plugin)
         this.setState({ plugin: plugin })
       // otherwise fallback to auto-generated local metadata
       } else if (global && global.ipcRenderer) {
           global.ipcRenderer.invoke('get-plugin', props.router.query.slug).then((plugin) => {
-            console.log('get-plugin-result', plugin)
+            console.log('get-plugin', plugin)
             this.setState({ plugin: plugin })
           })
         }
       })
+  }
+
+  install = () => {
+    console.log('install', this.state.plugin)
+    if (global && global.ipcRenderer) {
+      global.ipcRenderer.invoke('installPlugin', this.state.plugin).then((plugin) => {
+        console.log('installPlugin', plugin)
+      })
+    }
+  }
+
+  uninstall = () => {
+    console.log('uninstall', this.state.plugin)
+    if (global && global.ipcRenderer) {
+      global.ipcRenderer.invoke('uninstallPlugin', this.state.plugin).then((plugin) => {
+        console.log('uninstallPlugin', plugin)
+      })
+    }
   }
 
   play = () => {
@@ -96,15 +115,15 @@ class PluginPage extends Component<PluginProps, {
                   ))
                 }
               </ul>
-              {this.state.plugin.status === 'installed' ?
-                <a className={`button ${styles.button}`}>Uninstall</a>
+              {this.state.plugin.status !== 'installed' ?
+                <a className={`button ${styles.button}`} onClick={this.install}>Install</a>
                 :
-                <a className={`button ${styles.button}`}>Install</a>
+                <a className={`button ${styles.button}`} onClick={this.uninstall}>Uninstall</a>
               }
             </div>
           </div>
         </div>
-        {this.state.plugin.status !== 'installed' && 
+        {this.state.plugin.status !== 'installed' ?
           <div className={styles.options}>
             <div className={styles.row}>
               <div className={`${styles.cell} ${styles.download}`}>
@@ -116,6 +135,15 @@ class PluginPage extends Component<PluginProps, {
               <div className={`${styles.cell} ${styles.install}`}>
                 <p>Install via command line:</p>
                 <pre className={styles.codeBox}>studiorack install {this.state.plugin.id}</pre>
+              </div>
+            </div>
+          </div>
+          :
+          <div className={styles.options}>
+            <div className={styles.row}>
+              <div className={`${styles.cell} ${styles.download}`}>
+                <p>Plugin location:</p>
+                <pre className={styles.codeBox}>{this.state.plugin.path}</pre>
               </div>
             </div>
           </div>
