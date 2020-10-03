@@ -4,10 +4,14 @@ const AdmZip = require('adm-zip');
 const { execSync } = require('child_process')
 const fsUtils = require('nodejs-fs-utils')
 const glob = require('glob')
+const path = require('path')
 
 const HOME_DIR = os.homedir()
 const PLUGIN_DIR = './plugins'
-const VALIDATOR_PATH = './electron-src/bin'
+
+const VALIDATOR_DIR = path.join(__dirname.substring(0, __dirname.lastIndexOf('main')), 'electron-src', 'bin');
+const VALIDATOR_EXT = getPlatformPrefix() === 'win' ? '.exe' : '';
+const VALIDATOR_PATH = path.join(VALIDATOR_DIR, 'validator' + VALIDATOR_EXT);
 
 const map: { [key: string]: string } = {
   category: 'description',
@@ -16,6 +20,15 @@ const map: { [key: string]: string } = {
   url: 'homepage',
   vendor: 'author',
   version: 'version'
+}
+
+function getPlatformPrefix() {
+  switch (process.platform as string) { 
+    case 'darwin' : return 'mac';
+    case 'win32' : return 'win';
+    case 'win64' : return 'win';
+    default : return 'linux';
+  }
 }
 
 export class File {
@@ -66,34 +79,34 @@ export class File {
     return glob.sync(path)
   }
 
-  readPlugin(path: string) {
-    if (!this.exists(path)) {
-      console.error(`File does not exist: ${path}`)
-      return false
+  readPlugin(pathItem: string) {
+    if (!this.directoryExists(pathItem)) {
+      console.error(`File does not exist: ${pathItem}`);
+      return false;
     }
-    console.log(`Reading: ${path}`)
-    let output = this.run(path)
-    const filepath = path.substring(0, path.lastIndexOf('.'))
+    console.log(`Reading: ${pathItem}`);
+    const outputText = this.run(pathItem);
+    const outputJson = this.processLog(pathItem, outputText);
+    const filepath = pathItem.substring(0, pathItem.lastIndexOf('.'));
 
-    console.log(output)
-    this.createFile(`${filepath}.txt`, output)
-    console.log(`Generated: ${filepath}.txt`)
+    console.log(outputText);
+    this.createFile(`${filepath}.txt`, outputText);
+    console.log(`Generated: ${filepath}.txt`);
 
-    output = this.processLog(path, output)
-    console.log(output)
-    this.createFileJson(`${filepath}.json`, output)
-    console.log(`Generated: ${filepath}.json`)
+    console.log(outputJson);
+    this.createFileJson(`${filepath}.json`, outputJson);
+    console.log(`Generated: ${filepath}.json`);
 
-    return output
+    return outputJson;
   }
 
   run(path: string) {
     // Run Steinberg VST3 SDK validator binary
     try {
-      const sdout = execSync(`${VALIDATOR_PATH}/validator "${path}"`)
-      return sdout.toString()
+      const sdout = execSync(`${VALIDATOR_PATH} "${path}"`);
+      return sdout.toString();
     } catch (error) {
-      return error.output ? error.output.toString() : error.toString()
+      return error.output ? error.output.toString() : error.toString();
     }
   }
 
@@ -132,47 +145,75 @@ export class File {
     return false;
   }
 
-  processLog(path: string, logs: string) {
+  getDate(pathItem: string) {
+    return fs.statSync(pathItem).mtime;
+  }
+  
+  getSize(pathItem: string) {
+    return fsUtils.fsizeSync(pathItem);
+  }
+
+  directoryExists(path: string) {
+    return fs.existsSync(path);
+  }
+
+  processLog(pathItem: string, log: string) {
+    const folder = pathItem.substring(0, pathItem.lastIndexOf('/'));
+    // console.log('processLog', pathItem);
     const json:{ [key: string]: any } = {}
     // loop through validator output
-    for (let line of logs.split('\n')) {
+    for (let line of log.split('\n')) {
       // remove whitespace at start and end of lines
-      line = line.trim()
+      line = line.trim();
       // only process lines assigning values
       if (line.includes(' = ')) {
-        let [key, val] = line.split(' = ')
+        let [key, val] = line.split(' = ');
         let newVal:any = val
         // ignore keys with spaces
         if (!key.includes(' ')) {
           // turn bar delimited strings into arrays
           if (newVal.includes('|')) {
-            newVal = newVal.split('|')
+            newVal = newVal.split('|');
           }
           // ensure tags is always an array
           if (map[key] === 'tags' && newVal.constructor !== Array) {
-            newVal = [newVal]
+            newVal = [newVal];
           }
           // rename and output only fields which exist in our map
           if (map[key]) {
-            json[map[key]] = newVal
+            json[map[key]] = newVal;
           }
         }
       }
     }
-    // if we can get filesize then add to json
-    const size = fsUtils.fsizeSync(path)
+    // get date then add to json
+    const date = this.getDate(pathItem);
+    if (date) {
+      json.date = date.toISOString();
+    }
+    // get filesize then add to json
+    const size = this.getSize(pathItem);
     if (size) {
-      json.size = size
+      json.size = size;
+    }
+    // generate the id from the filename
+    const id = path.basename(pathItem, path.extname(pathItem))
+    if (id) {
+      json.id = id;
+    }
+    // generate the id from the filename
+    const filename = path.basename(pathItem)
+    if (filename) {
+      json.file = filename;
     }
     // if image exists add to json
-    if (fs.existsSync('./plugin.png')) {
-      json.image = 'plugin.png'
+    if (this.directoryExists(`${folder}/${id}.png`)) {
+      json.image = `${id}.png`;
     }
     // if audio exists add to json
-    if (fs.existsSync('./plugin.wav')) {
-      json.audio = 'plugin.wav'
+    if (this.directoryExists(`${folder}/${id}.wav`)) {
+      json.audio = `${id}.wav`;
     }
-    json.status = 'installed'
-    return json
+    return json;
   }
 }
