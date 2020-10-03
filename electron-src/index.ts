@@ -80,16 +80,18 @@ ipcMain.handle('get-plugins', async () => {
   const pluginPaths = file.readDir(folder)
   pluginPaths.forEach((pluginPath: string) => {
     const folderPath = path.dirname(folder).replace('**', '')
-    const pluginId = pluginPath.substring(folderPath.length, pluginPath.lastIndexOf('.'))
-    const versionId = pluginId.match(/([0-9]+)\.([0-9]+)\.([0-9]+)/)
+    const relativePath = pluginPath.substring(folderPath.length);
+    const pluginId = getPluginId(pluginPath.substring(folderPath.length, pluginPath.lastIndexOf('.')));
+    const repoId = relativePath.split('/', 2).join('/');
+    const versionId = pluginPath.match(/([0-9]+)\.([0-9]+)\.([0-9]+)/)
     const jsonPath = pluginPath.substring(0, pluginPath.lastIndexOf('.')) + '.json'
     let plugin = file.loadFileJson(jsonPath)
     if (!plugin) {
       plugin = file.readPlugin(pluginPath)
     }
-    plugin.id = pluginId
+    plugin.id = `${repoId}/${pluginId}`
     plugin.path = pluginPath
-    plugin.slug = toSlug(pluginId)
+    plugin.slug = toSlug(plugin.id)
     plugin.status = 'installed'
     plugin.version = versionId ? versionId[0] : plugin.version
     list.push(plugin)
