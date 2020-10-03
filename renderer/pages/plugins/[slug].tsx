@@ -12,7 +12,8 @@ type PluginProps = {
 }
 
 class PluginPage extends Component<PluginProps, {
-  isPlaying: Boolean,
+  isDisabled: boolean,
+  isPlaying: boolean,
   router: Router,
   plugin: Plugin
 }> {
@@ -21,6 +22,7 @@ class PluginPage extends Component<PluginProps, {
     super(props)
     console.log('props', props);
     this.state = {
+      isDisabled: false,
       isPlaying: false,
       plugin: {} as Plugin,
       router: props.router
@@ -45,9 +47,13 @@ class PluginPage extends Component<PluginProps, {
   install = () => {
     console.log('install', this.state.plugin)
     if (global && global.ipcRenderer) {
+      this.setState({ isDisabled: true })
       global.ipcRenderer.invoke('installPlugin', this.state.plugin).then((plugin) => {
         console.log('installPlugin response', plugin)
-        this.setState({ plugin: plugin })
+        this.setState({
+          isDisabled: false,
+          plugin: plugin
+        })
       })
     }
   }
@@ -55,9 +61,13 @@ class PluginPage extends Component<PluginProps, {
   uninstall = () => {
     console.log('uninstall', this.state.plugin)
     if (global && global.ipcRenderer) {
+      this.setState({ isDisabled: true })
       global.ipcRenderer.invoke('uninstallPlugin', this.state.plugin).then((plugin) => {
         console.log('uninstallPlugin response', plugin)
-        this.setState({ plugin: plugin })
+        this.setState({
+          isDisabled: false,
+          plugin: plugin
+        })
       })
     }
   }
@@ -126,9 +136,9 @@ class PluginPage extends Component<PluginProps, {
                 }
               </ul>
               {this.state.plugin.status !== 'installed' ?
-                <a className="button" onClick={this.install}>Install</a>
+                <button className="button" onClick={this.install} disabled={this.state.isDisabled}>Install</button>
                 :
-                <a className="button button-clear" onClick={this.uninstall}>Uninstall</a>
+                <button className="button button-clear" onClick={this.uninstall} disabled={this.state.isDisabled}>Uninstall</button>
               }
             </div>
           </div>
