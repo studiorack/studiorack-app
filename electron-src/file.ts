@@ -115,7 +115,7 @@ export class File {
     }
   }
 
-  getSource(id: string, version: string) {
+  getSource(repoId: string, pluginId: string, version: string) {
     var supported:any = {
       'aix': 'linux',
       'darwin': 'mac',
@@ -127,7 +127,7 @@ export class File {
       'win64': 'win'
     }
     if (supported[process.platform]) {
-      return `https://github.com/${id}/releases/download/v${version}/plugin-${supported[process.platform]}.zip`;
+      return `https://github.com/${repoId}/releases/download/v${version}/${pluginId}-${supported[process.platform]}.zip`;
     }
     return false;
   }

@@ -115,17 +115,19 @@ ipcMain.handle('get-plugin', async (_event, path) => {
 ipcMain.handle('installPlugin', async (_event, plugin) => {
   // prototyping this quickly, will rewrite this properly later
   console.log('installPlugin', plugin)
-  const source = file.getSource(plugin.id, plugin.version);
+  const pluginId = getPluginId(plugin.id)
+  const repoId = getRepo(plugin.id)
+  const source = file.getSource(repoId, pluginId, plugin.version);
   if (!source) {
-    return console.error(`Plugin not available for your system ${plugin.id}`);
+    return console.error(`Plugin not available for your system ${plugin.id}`)
   }
   if (source.slice(-4) !== '.zip') {
-    return console.error(`Unsupported file type ${source.slice(-4)}`);
+    return console.error(`Unsupported file type ${source.slice(-4)}`)
   }
-  const data = await getRaw(source);
-  file.createDirectory(`${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`);
-  file.extractZip(data, `${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`);
-  plugin.path = `${file.getPluginFolder(true)}/${plugin.id}/${plugin.version}`
+  const data = await getRaw(source)
+  file.createDirectory(`${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`)
+  file.extractZip(data, `${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`)
+  plugin.path = `${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`
   plugin.status = 'installed'
   return plugin
 })
@@ -133,16 +135,20 @@ ipcMain.handle('installPlugin', async (_event, plugin) => {
 ipcMain.handle('uninstallPlugin', async (_event, plugin) => {
   // prototyping this quickly, will rewrite this properly later
   console.log('uninstallPlugin', plugin)
-  file.deleteDirectory(plugin.path)
-  file.deleteDirectory(plugin.path.substring(0, plugin.path.lastIndexOf('.')) + '.txt')
-  file.deleteDirectory(plugin.path.substring(0, plugin.path.lastIndexOf('.')) + '.json')
-  const pluginDir = plugin.path.substring(0, plugin.path.lastIndexOf('/'))
+  const pluginId = getPluginId(plugin.id)
+  const repoId = getRepo(plugin.id)
+  file.deleteDirectory(`${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`)
+  const pluginDir = `${file.getPluginFolder(true)}/${repoId}/${pluginId}`
   if (file.directoryEmpty(pluginDir)) {
     file.deleteDirectory(pluginDir)
   }
-  const parentDir = pluginDir.substring(0, pluginDir.lastIndexOf('/'))
+  const parentDir = `${file.getPluginFolder(true)}/${repoId}`
   if (file.directoryEmpty(parentDir)) {
     file.deleteDirectory(parentDir)
+  }
+  const grandparentDir = `${file.getPluginFolder(true)}/${repoId.split('/')[0]}`
+  if (file.directoryEmpty(grandparentDir)) {
+    file.deleteDirectory(grandparentDir)
   }
   delete plugin.path
   plugin.status = 'available'
@@ -155,4 +161,12 @@ function toSlug(input: string) {
 
 function fromSlug(input: string) {
   return input ? input.replace(/_/g, '/') : input
+}
+
+function getRepo(id: string) {
+  return id.slice(0, id.lastIndexOf('/'))
+}
+
+function getPluginId(id: string) {
+  return id.slice(id.lastIndexOf('/') + 1)
 }
