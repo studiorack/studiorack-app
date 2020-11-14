@@ -8,12 +8,7 @@ import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 
 // custom code
-import { File } from './file'
-const path = require('path')
-import { getRaw } from './api'
-
-const file = new File()
-const folder = `${file.getPluginFolder(true)}/**/*.{vst,vst3}`
+import { pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall } from '@studiorack/core';
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
@@ -69,106 +64,31 @@ app.on('ready', async () => {
 // Quit the app once all windows are closed
 app.on('window-all-closed', app.quit)
 
-// listen the channel `message` and resend the received message to the renderer process
+// Listen the channel `message` and resend the received message to the renderer process
 ipcMain.on('message', (event: IpcMainEvent, message: any) => {
   event.sender.send('message', message)
 })
 
+// Get plugins installed locally
 ipcMain.handle('get-plugins', async () => {
-  // Prototype for now, will write this properly later
-  const list: Array<object> = []
-  const pluginPaths = file.readDir(folder)
-  pluginPaths.forEach((pluginPath: string) => {
-    const folderPath = path.dirname(folder).replace('**', '')
-    const relativePath = pluginPath.substring(folderPath.length);
-    const pluginId = getPluginId(pluginPath.substring(folderPath.length, pluginPath.lastIndexOf('.')));
-    const repoId = relativePath.split('/', 2).join('/');
-    const versionId = pluginPath.match(/([0-9]+)\.([0-9]+)\.([0-9]+)/)
-    const jsonPath = pluginPath.substring(0, pluginPath.lastIndexOf('.')) + '.json'
-    let plugin = file.loadFileJson(jsonPath)
-    if (!plugin) {
-      plugin = file.readPlugin(pluginPath)
-    }
-    plugin.id = `${repoId}/${pluginId}`
-    plugin.path = pluginPath
-    plugin.slug = toSlug(plugin.id)
-    plugin.status = 'installed'
-    plugin.version = versionId ? versionId[0] : plugin.version
-    list.push(plugin)
-  })
-  return list
+  console.log('get-plugins')
+  return pluginsGetLocal()
 })
 
+// Get plugin installer locally by path
 ipcMain.handle('get-plugin', async (_event, path) => {
-  // Prototype for now, will write this properly later
   console.log('get-plugin', path)
-  const jsonPath = `${file.getPluginFolder(true)}/${fromSlug(path)}.json`
-  const versionId = path.match(/([0-9]+)\.([0-9]+)\.([0-9]+)/)
-  console.log('jsonPath', jsonPath)
-  let plugin = file.loadFileJson(jsonPath)
-  plugin.id = fromSlug(path)
-  plugin.path = `${file.getPluginFolder(true)}/${fromSlug(path)}.vst3`
-  plugin.slug = path
-  plugin.status = 'installed'
-  plugin.version = versionId ? versionId[0] : plugin.version
-  return plugin
+  return pluginGetLocal(path)
 })
 
+// Install plugin into root plugin folder locally
 ipcMain.handle('installPlugin', async (_event, plugin) => {
-  // prototyping this quickly, will rewrite this properly later
   console.log('installPlugin', plugin)
-  const pluginId = getPluginId(plugin.id)
-  const repoId = getRepo(plugin.id)
-  const source = file.getSource(repoId, pluginId, plugin.version);
-  if (!source) {
-    return console.error(`Plugin not available for your system ${plugin.id}`)
-  }
-  if (source.slice(-4) !== '.zip') {
-    return console.error(`Unsupported file type ${source.slice(-4)}`)
-  }
-  const data = await getRaw(source)
-  file.createDirectory(`${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`)
-  file.extractZip(data, `${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`)
-  plugin.path = `${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`
-  plugin.status = 'installed'
-  return plugin
+  return pluginInstall(plugin.id, plugin.version, true)
 })
 
+// Uninstall plugin from root plugin folder locally
 ipcMain.handle('uninstallPlugin', async (_event, plugin) => {
-  // prototyping this quickly, will rewrite this properly later
   console.log('uninstallPlugin', plugin)
-  const pluginId = getPluginId(plugin.id)
-  const repoId = getRepo(plugin.id)
-  file.deleteDirectory(`${file.getPluginFolder(true)}/${repoId}/${pluginId}/${plugin.version}`)
-  const pluginDir = `${file.getPluginFolder(true)}/${repoId}/${pluginId}`
-  if (file.directoryEmpty(pluginDir)) {
-    file.deleteDirectory(pluginDir)
-  }
-  const parentDir = `${file.getPluginFolder(true)}/${repoId}`
-  if (file.directoryEmpty(parentDir)) {
-    file.deleteDirectory(parentDir)
-  }
-  const grandparentDir = `${file.getPluginFolder(true)}/${repoId.split('/')[0]}`
-  if (file.directoryEmpty(grandparentDir)) {
-    file.deleteDirectory(grandparentDir)
-  }
-  delete plugin.path
-  plugin.status = 'available'
-  return plugin
+  return pluginUninstall(plugin.id, plugin.version, true)
 })
-
-function toSlug(input: string) {
-  return input ? input.replace(/\//g, '_') : input
-}
-
-function fromSlug(input: string) {
-  return input ? input.replace(/_/g, '/') : input
-}
-
-function getRepo(id: string) {
-  return id.slice(0, id.lastIndexOf('/'))
-}
-
-function getPluginId(id: string) {
-  return id.slice(id.lastIndexOf('/') + 1)
-}
