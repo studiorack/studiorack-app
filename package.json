@@ -11,6 +11,8 @@
     "build-renderer": "next build renderer && next export renderer",
     "build-electron": "tsc -p electron-src",
     "build": "npm run build-renderer && npm run build-electron",
+    "format": "prettier --write \"electron-src/**/*.ts\" \"renderer/pages/**/*.ts\"",
+    "lint": "tslint -p electron-src/tsconfig.json",
     "pack-app": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder --publish never",
     "type-check": "tsc"
@@ -39,7 +41,10 @@
     "electron": "^10.1.2",
     "electron-builder": "^22.8.0",
     "next": "^9.5.1",
+    "prettier": "^2.1.2",
     "rimraf": "^3.0.0",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.3"
   },
   "dependencies": {
