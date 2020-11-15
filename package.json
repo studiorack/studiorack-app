@@ -14,6 +14,7 @@
     "format": "prettier --write \"electron-src/**/*.ts\" \"renderer/pages/**/*.ts\"",
     "lint": "tslint -p electron-src/tsconfig.json",
     "pack-app": "npm run build && electron-builder --dir",
+    "test": "echo 'No tests were run'",
     "dist": "npm run build && electron-builder --publish never",
     "type-check": "tsc"
   },
