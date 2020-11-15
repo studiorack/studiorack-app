@@ -47,7 +47,7 @@ class Home extends Component<HomeProps, {
               <img className={styles.sectionImage} src={`${this.state.router.basePath}/static/producers-mobile.jpg`} alt="Producers" />
               <h2 className={styles.title}>Easy plugin installation &amp; management</h2>
               <p>Our app and command line tools allow you to search our plugin registry for free plugins. You can install and manage plugin versions all from one place.</p>
-              <a className="button" href="https://github.com/studiorack/studiorack-app/releases/latest" target="_blank">Download the app</a> <a className="button button-clear" href="https://www.npmjs.com/package/@studiorack/studiorack-cli" target="_blank">Install the CLI</a>
+              <a className="button" href="https://github.com/studiorack/studiorack-app/releases/latest" target="_blank">Download the app</a> <a className="button button-clear" href="https://www.npmjs.com/package/@studiorack/cli" target="_blank">Install the CLI</a>
             </div>
           </div>
         </section>

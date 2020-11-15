@@ -41,7 +41,7 @@ class DocList extends Component<DocListProps, {
             <li className={styles.markdownLi}>NodeJS 8+</li>
           </ul>
           <p>To install the command line tool, run the command:</p>
-          <pre className={styles.markdownPre}>npm install @studiorack/studiorack-cli -g</pre>
+          <pre className={styles.markdownPre}>npm install @studiorack/cli -g</pre>
           <p>Verify the tool has been installed by running:</p>
           <pre className={styles.markdownPre}>studiorack --version</pre>
           <h2 className={styles.markdownH2}>Music producers</h2>
