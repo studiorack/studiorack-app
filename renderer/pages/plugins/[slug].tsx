@@ -48,10 +48,10 @@ class PluginPage extends Component<PluginProps, {
     console.log('install', this.state.plugin)
     if (global && global.ipcRenderer) {
       this.setState({ isDisabled: true })
-      global.ipcRenderer.invoke('installPlugin', this.state.plugin).then((plugin) => {
-        console.log('installPlugin response', plugin)
-        this.state.plugin.path = plugin.path;
-        this.state.plugin.status = plugin.status;
+      global.ipcRenderer.invoke('installPlugin', this.state.plugin).then((pluginInstalled) => {
+        console.log('installPlugin response', pluginInstalled)
+        this.state.plugin.path = pluginInstalled.path;
+        this.state.plugin.status = pluginInstalled.status;
         this.setState({
           isDisabled: false,
           plugin: this.state.plugin
@@ -64,10 +64,10 @@ class PluginPage extends Component<PluginProps, {
     console.log('uninstall', this.state.plugin)
     if (global && global.ipcRenderer) {
       this.setState({ isDisabled: true })
-      global.ipcRenderer.invoke('uninstallPlugin', this.state.plugin).then((plugin) => {
-        console.log('uninstallPlugin response', plugin)
-        this.state.plugin.path = plugin.path
-        this.state.plugin.status = plugin.status
+      global.ipcRenderer.invoke('uninstallPlugin', this.state.plugin).then((pluginInstalled) => {
+        console.log('uninstallPlugin response', pluginInstalled)
+        this.state.plugin.path = pluginInstalled.path
+        this.state.plugin.status = pluginInstalled.status
         this.setState({
           isDisabled: false,
           plugin: this.state.plugin
