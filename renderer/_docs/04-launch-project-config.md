@@ -9,3 +9,5 @@ Navigate to a music project folder containing a project.json config, install all
 Then start the project using
 
     studiorack start
+
+[Read the API Reference &gt;](/docs/06-command-line)

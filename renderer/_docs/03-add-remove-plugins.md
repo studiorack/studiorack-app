@@ -8,10 +8,10 @@ Search the plugin registry using:
 
 Add a plugin and update project.json config using:
 
-    studiorack install kmturley/studiorack-plugin --global
+    studiorack install studiorack/studiorack-plugin/adelay --global
 
 Remove a plugin and update project.json config using:
  
-    studiorack uninstall kmturley/studiorack-plugin --global
+    studiorack uninstall studiorack/studiorack-plugin/adelay --global
 
 [Launch project config &gt;](/docs/04-launch-project-config)

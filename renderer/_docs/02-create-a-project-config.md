@@ -9,14 +9,12 @@ If music project folder does not contain a project.json, you can create a new on
 This will create a project.json with your configuration:
 
     {
-      "name": "Example audio project",
-      "version": "1.0.0",
-      "description": "Example audio project description",
-      "main": "Test.als",
-      "preview": {
-        "audio": "Test.wav",
-        "image": "Test.png"
-      },
+      "name": "My Project",
+      "version": "0.0.1",
+      "description": "My project description",
+      "main": "Song.als",
+      "audio": "Song.wav",
+      "image": "Song.png",
       "plugins": {
         "plugin-name": "1.0.0"
       }

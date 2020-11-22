@@ -8,9 +8,9 @@ The StudioRack CLI allows you to create, install, and publish plugins.
 * [Init](#init)
 * [Install](#install)
 * [Uninstall](#uninstall)
-* [Publish](#publish)
 * [Search](#search)
 * [Start](#start)
+* [Validate](#validate)
 * [Help](#help)
 
 
@@ -34,14 +34,12 @@ Follow the instructions in generated README.md to install and build your plugin.
 `studiorack init` initiates the current folder as a studiorack project. This will create a project.json with your configuration:
 
     {
-      "name": "Example audio project",
-      "version": "1.0.0",
-      "description": "Example audio project description",
-      "main": "Test.als",
-      "preview": {
-        "audio": "Test.wav",
-        "image": "Test.png"
-      },
+      "name": "My Project",
+      "version": "0.0.1",
+      "description": "My project description",
+      "main": "Song.als",
+      "audio": "Song.wav",
+      "image": "Song.png",
       "plugins": {
         "plugin-name": "1.0.0"
       }
@@ -52,26 +50,19 @@ Follow the instructions in generated README.md to install and build your plugin.
 
 `studiorack install [options] [id]` adds a plugin and updates the project.json config. For example:
 
-    studiorack install kmturley/studiorack-plugin --global
+    studiorack install studiorack/studiorack-plugin/adelay --global
 
 
 ## Uninstall
 
 `studiorack uninstall [options] [id]` removes a plugin and updates the project.json config. For example:
 
-    studiorack uninstall kmturley/studiorack-plugin --global
-
-
-## Publish
-
-`studiorack publish` opens a pull request to the main GitHub registry. For example:
-
-    studiorack publish
+    studiorack uninstall studiorack/studiorack-plugin/adelay --global
 
 
 ## Search
 
-`studiorack search <query>` search the plugin registry for plugins by name. For example:
+`studiorack search [options] <query>` Search plugin registry by query. For example:
 
     studiorack search delay
 
@@ -81,6 +72,13 @@ Follow the instructions in generated README.md to install and build your plugin.
 `studiorack start [path]` open the current music project. For example:
 
     studiorack start
+
+
+## Validate
+
+`studiorack validate [options] [path]` Validate a plugin using the Steinberg VST3 SDK validator. For example:
+
+    studiorack validate ./plugins/**/*.vst3
 
 
 ## Help
@@ -95,11 +93,11 @@ Follow the instructions in generated README.md to install and build your plugin.
         -h, --help                display help for command
 
     Commands:
-        create <folder>           Create a new folder using the plugin starter template
-        init                      Set up a new or existing StudioRack project.
-        install [options] [id]    Install a plugin and update project config.
-        uninstall [options] [id]  Uninstall a plugin and update project config.
-        publish                   Publish plugin to the registry
-        search <query>            Search plugin registry by query.
-        start [path]              Start music project using the project config.
-        help [command]            display help for command
+        create <folder>            Create a new folder using the plugin starter template
+        init                       Set up a new or existing StudioRack project.
+        install [options] [id]     Install a plugin and update project config.
+        uninstall [options] [id]   Uninstall a plugin and update project config.
+        search [options] <query>   Search plugin registry by query.
+        start [path]               Start music project using the project config.
+        validate [options] [path]  Validate a plugin using the Steinberg VST3 SDK validator
+        help [command]             display help for command
