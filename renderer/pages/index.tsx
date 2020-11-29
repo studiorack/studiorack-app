@@ -54,10 +54,10 @@ class Home extends Component<HomeProps, {
         <section className={`${styles.section} ${styles.sectionCreators}`}>
           <div className={styles.container}>
             <div className={styles.inner}>
-              <img className={styles.sectionImage} src={`${this.state.router.basePath}/static/creators-mobile.jpg`} alt="Creators" />
+            <img className={styles.sectionImage} src={`${this.state.router.basePath}/static/creators-mobile.jpg`} alt="Creators" />
               <h2 className={styles.title}>Automate your plugin publishing workflow</h2>
-              <p>Our plugin starter template uses GitHub Actions to build your plugin with the Steinberg VST3 SDK, publishing a new version straight to Github Releases.</p>
-              <a className="button" href="https://github.com/studiorack/studiorack-plugin" target="_blank">Use the plugin template</a>
+              <p>Our plugin starter templates use GitHub Actions to automatically build your plugin, publishing a Windows, Mac and Linux versions directly to Github Releases.</p>
+              <a className="button" href="https://github.com/studiorack/studiorack-plugin-juce" target="_blank">JUCE</a> <a className="button button-clear" href="https://github.com/studiorack/studiorack-plugin" target="_blank">Steinberg</a>
             </div>
           </div>
         </section>
