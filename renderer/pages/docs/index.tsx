@@ -38,7 +38,7 @@ class DocList extends Component<DocListProps, {
           <p>System Requirements:</p>
           <ul className={styles.markdownUl}>
             <li className={styles.markdownLi}>Linux, MacOS or Windows</li>
-            <li className={styles.markdownLi}>NodeJS 8+</li>
+            <li className={styles.markdownLi}>NodeJS 12+</li>
           </ul>
           <p>To install the command line tool, run the command:</p>
           <pre className={styles.markdownPre}>npm install @studiorack/cli -g</pre>
