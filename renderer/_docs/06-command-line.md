@@ -50,14 +50,14 @@ Follow the instructions in generated README.md to install and build your plugin.
 
 `studiorack install [options] [id]` adds a plugin and updates the project.json config. For example:
 
-    studiorack install studiorack/studiorack-plugin/adelay --global
+    studiorack install studiorack/studiorack-plugin-steinberg/adelay --global
 
 
 ## Uninstall
 
 `studiorack uninstall [options] [id]` removes a plugin and updates the project.json config. For example:
 
-    studiorack uninstall studiorack/studiorack-plugin/adelay --global
+    studiorack uninstall studiorack/studiorack-plugin-steinberg/adelay --global
 
 
 ## Search
