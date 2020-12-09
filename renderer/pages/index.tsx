@@ -57,7 +57,9 @@ class Home extends Component<HomeProps, {
             <img className={styles.sectionImage} src={`${this.state.router.basePath}/static/creators-mobile.jpg`} alt="Creators" />
               <h2 className={styles.title}>Automate your plugin publishing workflow</h2>
               <p>Our plugin starter templates use GitHub Actions to automatically build your plugin, publishing a Windows, Mac and Linux versions directly to Github Releases.</p>
-              <a className="button" href="https://github.com/studiorack/studiorack-plugin-juce" target="_blank">JUCE</a> <a className="button button-clear" href="https://github.com/studiorack/studiorack-plugin-steinberg" target="_blank">Steinberg</a>
+              <a className="button" href="https://github.com/studiorack/studiorack-plugin-iplug" target="_blank">iPlug</a>
+              <a className="button" href="https://github.com/studiorack/studiorack-plugin-juce" target="_blank">JUCE</a>
+              <a className="button" href="https://github.com/studiorack/studiorack-plugin-steinberg" target="_blank">Steinberg</a>
             </div>
           </div>
         </section>
