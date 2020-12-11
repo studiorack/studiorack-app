@@ -23,6 +23,7 @@ The StudioRack CLI allows you to create, install, and publish plugins.
         /LICENSE
         /README.md
         /src
+        /vst2sdk
         /vst3sdk
 
 Follow the instructions in generated README.md to install and build your plugin.
