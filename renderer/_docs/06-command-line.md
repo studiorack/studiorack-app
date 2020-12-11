@@ -16,14 +16,13 @@ The StudioRack CLI allows you to create, install, and publish plugins.
 
 ## Create
 
-`studiorack create <folder>` creates a new plugin using the starter template with the following structure:
+`studiorack create <folder> --type steinberg` creates a new plugin using the starter template with the following structure:
 
     /folder
         /index.js
         /LICENSE
         /README.md
         /src
-        /vst2sdk
         /vst3sdk
 
 Follow the instructions in generated README.md to install and build your plugin.

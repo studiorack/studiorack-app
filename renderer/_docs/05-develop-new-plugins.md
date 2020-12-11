@@ -4,7 +4,7 @@ title: 'Develop new plugins'
 
 Create a new plugin using the starter template:
 
-    studiorack create myplugin
+    studiorack create myplugin --type steinberg
 
 This creates a new plugin using the starter template with the following structure:
 
