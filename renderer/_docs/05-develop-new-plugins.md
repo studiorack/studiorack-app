@@ -60,8 +60,8 @@ Commit your plugin code to GitHub. When ready to release a version, publish a Gi
       ]
     }
 
-## Tag your repo
+## Add the topic to your repo
 
-Tag your GitHub repository with `studiorack-plugin` so it can be discovered. Wait for the studiorack-registry to index your plugin (every 24 hours). Check the registry feed for your plugin to appear https://studiorack.github.io/studiorack-registry/. Soon afterwards the site will also build, and your plugin will be available at: https://studiorack.github.io/studiorack-site/
+Add the `studiorack-plugin` topic to your GitHub repository, so it can be discovered. Wait for the studiorack-registry to index your plugin (every 24 hours). Check the registry feed for your plugin to appear https://studiorack.github.io/studiorack-registry/. Soon afterwards the site will also build, and your plugin will be available at: https://studiorack.github.io/studiorack-site/
 
 [Read the API Reference &gt;](/docs/06-command-line)
