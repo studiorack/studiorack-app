@@ -74,7 +74,7 @@ ipcMain.on('message', (event: IpcMainEvent, message: any) => {
 // Get plugins installed locally
 ipcMain.handle('get-plugins', async () => {
   console.log('get-plugins');
-  return pluginsGetLocal();
+  return await pluginsGetLocal();
 });
 
 // Get plugin installer locally by path

@@ -140,9 +140,11 @@ class PluginList extends Component<PluginListProps, {
                     </div>
                     <ul className={styles.pluginTags}>
                       <img className={styles.pluginIcon} src={`${this.state.router.basePath}/static/icon-tag.svg`} alt="Tags" />
-                      {plugin.tags.map((tag, tagIndex) => (
-                        <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
-                      ))}
+                      {plugin.tags && 
+                        plugin.tags.map((tag, tagIndex) => (
+                          <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
+                        ))
+                      }
                     </ul>
                   </div>
                   <img className={styles.pluginImage} src={`https://github.com/${this.getRepo(plugin)}/releases/download/${plugin.release}/${this.getPluginId(plugin)}.png`} alt={plugin.name} onError={this.imageError} />
