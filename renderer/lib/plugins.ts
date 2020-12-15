@@ -10,6 +10,7 @@ export interface Plugin {
   id: string,
   path?: string,
   name: string,
+  release?: string,
   size: number,
   slug: string,
   status: string,
