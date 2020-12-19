@@ -4,8 +4,9 @@ title: 'Develop new plugins'
 
 ## Use our plugin templates (optional)
 
-We have three plugin templates which automate plugin builds
+We have plugin templates which automate plugin builds
 
+- [studiorack-plugin-dplug](https://github.com/studiorack/studiorack-plugin-dplug)
 - [studiorack-plugin-iplug](https://github.com/studiorack/studiorack-plugin-iplug)
 - [studiorack-plugin-juce](https://github.com/studiorack/studiorack-plugin-juce)
 - [studiorack-plugin-steinberg](https://github.com/studiorack/studiorack-plugin-steinberg)
