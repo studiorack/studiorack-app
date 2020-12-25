@@ -35,14 +35,14 @@ class PluginList extends Component<PluginListProps, {
     super(props)
     this.state = {
       category: 'all',
-      plugins: props.plugins,
-      pluginsFiltered: props.plugins,
+      plugins: props.plugins || [],
+      pluginsFiltered: props.plugins || [],
       router: props.router,
       query: ''
     }
     this.list = props.plugins
     if (global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('get-plugins').then((plugins) => {
+      global.ipcRenderer.invoke('pluginsGetLocal').then((plugins) => {
         this.list = this.list.concat(plugins)
         console.log(this.list)
         this.setState({
@@ -102,11 +102,11 @@ class PluginList extends Component<PluginListProps, {
   }
 
   getRepo = (plugin: Plugin) => {
-    return plugin.id.slice(0, plugin.id.lastIndexOf('/'))
+    return plugin?.id?.slice(0, plugin.id.lastIndexOf('/'))
   }
 
   getPluginId = (plugin: Plugin) => {
-    return plugin.id.slice(plugin.id.lastIndexOf('/') + 1)
+    return plugin?.id?.slice(plugin.id.lastIndexOf('/') + 1)
   }
 
   render() {
@@ -147,7 +147,11 @@ class PluginList extends Component<PluginListProps, {
                       }
                     </ul>
                   </div>
-                  <img className={styles.pluginImage} src={`https://github.com/${this.getRepo(plugin)}/releases/download/${plugin.release}/${this.getPluginId(plugin)}.png`} alt={plugin.name} onError={this.imageError} />
+                  { plugin.files.image ?
+                    <img className={styles.pluginImage} src={`https://github.com/${this.getRepo(plugin)}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
+                    :
+                    <img className={styles.pluginImage} src={`${this.state.router.basePath}/static/plugin.png}`} alt={plugin.name} onError={this.imageError} />
+                  }
                 </div>
               </Link>
             ))}

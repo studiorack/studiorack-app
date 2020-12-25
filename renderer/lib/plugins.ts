@@ -3,19 +3,42 @@ import slugify from 'slugify'
 const REGISTRY_PATH = process.env.REGISTRY_PATH || 'https://studiorack.github.io/studiorack-registry/'
 
 export interface Plugin {
-  author: string,
-  date: string,
-  description: string,
-  homepage: string,
-  id: string,
+  author: string;
+  date: string;
+  description: string;
+  homepage: string;
+  id?: string;
   path?: string,
-  name: string,
-  release?: string,
-  size: number,
-  slug: string,
-  status: string,
-  tags: Array<string>,
-  version: string
+  name: string;
+  release?: string;
+  files: PluginFiles;
+  slug?: string;
+  status?: string;
+  tags: string[];
+  version: string;
+}
+
+interface PluginFiles {
+  audio: {
+      name: string;
+      size: number;
+  };
+  image: {
+      name: string;
+      size: number;
+  };
+  linux?: {
+      name: string;
+      size: number;
+  };
+  mac?: {
+      name: string;
+      size: number;
+  };
+  win?: {
+      name: string;
+      size: number;
+  };
 }
 
 function toSlug(input: string) {

@@ -72,25 +72,25 @@ ipcMain.on('message', (event: IpcMainEvent, message: any) => {
 });
 
 // Get plugins installed locally
-ipcMain.handle('get-plugins', async () => {
-  console.log('get-plugins');
+ipcMain.handle('pluginsGetLocal', async () => {
+  console.log('pluginsGetLocal');
   return await pluginsGetLocal();
 });
 
 // Get plugin installer locally by path
-ipcMain.handle('get-plugin', async (_event, path) => {
-  console.log('get-plugin', path);
+ipcMain.handle('pluginGetLocal', async (_event, path) => {
+  console.log('pluginGetLocal', path);
   return pluginGetLocal(path);
 });
 
 // Install plugin into root plugin folder locally
-ipcMain.handle('installPlugin', async (_event, plugin) => {
-  console.log('installPlugin', plugin);
+ipcMain.handle('pluginInstall', async (_event, plugin) => {
+  console.log('pluginInstall', plugin);
   return pluginInstall(plugin.id, plugin.version, true);
 });
 
 // Uninstall plugin from root plugin folder locally
-ipcMain.handle('uninstallPlugin', async (_event, plugin) => {
-  console.log('uninstallPlugin', plugin);
+ipcMain.handle('pluginUninstall', async (_event, plugin) => {
+  console.log('pluginUninstall', plugin);
   return pluginUninstall(plugin.id, plugin.version, true);
 });

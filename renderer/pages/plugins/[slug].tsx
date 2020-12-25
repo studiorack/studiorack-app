@@ -3,12 +3,13 @@ import Layout from '../../components/layout'
 import { getPluginData, Plugin } from '../../lib/plugins'
 import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
+import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
+import { pathFromSlashes, pathToSlashes, pluginGet, pluginsGet, pluginLatest } from '@studiorack/core'
 
 type PluginProps = {
   plugin: Plugin,
-  router: Router,
-  slug: string
+  router: Router
 }
 
 class PluginPage extends Component<PluginProps, {
@@ -20,14 +21,14 @@ class PluginPage extends Component<PluginProps, {
 
   constructor(props: PluginProps) {
     super(props)
-    console.log('props', props);
+    console.log('props', props)
     this.state = {
       isDisabled: false,
       isPlaying: false,
-      plugin: {} as Plugin,
+      plugin: props.plugin,
       router: props.router
     }
-
+  
     console.log('slug', props.router.query.slug);
     // check if registry has plugin metadata
     getPluginData(props.router.query.slug as string).then((plugin: Plugin) => {
@@ -36,8 +37,8 @@ class PluginPage extends Component<PluginProps, {
         this.setState({ plugin: plugin })
       // otherwise fallback to auto-generated local metadata
       } else if (global && global.ipcRenderer) {
-          global.ipcRenderer.invoke('get-plugin', props.router.query.slug).then((plugin) => {
-            console.log('get-plugin', plugin)
+          global.ipcRenderer.invoke('pluginGetLocal', props.router.query.slug).then((plugin) => {
+            console.log('pluginGetLocal', plugin)
             this.setState({ plugin: plugin })
           })
         }
@@ -48,8 +49,8 @@ class PluginPage extends Component<PluginProps, {
     console.log('install', this.state.plugin)
     if (global && global.ipcRenderer) {
       this.setState({ isDisabled: true })
-      global.ipcRenderer.invoke('installPlugin', this.state.plugin).then((pluginInstalled) => {
-        console.log('installPlugin response', pluginInstalled)
+      global.ipcRenderer.invoke('pluginInstall', this.state.plugin).then((pluginInstalled) => {
+        console.log('pluginInstall response', pluginInstalled)
         this.state.plugin.path = pluginInstalled.path;
         this.state.plugin.status = pluginInstalled.status;
         this.setState({
@@ -64,8 +65,8 @@ class PluginPage extends Component<PluginProps, {
     console.log('uninstall', this.state.plugin)
     if (global && global.ipcRenderer) {
       this.setState({ isDisabled: true })
-      global.ipcRenderer.invoke('uninstallPlugin', this.state.plugin).then((pluginInstalled) => {
-        console.log('uninstallPlugin response', pluginInstalled)
+      global.ipcRenderer.invoke('pluginUninstall', this.state.plugin).then((pluginInstalled) => {
+        console.log('pluginUninstall response', pluginInstalled)
         this.state.plugin.path = pluginInstalled.path
         this.state.plugin.status = pluginInstalled.status
         this.setState({
@@ -74,6 +75,40 @@ class PluginPage extends Component<PluginProps, {
         })
       })
     }
+  }
+
+  formatBytes(bytes:number, decimals = 2) {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+  }
+
+  timeSince(date:string) {
+    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000)
+    let interval = seconds / 31536000
+    if (interval > 1) {
+      return Math.floor(interval) + " years"
+    }
+    interval = seconds / 2592000
+    if (interval > 1) {
+      return Math.floor(interval) + " months"
+    }
+    interval = seconds / 86400
+    if (interval > 1) {
+      return Math.floor(interval) + " days"
+    }
+    interval = seconds / 3600
+    if (interval > 1) {
+      return Math.floor(interval) + " hours"
+    }
+    interval = seconds / 60
+    if (interval > 1) {
+      return Math.floor(interval) + " minutes"
+    }
+    return Math.floor(seconds) + " seconds"
   }
 
   play = () => {
@@ -100,11 +135,19 @@ class PluginPage extends Component<PluginProps, {
   }
 
   getRepo = (plugin: Plugin) => {
-    return plugin.id ? plugin.id.slice(0, plugin.id.lastIndexOf('/')) : ''
+    return plugin?.id?.slice(0, plugin.id.lastIndexOf('/'))
   }
 
   getPluginId = (plugin: Plugin) => {
-    return plugin.id ?  plugin.id.slice(plugin.id.lastIndexOf('/') + 1) : ''
+    return plugin?.id?.slice(plugin.id.lastIndexOf('/') + 1)
+  }
+
+  getPlayButton() {
+    if (this.state.isPlaying) {
+      return <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-pause.svg`} alt="Pause" onClick={this.pause} />
+    } else {
+      return <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-play.svg`} alt="Play" onClick={this.play} />
+    }
   }
 
   render() {
@@ -118,32 +161,42 @@ class PluginPage extends Component<PluginProps, {
           <div className={styles.headerInner}>
             <div className={styles.media}>
               <div className={styles.imageContainer}>
-              {this.state.isPlaying ?
-                <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-pause.svg`} alt="Pause" onClick={this.pause} />
-                :
-                <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-play.svg`} alt="Play" onClick={this.play} />
+              {this.state.plugin.files.audio ?
+                this.getPlayButton()
+                : ''
               }
-                <img className={styles.image} src={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.getPluginId(this.state.plugin)}.png`} alt={this.state.plugin.name} />
+              {this.state.plugin.files.image ?
+                <img className={styles.image} src={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.image.name}`} alt={this.state.plugin.name || ''} />
+                : ''
+              }
               </div>
-              <audio src={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.getPluginId(this.state.plugin)}.wav`} id="audio">Your browser does not support the audio element.</audio>
+              {this.state.plugin.files.audio ?
+                <audio src={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.audio.name}`} id="audio">Your browser does not support the audio element.</audio>
+                : ''
+              }
             </div>
             <div className={styles.details}>
-              <h3 className={styles.title}>{this.state.plugin.name} <span className={styles.version}>v{this.state.plugin.version}</span></h3>
+              <h3 className={styles.title}>{this.state.plugin.name || ''} <span className={styles.version}>v{this.state.plugin.version}</span></h3>
               <p className={styles.author}>By <a href={this.state.plugin.homepage} target="_blank">{this.state.plugin.author}</a></p>
               <p>{this.state.plugin.description}</p>
-              <ul className={styles.tags}>
-                <img className={styles.icon} src={`${this.state.router.basePath}/static/icon-tag.svg`} alt="Tags" />
-                {this.state.plugin.tags && 
-                  this.state.plugin.tags.map((tag) => (
-                    <li className={styles.tag} key={tag}>{tag},</li>
-                  ))
+              <div className={styles.metadataList}>
+                {/* <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/static/icon-filesize.svg`} alt="Filesize" /> {this.formatBytes(this.state.plugin.size)}</div> */}
+                <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/static/icon-date.svg`} alt="Date updated" /> {this.timeSince(this.state.plugin.date)} ago</div>
+                <div className={styles.metadata}>
+                  <img className={styles.icon} src={`${this.state.router.basePath}/static/icon-tag.svg`} alt="Tags" />
+                    <ul className={styles.tags}>
+                    {this.state.plugin.tags && 
+                      this.state.plugin.tags.map((tag) => (
+                      <li className={styles.tag} key={tag}>{tag},</li>
+                    ))}
+                  </ul>
+                </div>
+                {this.state.plugin.status !== 'installed' ?
+                  <button className="button" onClick={this.install} disabled={this.state.isDisabled}>Install</button>
+                  :
+                  <button className="button button-clear" onClick={this.uninstall} disabled={this.state.isDisabled}>Uninstall</button>
                 }
-              </ul>
-              {this.state.plugin.status !== 'installed' ?
-                <button className="button" onClick={this.install} disabled={this.state.isDisabled}>Install</button>
-                :
-                <button className="button button-clear" onClick={this.uninstall} disabled={this.state.isDisabled}>Uninstall</button>
-              }
+              </div>
             </div>
           </div>
         </div>
@@ -151,10 +204,19 @@ class PluginPage extends Component<PluginProps, {
           <div className={styles.options}>
             <div className={styles.row}>
               <div className={`${styles.cell} ${styles.download}`}>
-                <p>Download .zip file:</p>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.getPluginId(this.state.plugin)}-linux.zip`}>Linux</a>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.getPluginId(this.state.plugin)}-mac.zip`}>MacOS</a>
-                <a className={`button ${styles.button}`} href={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.getPluginId(this.state.plugin)}-win.zip`}>Windows</a>
+                <p>Download and install manually:</p>
+                { this.state.plugin.files.linux ? 
+                  <a className={`button ${styles.button}`} href={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.linux.name}`}>Linux</a>
+                  : ''
+                }
+                { this.state.plugin.files.mac ?
+                  <a className={`button ${styles.button}`} href={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.mac.name}`}>MacOS</a>
+                  : ''
+                }
+                { this.state.plugin.files.win ?
+                  <a className={`button ${styles.button}`} href={`https://github.com/${this.getRepo(this.state.plugin)}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.win.name}`}>Windows</a>
+                  : ''
+                }
               </div>
               <div className={`${styles.cell} ${styles.install}`}>
                 <p>Install via command line:</p>
@@ -162,16 +224,16 @@ class PluginPage extends Component<PluginProps, {
               </div>
             </div>
           </div>
-          :
-          <div className={styles.options}>
-            <div className={styles.row}>
-              <div className={`${styles.cell} ${styles.download}`}>
-                <p>Plugin location:</p>
-                <pre className={styles.codeBox}>{this.state.plugin.path}</pre>
-              </div>
+        :
+        <div className={styles.options}>
+          <div className={styles.row}>
+            <div className={`${styles.cell} ${styles.download}`}>
+              <p>Plugin location:</p>
+              <pre className={styles.codeBox}>{this.state.plugin.path}</pre>
             </div>
           </div>
-        }
+        </div>
+      }
       </article>
     </Layout>
     )
