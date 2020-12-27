@@ -30,11 +30,11 @@ Follow the instructions at `./myplugin/README.md` to install and build your plug
 
 Commit your plugin code to GitHub. When ready to release a version, publish a GitHub Release along with the following files:
 
-- `yourplugin-linux.zip `- Linux build
-- `yourplugin-mac.zip` - Mac build
-- `yourplugin-win.zip` - Windows build
-- `yourplugin.png` - Screenshot of your plugin
-- `yourplugin.wav` - Audio preview of the sound (using a midi or piano middle-C key)
+- `your-plugin-linux.zip `- Linux build
+- `your-plugin-mac.zip` - Mac build
+- `your-plugin-win.zip` - Windows build
+- `your-plugin.png` - Screenshot of your plugin
+- `your-plugin.wav` - Audio preview of the sound (using a midi or piano middle-C key)
 - `plugins.json` - Plugin metadata for the registry
 
 `plugins.json` should use the following format:
@@ -51,7 +51,7 @@ Commit your plugin code to GitHub. When ready to release a version, publish a Gi
             "Delay"
           ],
           "version": "1.1.0",
-          "id": "yourplugin",
+          "id": "your-plugin",
           "date": "2020-12-09T17:25:12.081Z",
           "files": {
             "audio": {
