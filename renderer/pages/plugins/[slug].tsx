@@ -142,9 +142,9 @@ class PluginPage extends Component<PluginProps, {
 
   getPlayButton() {
     if (this.state.isPlaying) {
-      return <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-pause.svg`} alt="Pause" onClick={this.pause} />
+      return <img className={styles.imagePlay} src={`${this.state.router.basePath}/images/icon-pause.svg`} alt="Pause" onClick={this.pause} />
     } else {
-      return <img className={styles.imagePlay} src={`${this.state.router.basePath}/static/icon-play.svg`} alt="Play" onClick={this.play} />
+      return <img className={styles.imagePlay} src={`${this.state.router.basePath}/images/icon-play.svg`} alt="Play" onClick={this.play} />
     }
   }
 
@@ -178,10 +178,10 @@ class PluginPage extends Component<PluginProps, {
               <p className={styles.author}>By <a href={this.state.plugin.homepage} target="_blank">{this.state.plugin.author}</a></p>
               <p>{this.state.plugin.description}</p>
               <div className={styles.metadataList}>
-                {/* <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/static/icon-filesize.svg`} alt="Filesize" /> {this.formatBytes(this.state.plugin.size)}</div> */}
-                <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/static/icon-date.svg`} alt="Date updated" /> {this.timeSince(this.state.plugin.date)} ago</div>
+                {/* <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/images/icon-filesize.svg`} alt="Filesize" /> {this.formatBytes(this.state.plugin.size)}</div> */}
+                <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/images/icon-date.svg`} alt="Date updated" /> {this.timeSince(this.state.plugin.date)} ago</div>
                 <div className={styles.metadata}>
-                  <img className={styles.icon} src={`${this.state.router.basePath}/static/icon-tag.svg`} alt="Tags" />
+                  <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
                     <ul className={styles.tags}>
                     {this.state.plugin.tags && 
                       this.state.plugin.tags.map((tag) => (
