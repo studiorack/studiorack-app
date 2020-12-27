@@ -11,7 +11,7 @@ We have plugin templates which automate plugin builds
 - [studiorack-plugin-juce](https://github.com/studiorack/studiorack-plugin-juce)
 - [studiorack-plugin-steinberg](https://github.com/studiorack/studiorack-plugin-steinberg)
 
-You can fork the repos on GitHub or use our command line tool. Create a new plugin using a starter template (iplug, juce, steinberg):
+You can fork the repos on GitHub or use our command line tool. Create a new plugin using a starter template (dplug, iplug, juce, steinberg):
 
     studiorack create myplugin --type steinberg
 
