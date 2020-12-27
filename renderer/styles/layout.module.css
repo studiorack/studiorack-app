@@ -1,8 +1,5 @@
 .header {
-  align-items: center;
   background-color: #000;
-  display: flex;
-  justify-content: space-between;
   min-height: 70px;
   position: fixed;
   top: 0;
@@ -14,7 +11,8 @@
   align-items: center;
   border: 0;
   display: flex;
-  padding: 0 1.5rem;
+  float: left;
+  padding: 1.1rem 1.5rem;
 }
 
 .headerLink:hover {
@@ -31,34 +29,111 @@
   font-weight: 700;
 }
 
-.navigation {
+.navigation a {
+  border-bottom: 3px solid transparent;
+  color: #fff;
+  display: block;
+  padding: 1.5rem;
+  text-decoration: none;
+  transition: border .25s ease-out;
+}
+
+.navigation a:hover {
+  border-bottom-color:#fff;
+}
+
+.menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.menu {
+  clear: both;
+  max-height: 0;
+  transition: max-height .2s ease-out;
+}
+
+.menuIcn {
+  cursor: pointer;
+  float: right;
+  padding: 2.1rem 1.5rem;
+  position: relative;
+  user-select: none;
+}
+
+.menuIcn .menuNavIcn {
+  background: #fff;
+  display: block;
+  height: 2px;
+  position: relative;
+  transition: background .2s ease-out;
+  width: 18px;
+}
+
+.menuIcn .menuNavIcn:before,
+.menuIcn .menuNavIcn:after {
+  background: #fff;
+  content: '';
+  display: block;
+  height: 100%;
+  position: absolute;
+  transition: all .2s ease-out;
+  width: 100%;
+}
+
+.menuIcn .menuNavIcn:before {
+  top: 5px;
+}
+
+.menuIcn .menuNavIcn:after {
+  top: -5px;
+}
+
+.menuBtn {
   display: none;
 }
 
+.menuBtn:checked ~ .menu {
+  max-height: 240px;
+}
+
+.menuBtn:checked ~ .menuIcn .menuNavIcn {
+  background: transparent;
+}
+
+.menuBtn:checked ~ .menuIcn .menuNavIcn:before {
+  transform: rotate(-45deg);
+}
+
+.menuBtn:checked ~ .menuIcn .menuNavIcn:after {
+  transform: rotate(45deg);
+}
+
+.menuBtn:checked ~ .menuIcn:not(.steps) .menuNavIcn:before,
+.menuBtn:checked ~ .menuIcn:not(.steps) .menuNavIcn:after {
+  top: 0;
+}
+
 @media (min-width: 48rem) {
+  .headerLink {
+    padding: 1rem 1.5rem;
+  }
   .logoText {
     font-size: 30px;
     margin: 0 0 0 1rem;
     text-transform: uppercase;
   }
-
-  .navigation {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .menu {
+    clear: none;
+    float: right;
+    max-height: none;
   }
-
-  .navigation a {
-    border-bottom: 3px solid transparent;
-    color: #fff;
-    display: block;
-    padding: 1.5rem;
-    text-decoration: none;
-    transition: border .25s ease-out;
+  .menu li {
+    float: left;
   }
-
-  .navigation a:hover {
-    border-bottom-color:#fff;
+  .menuIcn {
+    display: none;
   }
 }

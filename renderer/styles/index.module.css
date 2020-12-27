@@ -15,10 +15,6 @@
   max-width: 1024px;
 }
 
-.inner {
-  max-width: 360px;
-}
-
 .sectionProducers .inner {
   margin: 0 0 0 auto;
 }
@@ -27,6 +23,10 @@
   .section {
     padding-bottom: 15rem;
     padding-top: 15rem;
+  }
+
+  .inner {
+    max-width: 360px;
   }
 
   .sectionOpenSource {

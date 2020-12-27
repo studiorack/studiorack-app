@@ -3,9 +3,7 @@ import Layout from '../../components/layout'
 import { getPluginData, Plugin } from '../../lib/plugins'
 import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
-import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { pathFromSlashes, pathToSlashes, pluginGet, pluginsGet, pluginLatest } from '@studiorack/core'
 
 type PluginProps = {
   plugin: Plugin,
@@ -25,7 +23,7 @@ class PluginPage extends Component<PluginProps, {
     this.state = {
       isDisabled: false,
       isPlaying: false,
-      plugin: props.plugin,
+      plugin: props.plugin || { files: {}} as Plugin,
       router: props.router
     }
   
