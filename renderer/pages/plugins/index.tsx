@@ -149,8 +149,7 @@ class PluginList extends Component<PluginListProps, {
                   </div>
                   { plugin.files.image ?
                     <img className={styles.pluginImage} src={`https://github.com/${this.getRepo(plugin)}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
-                    :
-                    <img className={styles.pluginImage} src={`${this.state.router.basePath}/images/plugin.png}`} alt={plugin.name} onError={this.imageError} />
+                    : ""
                   }
                 </div>
               </Link>
