@@ -17,11 +17,17 @@
   justify-content: space-between;
 }
 
-.pluginsHeader li {
+.pluginsCategory {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.pluginsCategory li {
   display: inline-block;
 }
 
-.pluginsHeader a {
+.pluginsCategory a {
   border: 0;
   border-radius: 1rem;
   cursor: pointer;
@@ -31,23 +37,17 @@
   transition: background-color .25s ease-out;
 }
 
-.pluginsHeader a:hover {
+.pluginsCategory a:hover {
   background-color: #222;
 }
 
-.pluginsHeader :global(.selected) {
+.pluginsCategory :global(.selected) {
   background-color: #fff;
   color: #000;
 }
 
-.pluginsHeader :global(.selected):hover {
+.pluginsCategory :global(.selected):hover {
   background-color: #fff;
-}
-
-.pluginsCategory {
-  list-style: none;
-  margin: 0 0 1rem;
-  padding: 0;
 }
 
 .pluginsSearch {

@@ -116,15 +116,15 @@ class PluginList extends Component<PluginListProps, {
           <title>{siteTitle}</title>
         </Head>
         <section className={styles.plugins}>
-        <h3 className={styles.pluginsTitle}>Plugins <span className={styles.pluginCount}>({this.state.pluginsFiltered.length})</span></h3>
           <div className={styles.pluginsHeader}>
-            <ul className={styles.pluginsCategory}>
-              <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
-              <li><a data-category="installed" onClick={this.selectCategory} className={this.isSelected('installed')}>Installed</a></li>
-              <li><a data-category="available" onClick={this.selectCategory} className={this.isSelected('available')}>Available</a></li>
-            </ul>
+            <h3 className={styles.pluginsTitle}>Plugins <span className={styles.pluginCount}>({this.state.pluginsFiltered.length})</span></h3>
             <input className={styles.pluginsSearch} placeholder="Filter by keyword" value={this.state.query} onChange={this.handleChange} />
           </div>
+          <ul className={styles.pluginsCategory}>
+            <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
+            <li><a data-category="installed" onClick={this.selectCategory} className={this.isSelected('installed')}>Installed</a></li>
+            <li><a data-category="available" onClick={this.selectCategory} className={this.isSelected('available')}>Available</a></li>
+          </ul>
           <div className={styles.pluginsList}>
             {this.state.pluginsFiltered.map((plugin, pluginIndex) => (
               <Link href="/plugins/[slug]" as={`/plugins/${plugin.slug}`} key={`${plugin.name}-${pluginIndex}`}>
