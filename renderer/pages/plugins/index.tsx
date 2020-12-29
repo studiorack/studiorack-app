@@ -116,7 +116,7 @@ class PluginList extends Component<PluginListProps, {
           <title>{siteTitle}</title>
         </Head>
         <section className={styles.plugins}>
-          <h3 className={styles.pluginsTitle}>Plugins</h3>
+        <h3 className={styles.pluginsTitle}>Plugins <span className={styles.pluginCount}>({this.state.pluginsFiltered.length})</span></h3>
           <div className={styles.pluginsHeader}>
             <ul className={styles.pluginsCategory}>
               <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>

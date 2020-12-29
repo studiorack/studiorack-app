@@ -3,7 +3,18 @@
 }
 
 .pluginsTitle {
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
+}
+
+.pluginCount {
+  color: #666;
+  font-size: 1rem;
+}
+
+.pluginsHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }
 
 .pluginsHeader li {
@@ -120,12 +131,9 @@
 }
 
 @media (min-width: 48rem) {
-  .pluginsHeader {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
+  .pluginCount {
+    font-size: 1.4rem;
   }
-
   .pluginsList {
     display: grid;
     grid-auto-rows: minmax(100px, auto);
