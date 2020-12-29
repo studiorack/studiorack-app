@@ -48,9 +48,9 @@ app.on('ready', async () => {
   });
 
   const url = isDev
-    ? 'http://localhost:8000/'
+    ? 'http://localhost:8000/plugins'
     : format({
-        pathname: join(__dirname, '../renderer/out/index.html'),
+        pathname: join(__dirname, '../renderer/out/plugins.html'),
         protocol: 'file:',
         slashes: true,
       });
