@@ -4,8 +4,9 @@ import Layout, { siteTitle } from '../../components/layout'
 import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
-import { getPlugins, Plugin } from '../../lib/plugins'
 import { withRouter, Router } from 'next/router'
+import { Plugin, pluginLatest, pluginsGet } from '@studiorack/core'
+import { idToSlug, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
 import { IpcRenderer } from 'electron'
 
 declare global {
@@ -101,14 +102,6 @@ class PluginList extends Component<PluginListProps, {
     return undefined
   }
 
-  getRepo = (plugin: Plugin) => {
-    return plugin?.id?.slice(0, plugin.id.lastIndexOf('/'))
-  }
-
-  getPluginId = (plugin: Plugin) => {
-    return plugin?.id?.slice(plugin.id.lastIndexOf('/') + 1)
-  }
-
   render() {
     return (
       <Layout>
@@ -127,7 +120,7 @@ class PluginList extends Component<PluginListProps, {
           </ul>
           <div className={styles.pluginsList}>
             {this.state.pluginsFiltered.map((plugin, pluginIndex) => (
-              <Link href="/plugins/[slug]" as={`/plugins/${plugin.slug}`} key={`${plugin.name}-${pluginIndex}`}>
+              <Link href="/plugins/[slug]" as={`/plugins/${idToSlug(plugin.id || '')}`} key={`${plugin.name}-${pluginIndex}`}>
                 <div className={styles.plugin}>
                   <div className={styles.pluginDetails}>
                     <div className={styles.pluginHead}>
@@ -140,15 +133,13 @@ class PluginList extends Component<PluginListProps, {
                     </div>
                     <ul className={styles.pluginTags}>
                       <img className={styles.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                      {plugin.tags && 
-                        plugin.tags.map((tag, tagIndex) => (
-                          <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
-                        ))
-                      }
+                      {plugin.tags.map((tag, tagIndex) => (
+                        <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
+                      ))}
                     </ul>
                   </div>
-                  { plugin.release && plugin.files.image ?
-                    <img className={styles.pluginImage} src={`https://github.com/${this.getRepo(plugin)}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
+                  { plugin.files.image ?
+                    <img className={styles.pluginImage} src={`https://github.com/${pathGetRepo(plugin.id || 'id')}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
                     : ""
                   }
                 </div>
@@ -163,10 +154,16 @@ class PluginList extends Component<PluginListProps, {
 export default withRouter(PluginList)
 
 export const getStaticProps: GetStaticProps = async () => {
-  const plugins = await getPlugins()
+  const plugins = await pluginsGet()
+  const list:Plugin[] = []
+  for (const pluginId in plugins) {
+    const plugin = pluginLatest(plugins[pluginId])
+    plugin.status = 'available'
+    list.push(plugin)
+  }
   return {
     props: {
-      plugins
+      plugins: list
     }
   }
 }

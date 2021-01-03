@@ -78,9 +78,9 @@ ipcMain.handle('pluginsGetLocal', async () => {
 });
 
 // Get plugin installer locally by path
-ipcMain.handle('pluginGetLocal', async (_event, path) => {
-  console.log('pluginGetLocal', path);
-  return pluginGetLocal(path);
+ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
+  console.log('pluginGetLocal', id);
+  return pluginGetLocal(id);
 });
 
 // Install plugin into root plugin folder locally
