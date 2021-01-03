@@ -30,21 +30,21 @@ class DocPage extends Component<DocProps, {
   }
 
   convertToSlug(text: string) {
-    return text ? text
+    return text
         .toLowerCase()
         .replace(/ /g,'-')
-        .replace(/[^\w-]+/g,'') : text
+        .replace(/[^\w-]+/g,'')
   }
 
   render() {
-    let content = this.state.doc.content ? this.state.doc.content.replace('/docs', `${this.state.router.basePath}/docs`) : this.state.doc.content
-    content = content ? content.replace(/<h2>(.*?)<\/h2>/g, (tag, title) => `<span id="${this.convertToSlug(title)}"></span>${tag}`) : content
+    let content = this.state.doc.content.replace('/docs', `${this.state.router.basePath}/docs`)
+    content = content.replace(/<h2>(.*?)<\/h2>/g, (tag, title) => `<span id="${this.convertToSlug(title)}"></span>${tag}`)
     return (
     <Layout>
       <Container docs={this.state.allDocs}>
         <h1>{this.state.doc.title}</h1>
         <div
-          className={markdownStyles['markdown']}
+          className={markdownStyles.markdown}
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </Container>
@@ -93,10 +93,10 @@ export async function getStaticPaths() {
   const docs = getAllDocs(['slug']) as Doc[]
 
   return {
-    paths: docs.map((docs) => {
+    paths: docs.map((doc) => {
       return {
         params: {
-          slug: docs.slug,
+          slug: doc.slug,
         },
       }
     }),

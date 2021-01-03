@@ -54,7 +54,7 @@ class Home extends Component<HomeProps, {
         <section className={`${styles.section} ${styles.sectionCreators}`}>
           <div className={styles.container}>
             <div className={styles.inner}>
-            <img className={styles.sectionImage} src={`${this.state.router.basePath}/images/creators-mobile.jpg`} alt="Creators" />
+              <img className={styles.sectionImage} src={`${this.state.router.basePath}/images/creators-mobile.jpg`} alt="Creators" />
               <h2 className={styles.title}>Automate your plugin publishing workflow</h2>
               <p>Our plugin starter templates use GitHub Actions to automatically build your plugin, publishing Windows, Mac and Linux versions directly to GitHub Releases.</p>
               <a className="button" href="https://github.com/studiorack/studiorack-plugin-dplug" target="_blank">Dplug</a>

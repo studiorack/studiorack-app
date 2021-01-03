@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getPlugins } from '../../lib/plugins';
+import { pluginsGet } from '@studiorack/core';
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
-  const plugins = await getPlugins();
+  const plugins = await pluginsGet();
   res.status(200).json(plugins);
 };
