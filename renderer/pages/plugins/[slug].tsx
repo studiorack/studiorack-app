@@ -26,7 +26,7 @@ class PluginPage extends Component<PluginProps, {
       plugin: props.plugin || { files: {}} as Plugin,
       router: props.router
     }
-  
+
     console.log('slug', props.router.query.slug);
     // check if registry has plugin metadata
     getPluginData(props.router.query.slug as string).then((plugin: Plugin) => {
@@ -35,12 +35,12 @@ class PluginPage extends Component<PluginProps, {
         this.setState({ plugin: plugin })
       // otherwise fallback to auto-generated local metadata
       } else if (global && global.ipcRenderer) {
-          global.ipcRenderer.invoke('pluginGetLocal', props.router.query.slug).then((plugin) => {
-            console.log('pluginGetLocal', plugin)
-            this.setState({ plugin: plugin })
-          })
-        }
-      })
+        global.ipcRenderer.invoke('pluginGetLocal', props.router.query.slug).then((plugin) => {
+          console.log('pluginGetLocal', plugin)
+          this.setState({ plugin: plugin })
+        })
+      }
+    })
   }
 
   install = () => {
@@ -182,7 +182,7 @@ class PluginPage extends Component<PluginProps, {
                 <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/images/icon-date.svg`} alt="Date updated" /> {this.timeSince(this.state.plugin.date)} ago</div>
                 <div className={styles.metadata}>
                   <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                    <ul className={styles.tags}>
+                  <ul className={styles.tags}>
                     {this.state.plugin.tags && 
                       this.state.plugin.tags.map((tag) => (
                       <li className={styles.tag} key={tag}>{tag},</li>

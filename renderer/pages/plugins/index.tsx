@@ -147,7 +147,7 @@ class PluginList extends Component<PluginListProps, {
                       }
                     </ul>
                   </div>
-                  { plugin.files.image ?
+                  { plugin.release && plugin.files.image ?
                     <img className={styles.pluginImage} src={`https://github.com/${this.getRepo(plugin)}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
                     : ""
                   }
