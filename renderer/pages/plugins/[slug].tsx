@@ -175,6 +175,11 @@ class PluginPage extends Component<PluginProps, {
                     ))}
                   </ul>
                 </div>
+                { this.state.plugin.status !== 'installed' ?	
+                  <button className="button" onClick={this.install} disabled={this.state.isDisabled}>Install</button>	
+                  :	
+                  <button className="button button-clear" onClick={this.uninstall} disabled={this.state.isDisabled}>Uninstall</button>	
+                }
               </div>
             </div>
           </div>

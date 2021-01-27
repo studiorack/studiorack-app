@@ -38,6 +38,19 @@ class ProjectPage extends Component<ProjectProps, {
     }
   }
 
+  open = () => {
+    console.log('open', this.state.project)
+    if (global && global.ipcRenderer) {
+      this.setState({ isDisabled: true })
+      global.ipcRenderer.invoke('projectOpen', this.state.project.path).then((projectOpened) => {
+        console.log('projectOpen response', projectOpened)
+        this.setState({
+          isDisabled: false
+        })
+      })
+    }
+  }
+
   formatBytes(bytes:number, decimals = 2) {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -147,6 +160,7 @@ class ProjectPage extends Component<ProjectProps, {
                     ))}
                   </ul>
                 </div>
+                <button className="button" onClick={this.open} disabled={this.state.isDisabled}>Open</button>	
               </div>
             </div>
           </div>

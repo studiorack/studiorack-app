@@ -8,7 +8,7 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
 // custom code
-import { pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet, projectRoot } from '@studiorack/core';
+import { fileOpen, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet, projectRoot } from '@studiorack/core';
 
 const DEFAULT_PAGE = 'projects';
 
@@ -117,4 +117,10 @@ ipcMain.handle('projectsGet', async () => {
 ipcMain.handle('projectGet', async (_event, id: string) => {
   console.log('projectGet', id);
   return projectGet(id);
+});
+
+// Open project
+ipcMain.handle('projectOpen', async (_event, path: string) => {
+  console.log('projectOpen', path);
+  return fileOpen(path);
 });
