@@ -124,7 +124,7 @@ class ProjectList extends Component<ProjectListProps, {
           </ul>
           <div className={styles.pluginsList}>
             {this.state.projectsFiltered.map((project, projectIndex) => (
-              <Link href="/plugins/[slug]" as={`/plugins/${idToSlug(project.id || '')}`} key={`${project.name}-${projectIndex}`}>
+              <Link href="/projects/[slug]" as={`/projects/${idToSlug(project.id || '')}`} key={`${project.name}-${projectIndex}`}>
                 <div className={styles.plugin}>
                   <div className={styles.pluginDetails}>
                     <div className={styles.pluginHead}>

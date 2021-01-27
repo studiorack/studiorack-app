@@ -38,7 +38,7 @@ app.on('ready', async () => {
           connect-src 'self' *.github.io data:;
           font-src 'self' fonts.gstatic.com;
           img-src 'self' github.com *.s3.amazonaws.com data: media:;
-          media-src 'self' github.com *.s3.amazonaws.com;
+          media-src 'self' github.com *.s3.amazonaws.com media:;
           script-src 'self' 'unsafe-inline' 'unsafe-eval';
           style-src 'self' 'unsafe-inline' fonts.googleapis.com
         `,
