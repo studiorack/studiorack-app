@@ -49,7 +49,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@studiorack/core": "0.0.31",
+    "@studiorack/core": "0.0.35",
     "electron-is-dev": "^1.2.0",
     "electron-next": "^3.1.5",
     "gray-matter": "^4.0.2",

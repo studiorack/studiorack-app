@@ -3,16 +3,27 @@ import { join } from 'path';
 import { format } from 'url';
 
 // Packages
-import { BrowserWindow, app, session, ipcMain, IpcMainEvent } from 'electron';
+import { BrowserWindow, app, session, ipcMain, IpcMainEvent, protocol } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
 // custom code
-import { pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall } from '@studiorack/core';
+import { pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet, projectRoot } from '@studiorack/core';
+
+const DEFAULT_PAGE = 'projects';
+
+// Hardcode path to project folder for now
+projectRoot('/Users/kimturley/Library/Mobile Documents/com~apple~CloudDocs/Ableton');
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
   await prepareNext('./renderer');
+
+  // Register custom media protocol for local images
+  protocol.registerFileProtocol('media', (request, callback) => {
+    const pathname = request.url.replace('media:///', '');
+    callback(pathname);
+  });
 
   app.dock.setIcon(join(__dirname, '../renderer/out/icons/icon.png'));
 
@@ -26,7 +37,7 @@ app.on('ready', async () => {
           default-src 'self';
           connect-src 'self' *.github.io data:;
           font-src 'self' fonts.gstatic.com;
-          img-src 'self' github.com *.s3.amazonaws.com data:;
+          img-src 'self' github.com *.s3.amazonaws.com data: media:;
           media-src 'self' github.com *.s3.amazonaws.com;
           script-src 'self' 'unsafe-inline' 'unsafe-eval';
           style-src 'self' 'unsafe-inline' fonts.googleapis.com
@@ -44,13 +55,14 @@ app.on('ready', async () => {
       nodeIntegration: false,
       preload: join(__dirname, 'preload.js'),
       worldSafeExecuteJavaScript: true,
+      webSecurity: false
     },
   });
 
   const url = isDev
-    ? 'http://localhost:8000/plugins'
+    ? `http://localhost:8000/${DEFAULT_PAGE}`
     : format({
-        pathname: join(__dirname, '../renderer/out/plugins.html'),
+        pathname: join(__dirname, `../renderer/out/${DEFAULT_PAGE}.html`),
         protocol: 'file:',
         slashes: true,
       });
@@ -93,4 +105,16 @@ ipcMain.handle('pluginInstall', async (_event, plugin) => {
 ipcMain.handle('pluginUninstall', async (_event, plugin) => {
   console.log('pluginUninstall', plugin);
   return pluginUninstall(plugin.id, plugin.version, true);
+});
+
+// Get projects installed locally
+ipcMain.handle('projectsGet', async () => {
+  console.log('projectsGet');
+  return await projectsGet();
+});
+
+// Get projects installer locally by path
+ipcMain.handle('projectGet', async (_event, id: string) => {
+  console.log('projectGet', id);
+  return projectGet(id);
 });
