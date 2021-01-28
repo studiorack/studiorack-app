@@ -119,8 +119,12 @@ class ProjectList extends Component<ProjectListProps, {
           </div>
           <ul className={styles.pluginsCategory}>
             <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
-            <li><a data-category="installed" onClick={this.selectCategory} className={this.isSelected('installed')}>Installed</a></li>
-            <li><a data-category="available" onClick={this.selectCategory} className={this.isSelected('available')}>Available</a></li>
+            <li><a data-category="ableton" onClick={this.selectCategory} className={this.isSelected('ableton')}>Ableton</a></li>
+            <li><a data-category="cubase" onClick={this.selectCategory} className={this.isSelected('cubase')}>Cubase</a></li>
+            <li><a data-category="fl-studio" onClick={this.selectCategory} className={this.isSelected('fl-studio')}>FL Studio</a></li>
+            <li><a data-category="logic" onClick={this.selectCategory} className={this.isSelected('logic')}>Logic</a></li>
+            <li><a data-category="pro-tools" onClick={this.selectCategory} className={this.isSelected('pro-tools')}>Pro Tools</a></li>
+            <li><a data-category="reaper" onClick={this.selectCategory} className={this.isSelected('reaper')}>Reaper</a></li>
           </ul>
           <div className={styles.pluginsList}>
             {this.state.projectsFiltered.map((project, projectIndex) => (
@@ -129,11 +133,7 @@ class ProjectList extends Component<ProjectListProps, {
                   <div className={styles.pluginDetails}>
                     <div className={styles.pluginHead}>
                       <h4 className={styles.pluginTitle}>{project.name} <span className={styles.pluginVersion}>v{project.version}</span></h4>
-                      {project.type === 'installed' ?
-                        <span className={styles.pluginButtonInstalled}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-installed.svg`} alt="Installed" /></span>
-                        :
-                        <span className={styles.pluginButton}><img className={styles.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-download.svg`} alt="Download" /></span>
-                      }
+                      <span className={styles.projectButton}><img className={styles.projectButtonIcon} src={`${this.state.router.basePath}/icons/icon-${project.type}.png`} alt={project.type} /></span>
                     </div>
                     <ul className={styles.pluginTags}>
                       <img className={styles.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
@@ -158,10 +158,9 @@ class ProjectList extends Component<ProjectListProps, {
 export default withRouter(ProjectList)
 
 export const getStaticProps: GetStaticProps = async () => {
-  const projects = await projectsGet()
   return {
     props: {
-      projects
+      projects: []
     }
   }
 }
