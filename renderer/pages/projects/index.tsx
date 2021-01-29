@@ -42,16 +42,6 @@ class ProjectList extends Component<ProjectListProps, {
       query: ''
     }
     this.list = props.projects
-    if (global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('projectsGet').then((projects) => {
-        this.list = this.list.concat(projects)
-        console.log(this.list)
-        this.setState({
-          projects: this.list,
-          projectsFiltered: this.list
-        })
-      })
-    }
   }
 
   filterProjects = () => {
@@ -158,9 +148,11 @@ class ProjectList extends Component<ProjectListProps, {
 export default withRouter(ProjectList)
 
 export const getStaticProps: GetStaticProps = async () => {
+  const projects = await projectsGet()
   return {
     props: {
-      projects: []
+      projects,
+      projectsFiltered: projects
     }
   }
 }

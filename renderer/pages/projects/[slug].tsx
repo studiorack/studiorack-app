@@ -1,13 +1,16 @@
 import { Component } from 'react'
 import Layout from '../../components/layout'
+import Link from 'next/link'
 import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
+import stylesPlugin from '../../styles/plugins.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Project } from '@studiorack/core'
-import { slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
+import { Plugin, PluginEntry, pluginGet, pluginLatest, Project, projectGet } from '@studiorack/core'
+import { idToSlug, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
 
 type ProjectProps = {
+  pluginsFiltered: Plugin[],
   project: Project,
   router: Router
 }
@@ -15,8 +18,9 @@ type ProjectProps = {
 class ProjectPage extends Component<ProjectProps, {
   isDisabled: boolean,
   isPlaying: boolean,
-  router: Router,
-  project: Project
+  pluginsFiltered: Plugin[],
+  project: Project,
+  router: Router
 }> {
 
   constructor(props: ProjectProps) {
@@ -24,18 +28,12 @@ class ProjectPage extends Component<ProjectProps, {
     this.state = {
       isDisabled: false,
       isPlaying: false,
+      pluginsFiltered: props.pluginsFiltered,
       project: props.project,
       router: props.router
     }
-    console.log('props.project', props.project, props.router.query.slug);
-
-    // If project is not found in registry, fallback to auto-generated local metadata
-    if (!props.project.name && global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('projectGet', slugToId(props.router.query.slug as string)).then((project) => {
-        console.log('projectGet', project)
-        this.setState({ project: project })
-      })
-    }
+    console.log('pluginsFiltered', props.pluginsFiltered);
+    console.log('project', props.project);
   }
 
   open = () => {
@@ -165,7 +163,7 @@ class ProjectPage extends Component<ProjectProps, {
             </div>
           </div>
         </div>
-        <div className={styles.options}>
+        {/* <div className={styles.options}>
           <div className={styles.row}>
             <div className={`${styles.cell} ${styles.download}`}>
               <p>Project files:</p>
@@ -186,6 +184,39 @@ class ProjectPage extends Component<ProjectProps, {
               <p>Project path:</p>
               <pre className={styles.codeBox}>{this.state.project.path}</pre>
             </div>
+          </div>
+        </div> */}
+        <div className={stylesPlugin.plugins}>
+          <div className={stylesPlugin.pluginsHeader}>
+            <h3 className={stylesPlugin.pluginsTitle}>Plugins <span className={stylesPlugin.pluginCount}>({this.state.pluginsFiltered.length})</span></h3>
+          </div>
+          <div className={stylesPlugin.pluginsList}>
+            {this.state.pluginsFiltered.map((plugin, pluginIndex) => (
+              <Link href="/plugins/[slug]" as={`/plugins/${idToSlug(plugin.id || '')}`} key={`${plugin.name}-${pluginIndex}`}>
+                <div className={stylesPlugin.plugin}>
+                  <div className={stylesPlugin.pluginDetails}>
+                    <div className={stylesPlugin.pluginHead}>
+                      <h4 className={stylesPlugin.pluginTitle}>{plugin.name} <span className={stylesPlugin.pluginVersion}>v{plugin.version}</span></h4>
+                      {plugin.status === 'installed' ?
+                        <span className={stylesPlugin.pluginButtonInstalled}><img className={stylesPlugin.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-installed.svg`} alt="Installed" /></span>
+                        :
+                        <span className={stylesPlugin.pluginButton}><img className={stylesPlugin.pluginButtonIcon} src={`${this.state.router.basePath}/images/icon-download.svg`} alt="Download" /></span>
+                      }
+                    </div>
+                    <ul className={stylesPlugin.pluginTags}>
+                      <img className={stylesPlugin.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
+                      {plugin.tags.map((tag, tagIndex) => (
+                        <li className={stylesPlugin.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
+                      ))}
+                    </ul>
+                  </div>
+                  { plugin.files.image ?
+                    <img className={stylesPlugin.pluginImage} src={`https://github.com/${pathGetRepo(plugin.id || 'id')}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} />
+                    : ""
+                  }
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </article>
@@ -209,10 +240,19 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
-  console.log(params.slug)
+  const projectId = slugToId(params.slug)
+  const project = await projectGet(projectId)
+  const promises = Object.keys(project.plugins).map((pluginId) => {
+    return pluginGet(pluginId)
+  })
+  const pluginList = await Promise.all(promises)
+  const pluginsFiltered = pluginList.map((plugin: PluginEntry) => {
+    return pluginLatest(plugin)
+  })
   return {
     props: {
-      project: { files: {} } as Project
+      project,
+      pluginsFiltered
     }
   }
 }
