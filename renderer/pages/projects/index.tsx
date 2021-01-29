@@ -5,9 +5,10 @@ import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Project, projectsGet } from '@studiorack/core'
+import { PROJECT_TYPES, Project, projectsGet } from '@studiorack/core'
 import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils'
 import { IpcRenderer } from 'electron'
+import slugify from 'slugify';
 
 declare global {
   namespace NodeJS {
@@ -20,14 +21,16 @@ declare global {
 type ProjectListProps = {
   category: string,
   projects: Project[],
+  projectTypes: { [property: string]: string },
   router: Router
 }
 
 class ProjectList extends Component<ProjectListProps, {
   category: string,
-  projects: Project[]
-  projectsFiltered: Project[]
-  router: Router
+  projects: Project[],
+  projectsFiltered: Project[],
+  projectTypes: { [property: string]: string },
+  router: Router,
   query: string,
 }> {
   list: Project[]
@@ -38,6 +41,7 @@ class ProjectList extends Component<ProjectListProps, {
       category: 'all',
       projects: props.projects || [],
       projectsFiltered: props.projects || [],
+      projectTypes: props.projectTypes,
       router: props.router,
       query: ''
     }
@@ -109,12 +113,9 @@ class ProjectList extends Component<ProjectListProps, {
           </div>
           <ul className={styles.pluginsCategory}>
             <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
-            <li><a data-category="ableton" onClick={this.selectCategory} className={this.isSelected('ableton')}>Ableton</a></li>
-            <li><a data-category="cubase" onClick={this.selectCategory} className={this.isSelected('cubase')}>Cubase</a></li>
-            <li><a data-category="fl-studio" onClick={this.selectCategory} className={this.isSelected('fl-studio')}>FL Studio</a></li>
-            <li><a data-category="logic" onClick={this.selectCategory} className={this.isSelected('logic')}>Logic</a></li>
-            <li><a data-category="pro-tools" onClick={this.selectCategory} className={this.isSelected('pro-tools')}>Pro Tools</a></li>
-            <li><a data-category="reaper" onClick={this.selectCategory} className={this.isSelected('reaper')}>Reaper</a></li>
+            {Object.keys(this.state.projectTypes).map((projectExt) => (
+              <li><a key={projectExt} data-category={slugify(this.state.projectTypes[projectExt], { lower: true })} onClick={this.selectCategory} className={this.isSelected(slugify(this.state.projectTypes[projectExt], { lower: true }))}>{this.state.projectTypes[projectExt]}</a></li>
+            ))}
           </ul>
           <div className={styles.pluginsList}>
             {this.state.projectsFiltered.map((project, projectIndex) => (
@@ -153,7 +154,8 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       projects,
-      projectsFiltered: projects
+      projectsFiltered: projects,
+      projectTypes: PROJECT_TYPES
     }
   }
 }
