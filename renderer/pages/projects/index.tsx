@@ -134,7 +134,8 @@ class ProjectList extends Component<ProjectListProps, {
                   </div>
                   { project.files.image ?
                     <img className={styles.pluginImage} src={`media://${this.getFolder(project.path || 'none')}/${project.files.image.name}`} alt={project.name} onError={this.imageError} />
-                    : ""
+                    :
+                    <img className={styles.pluginImage} src={`${this.state.router.basePath}/images/project.png`} alt={project.name} onError={this.imageError} />
                   }
                 </div>
               </Link>
