@@ -151,11 +151,24 @@ export default withRouter(ProjectList)
 
 export const getStaticProps: GetStaticProps = async () => {
   const projects = await projectsGet()
+  const projectTypesFound: { [property: string]: boolean } = {};
+  projects.sort((a: Project, b: Project) => {
+    projectTypesFound[a.type] = true
+    projectTypesFound[b.type] = true
+    return a.date < b.date ? 1 : -1
+  })
+  const projectTypesFiltered: { [property: string]: string } = {};
+  Object.keys(PROJECT_TYPES).forEach((projectExt) => {
+    const projectTypeSlug = slugify(PROJECT_TYPES[projectExt], { lower: true });
+    if (projectTypesFound[projectTypeSlug]) {
+      projectTypesFiltered[projectExt] = PROJECT_TYPES[projectExt];
+    }
+  })
   return {
     props: {
       projects,
       projectsFiltered: projects,
-      projectTypes: PROJECT_TYPES
+      projectTypes: projectTypesFiltered
     }
   }
 }
