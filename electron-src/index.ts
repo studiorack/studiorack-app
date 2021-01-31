@@ -3,7 +3,7 @@ import { join } from 'path';
 import { format } from 'url';
 
 // Packages
-import { BrowserWindow, app, session, ipcMain, IpcMainEvent, protocol } from 'electron';
+import { BrowserWindow, app, dialog, session, ipcMain, IpcMainEvent, protocol } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
@@ -124,4 +124,10 @@ ipcMain.handle('projectGet', async (_event, id: string) => {
 ipcMain.handle('projectOpen', async (_event, path: string) => {
   console.log('projectOpen', path);
   return fileOpen(path);
+});
+
+// Select folder
+ipcMain.handle('folderSelect', async (_event) => {
+  console.log('folderSelect');
+  return dialog.showOpenDialog({ properties: ['openDirectory'] });
 });

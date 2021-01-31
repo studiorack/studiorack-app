@@ -1,0 +1,47 @@
+.settings {
+  padding: 2rem 1.5rem;
+}
+
+.settingsHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.settingsTitle {
+  margin-bottom: 1rem;
+}
+
+.setting {
+  background-color: #111;
+  border-radius: .5rem;
+  cursor: pointer;
+  max-height: 200px;
+  overflow: hidden;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  margin-bottom: 1rem;
+  transition: background-color .25s ease-out;
+}
+
+.settingTitle {
+  margin-bottom: .5rem;
+}
+
+@media (min-width: 48rem) {
+  .setting {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .settingHead {
+    margin-right: 2rem;
+    width: 33.33%;
+  }
+
+  .settingControl {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+}

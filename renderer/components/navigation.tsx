@@ -37,10 +37,9 @@ class Navigation extends Component<{
       <input className={styles.menuBtn} type="checkbox" id="menu-btn" />
       <label className={styles.menuIcn} htmlFor="menu-btn"><span className={styles.menuNavIcn}></span></label>
       <ul className={styles.menu}>
-        <li><Link href={`${this.state.router.basePath}/`}><a className={this.isSelected('/')}>Tools</a></Link></li>
         <li><Link href={`${this.state.router.basePath}/projects`}><a className={this.isSelected('/projects')}>Projects</a></Link></li>
         <li><Link href={`${this.state.router.basePath}/plugins`}><a className={this.isSelected('/plugins')}>Plugins</a></Link></li>
-        <li><Link href={`${this.state.router.basePath}/docs`}><a className={this.isSelected('/docs')}>Docs</a></Link></li>
+        <li><Link href={`${this.state.router.basePath}/settings`}><a className={this.isSelected('/settings')}>Settings</a></Link></li>
       </ul>
     </div>
     )
