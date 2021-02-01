@@ -5,10 +5,11 @@ import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { PROJECT_TYPES, Project, projectsGet } from '@studiorack/core'
+import { PROJECT_TYPES, Project, projectsGet, projectRoot } from '@studiorack/core'
 import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils'
 import { IpcRenderer } from 'electron'
 import slugify from 'slugify';
+import { store } from '../../../electron-src/store';
 
 declare global {
   namespace NodeJS {
@@ -150,6 +151,7 @@ class ProjectList extends Component<ProjectListProps, {
 export default withRouter(ProjectList)
 
 export const getStaticProps: GetStaticProps = async () => {
+  projectRoot(store.get('projectFolder'));
   const projects = await projectsGet()
   const projectTypesFound: { [property: string]: boolean } = {};
   projects.sort((a: Project, b: Project) => {

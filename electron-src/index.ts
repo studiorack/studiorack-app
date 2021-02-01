@@ -8,12 +8,10 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
 // custom code
-import { fileOpen, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet, projectRoot } from '@studiorack/core';
+import { fileOpen, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet } from '@studiorack/core';
+import { store } from './store';
 
 const DEFAULT_PAGE = 'projects';
-
-// Hardcode path to project folder for now
-projectRoot('/Users/kimturley/Library/Mobile Documents/com~apple~CloudDocs/Ableton');
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
@@ -127,7 +125,25 @@ ipcMain.handle('projectOpen', async (_event, path: string) => {
 });
 
 // Select folder
-ipcMain.handle('folderSelect', async (_event) => {
+ipcMain.handle('folderSelect', async (_event, path: string) => {
   console.log('folderSelect');
-  return dialog.showOpenDialog({ properties: ['openDirectory'] });
+  if (!path) return;
+  return dialog.showOpenDialog({
+    defaultPath: path,
+    properties: ['openDirectory']
+  });
+});
+
+// Get user-specific setting
+ipcMain.handle('storeGet', async (_event, key: string) => {
+  console.log('storeGet', key);
+  if (!key) return;
+  return store.get(key);
+});
+
+// Set user-specific setting
+ipcMain.handle('storeSet', async (_event, key: string, val: any) => {
+  console.log('storeSet', key, val);
+  if (!key || !val) return;
+  return store.set(key, val);
 });

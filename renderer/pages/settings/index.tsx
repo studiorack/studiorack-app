@@ -47,30 +47,51 @@ class Settings extends Component<SettingsProps, {
         {
           name: 'Project directory',
           description: 'Path to a folder containing your music project files.',
-          value: '/Users/yourname/Library/Mobile Documents/com~apple~CloudDocs/Ableton'
+          value: ''
         },
         {
           name: 'Plugin directory',
           description: 'Path to a folder used to install your plugins.',
-          value: '/Library/Audio/Plug-ins/VST3'
+          value: ''
         }
       ],
       router: props.router,
       query: '',
       value: ''
     };
+
+    // Prototype, find better way to do this
+    if (global && global.ipcRenderer) {
+      global.ipcRenderer.invoke('storeGet', 'projectFolder').then((response) => {
+        console.log('storeGet 0 response', response)
+        if (!response) return;
+        this.state.settingsFiltered[0].value = response;
+        this.setState({ settingsFiltered: this.state.settingsFiltered })
+        global.ipcRenderer.invoke('storeGet', 'pluginFolder').then((response) => {
+          console.log('storeGet 1 response', response)
+          if (!response) return;
+          this.state.settingsFiltered[1].value = response;
+          this.setState({ settingsFiltered: this.state.settingsFiltered })
+        })
+      })
+    }
   }
 
   open = (settingIndex: number) => {
     if (global && global.ipcRenderer) {
       this.setState({ isDisabled: true })
-      global.ipcRenderer.invoke('folderSelect').then((response) => {
-        console.log('folderSelect response', response.filePaths[0])
+      global.ipcRenderer.invoke('folderSelect', this.state.settingsFiltered[settingIndex].value).then((response) => {
+        console.log('folderSelect response', response)
+        if (!response || !response.filePaths[0]) return this.setState({ isDisabled: false });
         this.state.settingsFiltered[settingIndex].value = response.filePaths[0];
         this.setState({
           isDisabled: false,
           settingsFiltered: this.state.settingsFiltered
         })
+        global.ipcRenderer.invoke('storeSet', 'projectFolder', response.filePaths[0]).then((response) => {
+          if (!response) return;
+          console.log('storeSet projectFolder', response);
+        });
       })
     }
   }
