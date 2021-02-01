@@ -138,7 +138,10 @@ ipcMain.handle('folderSelect', async (_event, path: string) => {
 ipcMain.handle('storeGet', async (_event, key: string) => {
   console.log('storeGet', key);
   if (!key) return;
-  return store.get(key);
+  return {
+    key,
+    value: store.get(key)
+  }
 });
 
 // Set user-specific setting

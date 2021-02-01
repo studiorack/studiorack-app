@@ -5,9 +5,10 @@ import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Plugin, pluginLatest, pluginsGet } from '@studiorack/core'
+import { Plugin, pluginLatest, pluginsGet, pluginRoot } from '@studiorack/core'
 import { idToSlug, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
 import { IpcRenderer } from 'electron'
+import { store } from '../../../electron-src/store';
 
 declare global {
   namespace NodeJS {
@@ -155,6 +156,7 @@ class PluginList extends Component<PluginListProps, {
 export default withRouter(PluginList)
 
 export const getStaticProps: GetStaticProps = async () => {
+  pluginRoot(store.get('pluginFolder'));
   const plugins = await pluginsGet()
   const list:Plugin[] = []
   for (const pluginId in plugins) {

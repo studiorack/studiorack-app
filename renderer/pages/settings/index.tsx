@@ -34,7 +34,7 @@ type SettingsProps = {
 class Settings extends Component<SettingsProps, {
   isDisabled: boolean,
   router: Router,
-  settingsFiltered: Setting[],
+  settingsFiltered: { [property: string]: Setting },
   query: string,
   value: string
 }> {
@@ -43,18 +43,18 @@ class Settings extends Component<SettingsProps, {
     super(props)
     this.state = {
       isDisabled: false,
-      settingsFiltered: [
-        {
+      settingsFiltered: {
+        projectFolder: {
           name: 'Project directory',
           description: 'Path to a folder containing your music project files.',
           value: ''
         },
-        {
+        pluginFolder: {
           name: 'Plugin directory',
           description: 'Path to a folder used to install your plugins.',
           value: ''
         }
-      ],
+      },
       router: props.router,
       query: '',
       value: ''
@@ -62,35 +62,33 @@ class Settings extends Component<SettingsProps, {
 
     // Prototype, find better way to do this
     if (global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('storeGet', 'projectFolder').then((response) => {
-        console.log('storeGet 0 response', response)
-        if (!response) return;
-        this.state.settingsFiltered[0].value = response;
-        this.setState({ settingsFiltered: this.state.settingsFiltered })
-        global.ipcRenderer.invoke('storeGet', 'pluginFolder').then((response) => {
-          console.log('storeGet 1 response', response)
-          if (!response) return;
-          this.state.settingsFiltered[1].value = response;
-          this.setState({ settingsFiltered: this.state.settingsFiltered })
-        })
-      })
+      const promises: Promise<any>[] = [];
+      Object.keys(this.state.settingsFiltered).forEach((settingKey: string)=> {
+        promises.push(global.ipcRenderer.invoke('storeGet', settingKey));
+      });
+      Promise.all(promises).then((responses) => {
+        responses.forEach((response) => {
+          this.state.settingsFiltered[response.key].value = response.value;
+        });
+        this.setState({ settingsFiltered: this.state.settingsFiltered });
+      });
     }
   }
 
-  open = (settingIndex: number) => {
+  open = (settingKey: string) => {
     if (global && global.ipcRenderer) {
       this.setState({ isDisabled: true })
-      global.ipcRenderer.invoke('folderSelect', this.state.settingsFiltered[settingIndex].value).then((response) => {
+      global.ipcRenderer.invoke('folderSelect', this.state.settingsFiltered[settingKey].value).then((response) => {
         console.log('folderSelect response', response)
         if (!response || !response.filePaths[0]) return this.setState({ isDisabled: false });
-        this.state.settingsFiltered[settingIndex].value = response.filePaths[0];
+        this.state.settingsFiltered[settingKey].value = response.filePaths[0];
         this.setState({
           isDisabled: false,
           settingsFiltered: this.state.settingsFiltered
         })
-        global.ipcRenderer.invoke('storeSet', 'projectFolder', response.filePaths[0]).then((response) => {
+        global.ipcRenderer.invoke('storeSet', settingKey, response.filePaths[0]).then((response) => {
           if (!response) return;
-          console.log('storeSet projectFolder', response);
+          console.log('storeSet', settingKey, response);
         });
       })
     }
@@ -107,15 +105,15 @@ class Settings extends Component<SettingsProps, {
             <h3 className={styles.settingsTitle}>Settings</h3>
           </div>
           <div className={styles.settingsList}>
-            {this.state.settingsFiltered.map((setting, settingIndex) => (
-              <div className={styles.setting} key={settingIndex}>
+            {Object.keys(this.state.settingsFiltered).map((settingKey) => (
+              <div className={styles.setting} key={settingKey}>
                 <div className={styles.settingHead}>
-                  <h4 className={styles.settingTitle}>{setting.name}</h4>
-                  <p>{setting.description}</p>
+                  <h4 className={styles.settingTitle}>{this.state.settingsFiltered[settingKey].name}</h4>
+                  <p>{this.state.settingsFiltered[settingKey].description}</p>
                 </div>
                 <div className={styles.settingControl}>
-                  <pre className={styles.settingPath}>{setting.value}</pre>
-                  <button className="button" onClick={() => this.open(settingIndex)} disabled={this.state.isDisabled}>Change</button>
+                  <pre className={styles.settingPath}>{this.state.settingsFiltered[settingKey].value}</pre>
+                  <button className="button" onClick={() => this.open(settingKey)} disabled={this.state.isDisabled}>Change</button>
                 </div>
               </div>
             ))}
