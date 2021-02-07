@@ -36,6 +36,19 @@ class ProjectPage extends Component<ProjectProps, {
     console.log('project', props.project);
   }
 
+  install = () => {
+    console.log('install', this.state.project)
+    if (global && global.ipcRenderer) {
+      this.setState({ isDisabled: true })
+      global.ipcRenderer.invoke('pluginsInstall', this.state.project.plugins).then((pluginsInstalled) => {
+        console.log('pluginsInstall response', pluginsInstalled)
+        this.setState({
+          isDisabled: false
+        })
+      })
+    }
+  }
+
   open = () => {
     console.log('open', this.state.project)
     if (global && global.ipcRenderer) {
@@ -158,7 +171,7 @@ class ProjectPage extends Component<ProjectProps, {
                     ))}
                   </ul>
                 </div>
-                <button className="button" onClick={this.open} disabled={this.state.isDisabled}>Open</button>	
+                <button className="button" onClick={this.open} disabled={this.state.isDisabled}>Open</button>
               </div>
             </div>
           </div>
@@ -189,6 +202,9 @@ class ProjectPage extends Component<ProjectProps, {
         <div className={stylesPlugin.plugins}>
           <div className={stylesPlugin.pluginsHeader}>
             <h3 className={stylesPlugin.pluginsTitle}>Plugins <span className={stylesPlugin.pluginCount}>({this.state.pluginsFiltered.length})</span></h3>
+            <div className={styles.pluginsSearch}>
+              <button className="button" onClick={this.install} disabled={this.state.isDisabled}>Install all</button>	
+            </div>
           </div>
           <div className={stylesPlugin.pluginsList}>
             {this.state.pluginsFiltered.map((plugin, pluginIndex) => (

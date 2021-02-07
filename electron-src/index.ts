@@ -8,7 +8,7 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
 // custom code
-import { fileOpen, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet } from '@studiorack/core';
+import { fileOpen, Plugin, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet } from '@studiorack/core';
 import { store } from './store';
 
 const DEFAULT_PAGE = 'projects';
@@ -95,9 +95,18 @@ ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
 });
 
 // Install plugin into root plugin folder locally
-ipcMain.handle('pluginInstall', async (_event, plugin) => {
+ipcMain.handle('pluginInstall', async (_event, plugin: Plugin) => {
   console.log('pluginInstall', plugin);
-  return pluginInstall(plugin.id, plugin.version, true);
+  return pluginInstall(plugin.id || 'none', plugin.version, true);
+});
+
+// Install plugin into root plugin folder locally
+ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
+  console.log('pluginsInstall', plugins);
+  const promises = Object.keys(plugins).map((pluginId: string) => {
+    return pluginInstall(pluginId, plugins[pluginId], true);
+  })
+  return Promise.all(promises);
 });
 
 // Uninstall plugin from root plugin folder locally
