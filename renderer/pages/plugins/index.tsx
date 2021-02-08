@@ -5,8 +5,8 @@ import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Plugin, pluginLatest, pluginsGet, pluginRoot } from '@studiorack/core'
-import { idToSlug, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
+import { Plugin, pluginLatest, pluginsGet, pluginsGetLocal, pluginRoot } from '@studiorack/core'
+import { idToSlug, pathGetId, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
 import { IpcRenderer } from 'electron'
 import { store } from '../../../electron-src/store';
 
@@ -31,7 +31,6 @@ class PluginList extends Component<PluginListProps, {
   router: Router
   query: string,
 }> {
-  list: Plugin[]
 
   constructor(props: PluginListProps) {
     super(props)
@@ -42,17 +41,18 @@ class PluginList extends Component<PluginListProps, {
       router: props.router,
       query: ''
     }
-    this.list = props.plugins
-    if (global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('pluginsGetLocal').then((plugins) => {
-        this.list = this.list.concat(plugins)
-        console.log(this.list)
-        this.setState({
-          plugins: this.list,
-          pluginsFiltered: this.list
-        })
-      })
-    }
+    // console.log(props.plugins);
+    // this.list = props.plugins
+    // if (global && global.ipcRenderer) {
+    //   global.ipcRenderer.invoke('pluginsGetLocal').then((plugins) => {
+    //     this.list = this.list.concat(plugins)
+    //     console.log('pluginsGetLocal', this.list)
+    //     this.setState({
+    //       plugins: this.list,
+    //       pluginsFiltered: this.list
+    //     })
+    //   })
+    // }
   }
 
   filterPlugins = () => {
@@ -156,17 +156,38 @@ class PluginList extends Component<PluginListProps, {
 export default withRouter(PluginList)
 
 export const getStaticProps: GetStaticProps = async () => {
-  pluginRoot(store.get('pluginFolder'));
-  const plugins = await pluginsGet()
-  const list:Plugin[] = []
-  for (const pluginId in plugins) {
-    const plugin = pluginLatest(plugins[pluginId])
-    plugin.status = 'available'
-    list.push(plugin)
-  }
+  const pluginsInstalled: any = {};
+  let plugins: Plugin[] = [];
+  const rootPath = pluginRoot(store.get('pluginFolder'));
+  const pluginsLocal = await pluginsGetLocal();
+  const pluginsRemote = await pluginsGet();
+  pluginsLocal.forEach((plugin: Plugin) => {
+    const relativePath = (plugin.path || '').replace(rootPath + '/', '');
+    const pluginId = pathGetId(relativePath);
+    const repoId = pathGetRepo(relativePath);
+    const fullId = `${repoId}/${pluginId}`;
+    pluginsInstalled[fullId] = true;
+    if (pluginsRemote[fullId]) {
+      pluginsRemote[fullId].status = 'installed';
+      console.log('✓', fullId, 'updated remote plugin');
+    } else {
+      plugin.status = 'installed';
+      plugins.push(plugin);
+      console.log('✓', fullId);
+    }
+  });
+  Object.keys(pluginsRemote).forEach((pluginId: string) => {
+    const plugin = pluginLatest(pluginsRemote[pluginId]);
+    plugin.status = pluginsInstalled[pluginId] ? 'installed' : 'available';
+    console.log('☓', pluginId);
+    plugins.push(plugin);
+  })
+  plugins = plugins.sort((a: Plugin, b: Plugin) => {
+    return a.date < b.date ? 1 : -1;
+  })
   return {
     props: {
-      plugins: list
+      plugins
     }
   }
 }
