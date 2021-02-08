@@ -6,8 +6,8 @@ import styles from '../../styles/plugin.module.css'
 import stylesPlugin from '../../styles/plugins.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Plugin, PluginEntry, pluginGet, pluginLatest, Project, projectGet } from '@studiorack/core'
-import { idToSlug, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
+import { Plugin, PluginEntry, pluginGet, pluginInstalled, pluginLatest, Project, projectGet } from '@studiorack/core'
+import { idToSlug, pathGetId, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
 
 type ProjectProps = {
   pluginsFiltered: Plugin[],
@@ -43,7 +43,8 @@ class ProjectPage extends Component<ProjectProps, {
       global.ipcRenderer.invoke('pluginsInstall', this.state.project.plugins).then((pluginsInstalled) => {
         console.log('pluginsInstall response', pluginsInstalled)
         this.setState({
-          isDisabled: false
+          isDisabled: false,
+          pluginsFiltered: pluginsInstalled
         })
       })
     }
@@ -203,7 +204,13 @@ class ProjectPage extends Component<ProjectProps, {
           <div className={stylesPlugin.pluginsHeader}>
             <h3 className={stylesPlugin.pluginsTitle}>Plugins <span className={stylesPlugin.pluginCount}>({this.state.pluginsFiltered.length})</span></h3>
             <div className={styles.pluginsSearch}>
-              <button className="button" onClick={this.install} disabled={this.state.isDisabled}>Install all</button>	
+              { this.state.pluginsFiltered.length > 0 ?
+                <button className="button" onClick={this.install} disabled={this.state.isDisabled}>Install all</button>	
+                :
+                <Link href={`${this.state.router.basePath}/plugins`}>
+                  <a className="button">Browse plugins</a>
+                </Link>
+              }
             </div>
           </div>
           <div className={stylesPlugin.pluginsList}>
@@ -262,9 +269,13 @@ export async function getStaticProps({ params }: Params) {
     return pluginGet(pluginId)
   })
   const pluginList = await Promise.all(promises)
-  const pluginsFiltered = pluginList.map((plugin: PluginEntry) => {
-    return pluginLatest(plugin)
+  const pluginsFiltered = pluginList.map((pluginEntry: PluginEntry) => {
+    const plugin = pluginLatest(pluginEntry);
+    plugin.status = pluginInstalled(pathGetRepo(plugin.id || 'id'), pathGetId(plugin.id || 'id'), plugin.version, true) ? 'installed' : 'available';
+    return plugin;
   })
+  console.log(pluginList);
+  console.log(pluginsFiltered);
   return {
     props: {
       project,

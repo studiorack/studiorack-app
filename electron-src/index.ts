@@ -8,7 +8,7 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
 // custom code
-import { fileOpen, Plugin, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGet, projectsGet } from '@studiorack/core';
+import { fileOpen, Plugin, PluginEntry, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginLatest, pluginUninstall, projectGet, projectsGet } from '@studiorack/core';
 import { store } from './store';
 
 const DEFAULT_PAGE = 'projects';
@@ -104,7 +104,11 @@ ipcMain.handle('pluginInstall', async (_event, plugin: Plugin) => {
 ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
   console.log('pluginsInstall', plugins);
   const promises = Object.keys(plugins).map((pluginId: string) => {
-    return pluginInstall(pluginId, plugins[pluginId], true);
+    return pluginInstall(pluginId, plugins[pluginId], true).then((pluginEntry: PluginEntry) => {
+      const plugin = pluginLatest(pluginEntry);
+      plugin.status = 'installed';
+      return plugin;
+    })
   })
   return Promise.all(promises);
 });
