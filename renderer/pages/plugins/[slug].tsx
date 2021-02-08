@@ -4,7 +4,7 @@ import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Plugin, pluginGet, pluginsGet, pluginLatest } from '@studiorack/core'
+import { Plugin, pluginGet, pluginsGet, pluginGetLocal, pluginLatest } from '@studiorack/core'
 import { idToSlug, slugToId, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
 
 type PluginProps = {
@@ -30,12 +30,12 @@ class PluginPage extends Component<PluginProps, {
     console.log('props.plugin', props.plugin, props.router.query.slug);
 
     // If plugin is not found in registry, fallback to auto-generated local metadata
-    if (!props.plugin.name && global && global.ipcRenderer) {
-      global.ipcRenderer.invoke('pluginGetLocal', slugToId(props.router.query.slug as string)).then((plugin) => {
-        console.log('pluginGetLocal', plugin)
-        this.setState({ plugin: plugin })
-      })
-    }
+    // if (!props.plugin.name && global && global.ipcRenderer) {
+    //   global.ipcRenderer.invoke('pluginGetLocal', slugToId(props.router.query.slug as string)).then((plugin) => {
+    //     console.log('pluginGetLocal', plugin)
+    //     this.setState({ plugin: plugin })
+    //   })
+    // }
   }
 
   install = () => {
@@ -249,10 +249,13 @@ type Params = {
 
 export async function getStaticProps({ params }: Params) {
   const pluginId = slugToId(params.slug)
-  const plugin = await pluginGet(pluginId)
-  const version = plugin ? pluginLatest(plugin) : { files: {} } as Plugin
-  version.status = 'available'
-  console.log(version);
+  const pluginRemote = await pluginGet(pluginId)
+  const pluginLocal = await pluginGetLocal(pluginId);
+  const version = pluginRemote ? pluginLatest(pluginRemote) : pluginLocal
+  if (pluginLocal) {
+    version.path = pluginLocal.path;
+    version.status = pluginLocal.status || 'available';
+  }
   return {
     props: {
       plugin: version
