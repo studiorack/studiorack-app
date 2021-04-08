@@ -113,13 +113,13 @@ class ProjectList extends Component<ProjectListProps, {
           </div>
           <ul className={styles.pluginsCategory}>
             <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
-            {Object.keys(this.state.projectTypes).map((projectKey) => (
-              <li><a key={projectKey} data-category={projectKey} onClick={this.selectCategory} className={this.isSelected(projectKey)}>{this.state.projectTypes[projectKey].name}</a></li>
+            {Object.keys(this.state.projectTypes).map((projectKey, projectIndex) => (
+              <li><a key={`${projectKey}-${projectIndex}`} data-category={projectKey} onClick={this.selectCategory} className={this.isSelected(projectKey)}>{this.state.projectTypes[projectKey].name}</a></li>
             ))}
           </ul>
           <div className={styles.pluginsList}>
             {this.state.projectsFiltered.map((project, projectIndex) => (
-              <Link href="/projects/[slug]" as={`/projects/${idToSlug(project.id || '')}`} key={`${project.name}-${projectIndex}`}>
+              <Link href="/projects/[slug]" as={`/projects/${idToSlug(project.id)}`} key={`${project.name}-${projectIndex}`}>
                 <div className={styles.plugin}>
                   <div className={styles.pluginDetails}>
                     <div className={styles.pluginHead}>
@@ -169,7 +169,6 @@ export const getStaticProps: GetStaticProps = async () => {
       projectTypesFiltered[projectKey] = projectTypes[projectKey as keyof ProjectTypes];
     }
   })
-  console.log(projects[0]);
   return {
     props: {
       projects,

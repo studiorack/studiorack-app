@@ -6,8 +6,9 @@ import styles from '../../styles/plugin.module.css'
 import stylesPlugin from '../../styles/plugins.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core'
+import { configGet, configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal, projectsGetLocal } from '@studiorack/core'
 import { idToSlug, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
+import { store } from '../../../electron-src/store';
 
 type ProjectProps = {
   pluginsFiltered: PluginLocal[],
@@ -32,8 +33,15 @@ class ProjectPage extends Component<ProjectProps, {
       project: props.project,
       router: props.router
     }
-    console.log('pluginsFiltered', props.pluginsFiltered);
-    console.log('project', props.project);
+    console.log('project', props.router.query.slug);
+
+    // If project is not found in registry, fallback to auto-generated local metadata
+    if (!props.project.name && global && global.ipcRenderer) {
+      global.ipcRenderer.invoke('projectGetLocal', slugToId(props.router.query.slug as string)).then((project: ProjectLocal) => {
+        console.log('pluginGetLocal', project)
+        this.setState({ project })
+      })
+    }
   }
 
   install = () => {
@@ -250,8 +258,19 @@ class ProjectPage extends Component<ProjectProps, {
 export default withRouter(ProjectPage)
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  configSet('projectFolder', store.get('projectFolder'));
+  const projects: ProjectLocal[] = await projectsGetLocal()
+  const list = projects.map((project: ProjectLocal) => {
+    return {
+      params: {
+        slug: idToSlug(project.id)
+      }
+    }
+  })
+  console.log(1, configGet('projectFolder'));
+  console.log(2, await projectsGetLocal());
   return {
-    paths: [],
+    paths: list,
     fallback: false
   }
 }
@@ -264,6 +283,7 @@ type Params = {
 
 export async function getStaticProps({ params }: Params) {
   const projectId = slugToId(params.slug)
+  console.log(params.slug, projectId);
   const project = await projectGetLocal(projectId)
   const promises = Object.keys(project.plugins).map(async (pluginId) => {
     const pluginLocal: PluginLocal = await pluginGet(pluginId) as PluginLocal;

@@ -116,14 +116,14 @@ ipcMain.handle('pluginUninstall', async (_event, plugin) => {
 });
 
 // Get projects installed locally
-ipcMain.handle('projectsGet', async () => {
-  console.log('projectsGet');
+ipcMain.handle('projectsGetLocal', async () => {
+  console.log('projectsGetLocal');
   return await projectsGetLocal();
 });
 
 // Get projects installer locally by path
-ipcMain.handle('projectGet', async (_event, id: string) => {
-  console.log('projectGet', id);
+ipcMain.handle('projectGetLocal', async (_event, id: string) => {
+  console.log('projectGetLocal', id);
   return await projectGetLocal(id);
 });
 

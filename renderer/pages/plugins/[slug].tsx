@@ -27,7 +27,7 @@ class PluginPage extends Component<PluginProps, {
       plugin: props.plugin,
       router: props.router
     }
-    console.log('props.plugin', props.plugin, props.router.query.slug);
+    console.log('plugin', props.router.query.slug);
 
     // If plugin is not found in registry, fallback to auto-generated local metadata
     // if (!props.plugin.name && global && global.ipcRenderer) {
