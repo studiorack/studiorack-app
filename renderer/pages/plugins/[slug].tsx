@@ -4,19 +4,19 @@ import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Plugin, pluginGet, pluginsGet, pluginGetLocal, pluginLatest } from '@studiorack/core'
+import { pluginGet, pluginsGet, pluginGetLocal, PluginLocal } from '@studiorack/core'
 import { idToSlug, slugToId, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
 
 type PluginProps = {
-  plugin: Plugin,
+  plugin: PluginLocal,
   router: Router
 }
 
 class PluginPage extends Component<PluginProps, {
   isDisabled: boolean,
   isPlaying: boolean,
+  plugin: PluginLocal,
   router: Router,
-  plugin: Plugin
 }> {
 
   constructor(props: PluginProps) {
@@ -249,16 +249,15 @@ type Params = {
 
 export async function getStaticProps({ params }: Params) {
   const pluginId = slugToId(params.slug)
-  const pluginRemote = await pluginGet(pluginId)
+  const plugin: PluginLocal = await pluginGet(pluginId) as PluginLocal
   const pluginLocal = await pluginGetLocal(pluginId);
-  const version = pluginRemote ? pluginLatest(pluginRemote) : pluginLocal
   if (pluginLocal) {
-    version.path = pluginLocal.path;
-    version.status = pluginLocal.status || 'available';
+    plugin.path = pluginLocal.path;
+    plugin.status = pluginLocal.status;
   }
   return {
     props: {
-      plugin: version
+      plugin
     }
   }
 }

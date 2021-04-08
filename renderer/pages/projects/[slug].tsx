@@ -6,20 +6,20 @@ import styles from '../../styles/plugin.module.css'
 import stylesPlugin from '../../styles/plugins.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Plugin, PluginEntry, pluginGet, pluginInstalled, pluginLatest, Project, projectGet } from '@studiorack/core'
-import { idToSlug, pathGetId, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
+import { pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core'
+import { idToSlug, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
 
 type ProjectProps = {
-  pluginsFiltered: Plugin[],
-  project: Project,
+  pluginsFiltered: PluginLocal[],
+  project: ProjectLocal,
   router: Router
 }
 
 class ProjectPage extends Component<ProjectProps, {
   isDisabled: boolean,
   isPlaying: boolean,
-  pluginsFiltered: Plugin[],
-  project: Project,
+  pluginsFiltered: PluginLocal[],
+  project: ProjectLocal,
   router: Router
 }> {
 
@@ -167,7 +167,7 @@ class ProjectPage extends Component<ProjectProps, {
                 <div className={styles.metadata}>
                   <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
                     <ul className={styles.tags}>
-                    { this.state.project.tags && this.state.project.tags.map((tag) => (
+                    { this.state.project.tags && this.state.project.tags.map((tag: string) => (
                       <li className={styles.tag} key={tag}>{tag},</li>
                     ))}
                   </ul>
@@ -228,7 +228,7 @@ class ProjectPage extends Component<ProjectProps, {
                     </div>
                     <ul className={stylesPlugin.pluginTags}>
                       <img className={stylesPlugin.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                      {plugin.tags.map((tag, tagIndex) => (
+                      {plugin.tags.map((tag: string, tagIndex: number) => (
                         <li className={stylesPlugin.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
                       ))}
                     </ul>
@@ -264,17 +264,13 @@ type Params = {
 
 export async function getStaticProps({ params }: Params) {
   const projectId = slugToId(params.slug)
-  const project = await projectGet(projectId)
-  const promises = Object.keys(project.plugins).map((pluginId) => {
-    return pluginGet(pluginId)
+  const project = await projectGetLocal(projectId)
+  const promises = Object.keys(project.plugins).map(async (pluginId) => {
+    const pluginLocal: PluginLocal = await pluginGet(pluginId) as PluginLocal;
+    pluginLocal.status = pluginInstalled(pluginLocal) ? 'installed' : 'available';
+    return pluginLocal;
   })
-  const pluginList = await Promise.all(promises)
-  const pluginsFiltered = pluginList.map((pluginEntry: PluginEntry) => {
-    const plugin = pluginLatest(pluginEntry);
-    plugin.status = pluginInstalled(pathGetRepo(plugin.id || 'id'), pathGetId(plugin.id || 'id'), plugin.version, true) ? 'installed' : 'available';
-    return plugin;
-  })
-  console.log(pluginList);
+  const pluginsFiltered: PluginLocal[] = await Promise.all(promises)
   console.log(pluginsFiltered);
   return {
     props: {

@@ -5,10 +5,9 @@ import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { PROJECT_TYPES, Project, projectsGet, projectRoot } from '@studiorack/core'
+import { configGet, configSet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core'
 import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils'
 import { IpcRenderer } from 'electron'
-import slugify from 'slugify';
 import { store } from '../../../electron-src/store';
 
 declare global {
@@ -21,20 +20,20 @@ declare global {
 
 type ProjectListProps = {
   category: string,
-  projects: Project[],
-  projectTypes: { [property: string]: string },
+  projects: ProjectLocal[],
+  projectTypes: { [property: string]: ProjectType },
   router: Router
 }
 
 class ProjectList extends Component<ProjectListProps, {
   category: string,
-  projects: Project[],
-  projectsFiltered: Project[],
-  projectTypes: { [property: string]: string },
+  projects: ProjectLocal[],
+  projectsFiltered: ProjectLocal[],
+  projectTypes: { [property: string]: ProjectType },
   router: Router,
   query: string,
 }> {
-  list: Project[]
+  list: ProjectLocal[]
 
   constructor(props: ProjectListProps) {
     super(props)
@@ -55,7 +54,7 @@ class ProjectList extends Component<ProjectListProps, {
       if (
           (
             this.state.category === 'all' ||
-            this.state.category === project.type
+            this.state.category === project.type?.ext
           )
           &&
           (
@@ -114,8 +113,8 @@ class ProjectList extends Component<ProjectListProps, {
           </div>
           <ul className={styles.pluginsCategory}>
             <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
-            {Object.keys(this.state.projectTypes).map((projectExt) => (
-              <li><a key={projectExt} data-category={slugify(this.state.projectTypes[projectExt], { lower: true })} onClick={this.selectCategory} className={this.isSelected(slugify(this.state.projectTypes[projectExt], { lower: true }))}>{this.state.projectTypes[projectExt]}</a></li>
+            {Object.keys(this.state.projectTypes).map((projectKey) => (
+              <li><a key={projectKey} data-category={projectKey} onClick={this.selectCategory} className={this.isSelected(projectKey)}>{this.state.projectTypes[projectKey].name}</a></li>
             ))}
           </ul>
           <div className={styles.pluginsList}>
@@ -125,16 +124,19 @@ class ProjectList extends Component<ProjectListProps, {
                   <div className={styles.pluginDetails}>
                     <div className={styles.pluginHead}>
                       <h4 className={styles.pluginTitle}>{project.name} <span className={styles.pluginVersion}>v{project.version}</span></h4>
-                      <span className={styles.projectButton}><img className={styles.projectButtonIcon} src={`${this.state.router.basePath}/icons/icon-${project.type}.png`} alt={project.type} /></span>
+                      { project.type && project.type.ext ?
+                        <span className={styles.projectButton}><img className={styles.projectButtonIcon} src={`${this.state.router.basePath}/icons/icon-${project.type.ext}.png`} alt={project.type.name} /></span>
+                        : ''
+                      }
                     </div>
                     <ul className={styles.pluginTags}>
                       <img className={styles.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                      {project.tags.map((tag, tagIndex) => (
+                      {project.tags.map((tag: string, tagIndex: number) => (
                         <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
                       ))}
                     </ul>
                   </div>
-                  { project.files.image ?
+                  { project.files.image && project.files.image.size ?
                     <img className={styles.pluginImage} src={`media://${this.getFolder(project.path || 'none')}/${project.files.image.name}`} alt={project.name} onError={this.imageError} />
                     :
                     <img className={styles.pluginImage} src={`${this.state.router.basePath}/images/project.png`} alt={project.name} onError={this.imageError} />
@@ -151,21 +153,23 @@ class ProjectList extends Component<ProjectListProps, {
 export default withRouter(ProjectList)
 
 export const getStaticProps: GetStaticProps = async () => {
-  projectRoot(store.get('projectFolder'));
-  const projects = await projectsGet()
+  configSet('projectFolder', store.get('projectFolder'));
+  const projects = await projectsGetLocal()
   const projectTypesFound: { [property: string]: boolean } = {};
-  projects.sort((a: Project, b: Project) => {
-    projectTypesFound[a.type] = true
-    projectTypesFound[b.type] = true
+  projects.sort((a: ProjectLocal, b: ProjectLocal) => {
+    if (a.type?.ext) projectTypesFound[a.type?.ext] = true
+    if (b.type?.ext) projectTypesFound[b.type?.ext] = true
     return a.date < b.date ? 1 : -1
   })
-  const projectTypesFiltered: { [property: string]: string } = {};
-  Object.keys(PROJECT_TYPES).forEach((projectExt) => {
-    const projectTypeSlug = slugify(PROJECT_TYPES[projectExt], { lower: true });
-    if (projectTypesFound[projectTypeSlug]) {
-      projectTypesFiltered[projectExt] = PROJECT_TYPES[projectExt];
+  const projectTypesFiltered: { [property: string]: ProjectType } = {};
+  const projectTypes: ProjectTypes = configGet('projectTypes');
+  Object.keys(projectTypes).forEach((projectKey: string) => {
+    const projectType: ProjectType = projectTypes[projectKey as keyof ProjectTypes];
+    if (projectTypesFound[projectType.ext]) {
+      projectTypesFiltered[projectKey] = projectTypes[projectKey as keyof ProjectTypes];
     }
   })
+  console.log(projects[0]);
   return {
     props: {
       projects,

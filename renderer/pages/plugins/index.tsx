@@ -5,7 +5,7 @@ import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { Plugin, pluginLatest, pluginsGet, pluginsGetLocal, pluginRoot } from '@studiorack/core'
+import { pluginLatest, PluginLocal, pluginsGet, pluginsGetLocal } from '@studiorack/core'
 import { idToSlug, pathGetId, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
 import { IpcRenderer } from 'electron'
 import { store } from '../../../electron-src/store';
@@ -20,14 +20,14 @@ declare global {
 
 type PluginListProps = {
   category: string,
-  plugins: Plugin[],
+  plugins: PluginLocal[],
   router: Router
 }
 
 class PluginList extends Component<PluginListProps, {
   category: string,
-  plugins: Plugin[]
-  pluginsFiltered: Plugin[]
+  plugins: PluginLocal[]
+  pluginsFiltered: PluginLocal[]
   router: Router
   query: string,
 }> {
@@ -157,18 +157,18 @@ export default withRouter(PluginList)
 
 export const getStaticProps: GetStaticProps = async () => {
   const pluginsInstalled: any = {};
-  let plugins: Plugin[] = [];
-  const rootPath = pluginRoot(store.get('pluginFolder'));
+  let plugins: PluginLocal[] = [];
   const pluginsLocal = await pluginsGetLocal();
   const pluginsRemote = await pluginsGet();
-  pluginsLocal.forEach((plugin: Plugin) => {
-    const relativePath = (plugin.path || '').replace(rootPath + '/', '');
+  pluginsLocal.forEach((plugin: PluginLocal) => {
+    const relativePath = (plugin.path || '').replace(store.get('pluginFolder') + '/', '');
     const pluginId = pathGetId(relativePath);
     const repoId = pathGetRepo(relativePath);
     const fullId = `${repoId}/${pluginId}`;
     pluginsInstalled[fullId] = true;
     if (pluginsRemote[fullId]) {
-      pluginsRemote[fullId].status = 'installed';
+      const pluginVersion: PluginLocal = pluginLatest(pluginsRemote[fullId]) as PluginLocal;
+      pluginVersion.status = 'installed';
       console.log('✓', fullId, 'updated remote plugin');
     } else {
       plugin.status = 'installed';
@@ -177,12 +177,12 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   });
   Object.keys(pluginsRemote).forEach((pluginId: string) => {
-    const plugin = pluginLatest(pluginsRemote[pluginId]);
+    const plugin: PluginLocal = pluginLatest(pluginsRemote[pluginId]) as PluginLocal;
     plugin.status = pluginsInstalled[pluginId] ? 'installed' : 'available';
     console.log('☓', pluginId);
     plugins.push(plugin);
   })
-  plugins = plugins.sort((a: Plugin, b: Plugin) => {
+  plugins = plugins.sort((a: PluginLocal, b: PluginLocal) => {
     return a.date < b.date ? 1 : -1;
   })
   return {

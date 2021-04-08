@@ -8,7 +8,7 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
 // custom code
-import { fileOpen, Plugin, PluginEntry, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginLatest, pluginUninstall, projectGet, projectsGet } from '@studiorack/core';
+import { fileOpen, PluginInterface, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGetLocal, projectsGetLocal } from '@studiorack/core';
 import { store } from './store';
 
 const DEFAULT_PAGE = 'projects';
@@ -91,24 +91,20 @@ ipcMain.handle('pluginsGetLocal', async () => {
 // Get plugin installer locally by path
 ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
   console.log('pluginGetLocal', id);
-  return pluginGetLocal(id);
+  return await pluginGetLocal(id);
 });
 
 // Install plugin into root plugin folder locally
-ipcMain.handle('pluginInstall', async (_event, plugin: Plugin) => {
+ipcMain.handle('pluginInstall', async (_event, plugin: PluginInterface) => {
   console.log('pluginInstall', plugin);
-  return pluginInstall(plugin.id || 'none', plugin.version, true);
+  return await pluginInstall(plugin.id || 'none', plugin.version);
 });
 
 // Install plugin into root plugin folder locally
 ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
   console.log('pluginsInstall', plugins);
   const promises = Object.keys(plugins).map((pluginId: string) => {
-    return pluginInstall(pluginId, plugins[pluginId], true).then((pluginEntry: PluginEntry) => {
-      const plugin = pluginLatest(pluginEntry);
-      plugin.status = 'installed';
-      return plugin;
-    })
+    return pluginInstall(pluginId, plugins[pluginId]);
   })
   return Promise.all(promises);
 });
@@ -116,19 +112,19 @@ ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
 // Uninstall plugin from root plugin folder locally
 ipcMain.handle('pluginUninstall', async (_event, plugin) => {
   console.log('pluginUninstall', plugin);
-  return pluginUninstall(plugin.id, plugin.version, true);
+  return await pluginUninstall(plugin.id, plugin.version);
 });
 
 // Get projects installed locally
 ipcMain.handle('projectsGet', async () => {
   console.log('projectsGet');
-  return await projectsGet();
+  return await projectsGetLocal();
 });
 
 // Get projects installer locally by path
 ipcMain.handle('projectGet', async (_event, id: string) => {
   console.log('projectGet', id);
-  return projectGet(id);
+  return await projectGetLocal(id);
 });
 
 // Open project
