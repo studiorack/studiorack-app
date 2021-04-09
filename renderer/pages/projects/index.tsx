@@ -153,6 +153,7 @@ class ProjectList extends Component<ProjectListProps, {
 export default withRouter(ProjectList)
 
 export const getStaticProps: GetStaticProps = async () => {
+  console.log('getStaticProps', store.path);
   configSet('projectFolder', store.get('projectFolder'));
   const projects = await projectsGetLocal()
   const projectTypesFound: { [property: string]: boolean } = {};

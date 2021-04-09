@@ -6,7 +6,7 @@ import styles from '../../styles/plugin.module.css'
 import stylesPlugin from '../../styles/plugins.module.css'
 import { GetStaticPaths } from 'next'
 import { withRouter, Router } from 'next/router'
-import { configGet, configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal, projectsGetLocal } from '@studiorack/core'
+import { configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal, projectsGetLocal } from '@studiorack/core'
 import { idToSlug, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
 import { store } from '../../../electron-src/store';
 
@@ -258,6 +258,7 @@ class ProjectPage extends Component<ProjectProps, {
 export default withRouter(ProjectPage)
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  console.log('getStaticPaths', store.path);
   configSet('projectFolder', store.get('projectFolder'));
   const projects: ProjectLocal[] = await projectsGetLocal()
   const list = projects.map((project: ProjectLocal) => {
@@ -267,8 +268,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
       }
     }
   })
-  console.log(1, configGet('projectFolder'));
-  console.log(2, await projectsGetLocal());
   return {
     paths: list,
     fallback: false
