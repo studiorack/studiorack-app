@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component, SyntheticEvent } from 'react'
 import Layout from '../../components/layout'
 import Link from 'next/link'
 import Head from 'next/head'
@@ -141,6 +141,15 @@ class ProjectPage extends Component<ProjectProps, {
     return path.slice(0, path.lastIndexOf('/'));
   }
 
+  imageError = (event: SyntheticEvent) => {
+    const el = event.target as HTMLImageElement
+    const fallback = `${this.state.router.basePath}/images/plugin.png`
+    if (el.getAttribute('src') !== fallback) {
+      el.setAttribute('src', fallback)
+    }
+    return undefined
+  }
+
   render() {
     return (
     <Layout>
@@ -243,8 +252,9 @@ class ProjectPage extends Component<ProjectProps, {
                     </ul>
                   </div>
                   { plugin.files.image && plugin.files.image.size ?
-                    <img className={stylesPlugin.pluginImage} src={`https://github.com/${pathGetRepo(plugin.id || 'id')}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} />
-                    : ""
+                    <img className={stylesPlugin.pluginImage} src={`https://github.com/${pathGetRepo(plugin.id || 'id')}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
+                    : 
+                    <img className={stylesPlugin.pluginImage} src={`${this.state.router.basePath}/images/plugin.png`} alt={plugin.name} onError={this.imageError} />
                   }
                 </div>
               </Link>

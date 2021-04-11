@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Layout, { siteTitle } from '../../components/layout'
 import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import { withRouter, Router } from 'next/router'
 import { configGet, configSet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core'
 import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils'
@@ -152,7 +152,7 @@ class ProjectList extends Component<ProjectListProps, {
 }
 export default withRouter(ProjectList)
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   configSet('projectFolder', store.get('projectFolder'));
   const projects = await projectsGetLocal()
   const projectTypesFound: { [property: string]: boolean } = {};
