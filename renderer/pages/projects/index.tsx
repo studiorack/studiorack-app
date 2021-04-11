@@ -114,7 +114,7 @@ class ProjectList extends Component<ProjectListProps, {
           <ul className={styles.pluginsCategory}>
             <li><a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>All</a></li>
             {Object.keys(this.state.projectTypes).map((projectKey, projectIndex) => (
-              <li><a key={`${projectKey}-${projectIndex}`} data-category={projectKey} onClick={this.selectCategory} className={this.isSelected(projectKey)}>{this.state.projectTypes[projectKey].name}</a></li>
+              <li><a key={`${projectKey}-${projectIndex}`} data-category={this.state.projectTypes[projectKey].ext} onClick={this.selectCategory} className={this.isSelected(this.state.projectTypes[projectKey].ext)}>{this.state.projectTypes[projectKey].name}</a></li>
             ))}
           </ul>
           <div className={styles.pluginsList}>
@@ -131,8 +131,8 @@ class ProjectList extends Component<ProjectListProps, {
                     </div>
                     <ul className={styles.pluginTags}>
                       <img className={styles.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                      {project.tags.map((tag: string, tagIndex: number) => (
-                        <li className={styles.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
+                      {project.tags.map((tag: string) => (
+                        <li className={styles.pluginTag} key={`${tag}-${projectIndex}`}>{tag},</li>
                       ))}
                     </ul>
                   </div>

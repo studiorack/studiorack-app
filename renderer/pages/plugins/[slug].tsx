@@ -146,16 +146,16 @@ class PluginPage extends Component<PluginProps, {
           <div className={styles.headerInner}>
             <div className={styles.media}>
               <div className={styles.imageContainer}>
-              {this.state.plugin.files.audio ?
+              { this.state.plugin.files.audio && this.state.plugin.files.audio.size ?
                 this.getPlayButton()
                 : ''
               }
-              {this.state.plugin.files.image ?
+              { this.state.plugin.files.image && this.state.plugin.files.image.size ?
                 <img className={styles.image} src={`https://github.com/${pathGetRepo(this.state.plugin.id || '')}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.image.name}`} alt={this.state.plugin.name || ''} />
                 : ''
               }
               </div>
-              {this.state.plugin.files.audio ?
+              { this.state.plugin.files.audio && this.state.plugin.files.audio.size ?
                 <audio src={`https://github.com/${pathGetRepo(this.state.plugin.id || '')}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.audio.name}`} id="audio">Your browser does not support the audio element.</audio>
                 : ''
               }

@@ -152,16 +152,16 @@ class ProjectPage extends Component<ProjectProps, {
           <div className={styles.headerInner}>
             <div className={styles.media}>
               <div className={styles.imageContainer}>
-              {this.state.project.files.audio ?
+              { this.state.project.files.audio && this.state.project.files.audio.size ?
                 this.getPlayButton()
                 : ''
               }
-              {this.state.project.files.image ?
+              { this.state.project.files.image && this.state.project.files.image.size ?
                 <img className={styles.image} src={`media://${this.getFolder(this.state.project.path || 'none')}/${this.state.project.files.image.name}`} alt={this.state.project.name || ''} />
                 : ''
               }
               </div>
-              {this.state.project.files.audio ?
+              { this.state.project.files.audio && this.state.project.files.audio.size ?
                 <audio src={`media://${this.getFolder(this.state.project.path || 'none')}/${this.state.project.files.audio.name}`} id="audio">Your browser does not support the audio element.</audio>
                 : ''
               }
@@ -237,12 +237,12 @@ class ProjectPage extends Component<ProjectProps, {
                     </div>
                     <ul className={stylesPlugin.pluginTags}>
                       <img className={stylesPlugin.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                      {plugin.tags.map((tag: string, tagIndex: number) => (
-                        <li className={stylesPlugin.pluginTag} key={`${tag}-${tagIndex}`}>{tag},</li>
+                      {plugin.tags.map((tag: string) => (
+                        <li className={stylesPlugin.pluginTag} key={`${tag}-${pluginIndex}`}>{tag},</li>
                       ))}
                     </ul>
                   </div>
-                  { plugin.files.image ?
+                  { plugin.files.image && plugin.files.image.size ?
                     <img className={stylesPlugin.pluginImage} src={`https://github.com/${pathGetRepo(plugin.id || 'id')}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} />
                     : ""
                   }
