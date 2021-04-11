@@ -8,7 +8,7 @@
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build && electron .",
     "start": "electron .",
-    "build-renderer": "next build renderer && next export renderer",
+    "build-renderer": "next build renderer",
     "build-electron": "tsc -p electron-src",
     "build": "npm run build-renderer && npm run build-electron",
     "format": "prettier --write \"electron-src/**/*.ts\" \"renderer/pages/**/*.ts\"",

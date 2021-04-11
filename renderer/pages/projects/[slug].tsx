@@ -4,10 +4,11 @@ import Link from 'next/link'
 import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
 import stylesPlugin from '../../styles/plugins.module.css'
-import { GetStaticPaths } from 'next'
+import { GetServerSideProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal, projectsGetLocal } from '@studiorack/core'
+import { configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core'
 import { idToSlug, pathGetRepo, slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
+import { Params } from 'next/dist/next-server/server/router'
 import { store } from '../../../electron-src/store';
 
 type ProjectProps = {
@@ -257,30 +258,8 @@ class ProjectPage extends Component<ProjectProps, {
 }
 export default withRouter(ProjectPage)
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  console.log('getStaticPaths', store.path);
+export const getServerSideProps: GetServerSideProps = async ({ params }: Params) => {
   configSet('projectFolder', store.get('projectFolder'));
-  const projects: ProjectLocal[] = await projectsGetLocal()
-  const list = projects.map((project: ProjectLocal) => {
-    return {
-      params: {
-        slug: idToSlug(project.id)
-      }
-    }
-  })
-  return {
-    paths: list,
-    fallback: false
-  }
-}
-
-type Params = {
-  params: {
-    slug: string
-  }
-}
-
-export async function getStaticProps({ params }: Params) {
   const projectId = slugToId(params.slug)
   console.log(params.slug, projectId);
   const project = await projectGetLocal(projectId)
