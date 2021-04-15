@@ -171,8 +171,8 @@ class PluginPage extends Component<PluginProps, {
                 <div className={styles.metadata}>
                   <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
                     <ul className={styles.tags}>
-                    { this.state.plugin.tags && this.state.plugin.tags.map((tag) => (
-                      <li className={styles.tag} key={tag}>{tag},</li>
+                    { this.state.plugin.tags && this.state.plugin.tags.map((tag: string, tagIndex: number) => (
+                      <li className={styles.tag} key={`${tag}-${tagIndex}`}>{tag},</li>
                     ))}
                   </ul>
                 </div>

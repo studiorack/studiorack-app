@@ -105,8 +105,8 @@ class Settings extends Component<SettingsProps, {
             <h3 className={styles.settingsTitle}>Settings</h3>
           </div>
           <div className={styles.settingsList}>
-            {Object.keys(this.state.settingsFiltered).map((settingKey) => (
-              <div className={styles.setting} key={settingKey}>
+            {Object.keys(this.state.settingsFiltered).map((settingKey: string, settingIndex: number) => (
+              <div className={styles.setting} key={`${settingKey}-${settingIndex}`}>
                 <div className={styles.settingHead}>
                   <h4 className={styles.settingTitle}>{this.state.settingsFiltered[settingKey].name}</h4>
                   <p>{this.state.settingsFiltered[settingKey].description}</p>

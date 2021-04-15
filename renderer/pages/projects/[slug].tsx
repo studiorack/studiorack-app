@@ -185,8 +185,8 @@ class ProjectPage extends Component<ProjectProps, {
                 <div className={styles.metadata}>
                   <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
                     <ul className={styles.tags}>
-                    { this.state.project.tags && this.state.project.tags.map((tag: string) => (
-                      <li className={styles.tag} key={tag}>{tag},</li>
+                    { this.state.project.tags && this.state.project.tags.map((tag: string, tagIndex: number) => (
+                      <li className={styles.tag} key={`${tag}-${tagIndex}`}>{tag},</li>
                     ))}
                   </ul>
                 </div>
@@ -246,8 +246,8 @@ class ProjectPage extends Component<ProjectProps, {
                     </div>
                     <ul className={stylesPlugin.pluginTags}>
                       <img className={stylesPlugin.pluginIcon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
-                      {plugin.tags.map((tag: string) => (
-                        <li className={stylesPlugin.pluginTag} key={`${tag}-${pluginIndex}`}>{tag},</li>
+                      {plugin.tags.map((tag: string, tagIndex: number) => (
+                        <li className={stylesPlugin.pluginTag} key={`${tag}-${tagIndex}-${pluginIndex}`}>{tag},</li>
                       ))}
                     </ul>
                   </div>
