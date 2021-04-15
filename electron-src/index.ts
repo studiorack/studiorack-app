@@ -32,7 +32,10 @@ app.on('ready', async () => {
     callback(pathname);
   });
 
-  app.dock.setIcon(join(__dirname, '../renderer/out/icons/icon.png'));
+  // Dock is only available on MacOS
+  if (app.dock) {
+    app.dock.setIcon(join(__dirname, '../renderer/out/icons/icon.png'));
+  }
 
   // enable more secure http header
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
