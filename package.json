@@ -11,7 +11,7 @@
     "build-renderer": "next build renderer",
     "build-electron": "tsc -p electron-src",
     "build": "npm run build-renderer && npm run build-electron",
-    "format": "prettier --write \"electron-src/**/*.ts\" \"renderer/pages/**/*.ts\"",
+    "format": "prettier --write \"electron-src/**/*.{ts,tsx}\" \"renderer/pages/**/*.{ts,tsx}\"",
     "lint": "tslint -p electron-src/tsconfig.json",
     "pack-app": "npm run build && electron-builder --dir",
     "test": "echo 'No tests were run'",

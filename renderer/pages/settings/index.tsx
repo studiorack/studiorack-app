@@ -1,15 +1,15 @@
-import { Component } from 'react'
-import Head from 'next/head'
-import Layout, { siteTitle } from '../../components/layout'
-import styles from '../../styles/settings.module.css'
-import { GetStaticProps } from 'next'
-import { withRouter, Router } from 'next/router'
-import { IpcRenderer } from 'electron'
+import { Component } from 'react';
+import Head from 'next/head';
+import Layout, { siteTitle } from '../../components/layout';
+import styles from '../../styles/settings.module.css';
+import { GetStaticProps } from 'next';
+import { withRouter, Router } from 'next/router';
+import { IpcRenderer } from 'electron';
 
 declare global {
   namespace NodeJS {
     interface Global {
-      ipcRenderer: IpcRenderer
+      ipcRenderer: IpcRenderer;
     }
   }
 }
@@ -25,45 +25,47 @@ type Setting = {
   name: string;
   description: string;
   value: string;
-}
+};
 
 type SettingsProps = {
-  router: Router
-}
+  router: Router;
+};
 
-class Settings extends Component<SettingsProps, {
-  isDisabled: boolean,
-  router: Router,
-  settingsFiltered: { [property: string]: Setting },
-  query: string,
-  value: string
-}> {
-
+class Settings extends Component<
+  SettingsProps,
+  {
+    isDisabled: boolean;
+    router: Router;
+    settingsFiltered: { [property: string]: Setting };
+    query: string;
+    value: string;
+  }
+> {
   constructor(props: SettingsProps) {
-    super(props)
+    super(props);
     this.state = {
       isDisabled: false,
       settingsFiltered: {
         projectFolder: {
           name: 'Project directory',
           description: 'Path to a folder containing your music project files.',
-          value: ''
+          value: '',
         },
         pluginFolder: {
           name: 'Plugin directory',
           description: 'Path to a folder used to install your plugins.',
-          value: ''
-        }
+          value: '',
+        },
       },
       router: props.router,
       query: '',
-      value: ''
+      value: '',
     };
 
     // Prototype, find better way to do this
     if (global && global.ipcRenderer) {
       const promises: Promise<any>[] = [];
-      Object.keys(this.state.settingsFiltered).forEach((settingKey: string)=> {
+      Object.keys(this.state.settingsFiltered).forEach((settingKey: string) => {
         promises.push(global.ipcRenderer.invoke('storeGet', settingKey));
       });
       Promise.all(promises).then((responses) => {
@@ -77,22 +79,22 @@ class Settings extends Component<SettingsProps, {
 
   open = (settingKey: string) => {
     if (global && global.ipcRenderer) {
-      this.setState({ isDisabled: true })
+      this.setState({ isDisabled: true });
       global.ipcRenderer.invoke('folderSelect', this.state.settingsFiltered[settingKey].value).then((response) => {
-        console.log('folderSelect response', response)
+        console.log('folderSelect response', response);
         if (!response || !response.filePaths[0]) return this.setState({ isDisabled: false });
         this.state.settingsFiltered[settingKey].value = response.filePaths[0];
         this.setState({
           isDisabled: false,
-          settingsFiltered: this.state.settingsFiltered
-        })
+          settingsFiltered: this.state.settingsFiltered,
+        });
         global.ipcRenderer.invoke('storeSet', settingKey, response.filePaths[0]).then((response) => {
           if (!response) return;
           console.log('storeSet', settingKey, response);
         });
-      })
+      });
     }
-  }
+  };
 
   render() {
     return (
@@ -113,21 +115,22 @@ class Settings extends Component<SettingsProps, {
                 </div>
                 <div className={styles.settingControl}>
                   <pre className={styles.settingPath}>{this.state.settingsFiltered[settingKey].value}</pre>
-                  <button className="button" onClick={() => this.open(settingKey)} disabled={this.state.isDisabled}>Change</button>
+                  <button className="button" onClick={() => this.open(settingKey)} disabled={this.state.isDisabled}>
+                    Change
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </section>
       </Layout>
-    )
+    );
   }
 }
-export default withRouter(Settings)
+export default withRouter(Settings);
 
 export const getStaticProps: GetStaticProps = async () => {
   return {
-    props: {
-    }
-  }
-}
+    props: {},
+  };
+};
