@@ -8,7 +8,16 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 
 // custom code
-import { fileOpen, PluginInterface, pluginGetLocal, pluginInstall, pluginsGetLocal, pluginUninstall, projectGetLocal, projectsGetLocal } from '@studiorack/core';
+import {
+  fileOpen,
+  PluginInterface,
+  pluginGetLocal,
+  pluginInstall,
+  pluginsGetLocal,
+  pluginUninstall,
+  projectGetLocal,
+  projectsGetLocal,
+} from '@studiorack/core';
 import { store } from './store';
 
 const DEFAULT_PAGE = 'projects';
@@ -54,7 +63,7 @@ app.on('ready', async () => {
       nodeIntegration: false,
       preload: join(__dirname, 'preload.js'),
       worldSafeExecuteJavaScript: true,
-      webSecurity: false
+      webSecurity: false,
     },
   });
 
@@ -106,7 +115,7 @@ ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
   const promises = Object.keys(plugins).map((pluginId: string) => {
     const plugin = plugins[pluginId];
     return pluginInstall(`${plugin.repo}/${plugin.id}`, plugin.version);
-  })
+  });
   return Promise.all(promises);
 });
 
@@ -140,7 +149,7 @@ ipcMain.handle('folderSelect', async (_event, path: string) => {
   if (!path) return;
   return dialog.showOpenDialog({
     defaultPath: path,
-    properties: ['openDirectory']
+    properties: ['openDirectory'],
   });
 });
 
@@ -150,8 +159,8 @@ ipcMain.handle('storeGet', async (_event, key: string) => {
   if (!key) return;
   return {
     key,
-    value: store.get(key)
-  }
+    value: store.get(key),
+  };
 });
 
 // Set user-specific setting
