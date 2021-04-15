@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Layout, { siteTitle } from '../../components/layout'
 import styles from '../../styles/plugins.module.css'
 import Link from 'next/link'
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import { withRouter, Router } from 'next/router'
 import { pluginLatest, PluginLocal, pluginsGet, pluginsGetLocal } from '@studiorack/core'
 import { idToSlug, pathGetId, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
@@ -121,7 +121,7 @@ class PluginList extends Component<PluginListProps, {
           </ul>
           <div className={styles.pluginsList}>
             {this.state.pluginsFiltered.map((plugin, pluginIndex) => (
-              <Link href="/plugins/[slug]" as={`/plugins/${idToSlug(plugin.id || '')}`} key={`${plugin.name}-${pluginIndex}`}>
+              <Link href="/plugins/[slug]" as={`/plugins/${idToSlug(plugin.repo + '/' + plugin.id)}`} key={`${idToSlug(plugin.repo + '/' + plugin.id)}-${pluginIndex}`}>
                 <div className={styles.plugin}>
                   <div className={styles.pluginDetails}>
                     <div className={styles.pluginHead}>
@@ -140,7 +140,7 @@ class PluginList extends Component<PluginListProps, {
                     </ul>
                   </div>
                   { plugin.files.image && plugin.files.image.size ?
-                    <img className={styles.pluginImage} src={`https://github.com/${pathGetRepo(plugin.id || 'id')}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
+                    <img className={styles.pluginImage} src={`https://github.com/${plugin.repo}/releases/download/${plugin.release}/${plugin.files.image.name}`} alt={plugin.name} onError={this.imageError} />
                     : 
                     <img className={styles.pluginImage} src={`${this.state.router.basePath}/images/plugin.png`} alt={plugin.name} onError={this.imageError} />
                   }
@@ -155,7 +155,7 @@ class PluginList extends Component<PluginListProps, {
 }
 export default withRouter(PluginList)
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const pluginsInstalled: any = {};
   let plugins: PluginLocal[] = [];
   const pluginsLocal = await pluginsGetLocal();

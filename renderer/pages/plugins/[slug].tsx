@@ -2,10 +2,11 @@ import { Component } from 'react'
 import Layout from '../../components/layout'
 import Head from 'next/head'
 import styles from '../../styles/plugin.module.css'
-import { GetStaticPaths } from 'next'
+import { GetServerSideProps } from 'next'
 import { withRouter, Router } from 'next/router'
-import { pluginGet, pluginsGet, pluginGetLocal, PluginLocal } from '@studiorack/core'
-import { idToSlug, slugToId, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils'
+import { pluginGet, pluginGetLocal, PluginLocal } from '@studiorack/core'
+import { slugToId } from '../../../node_modules/@studiorack/core/dist/utils'
+import { Params } from 'next/dist/next-server/server/router'
 
 type PluginProps = {
   plugin: PluginLocal,
@@ -151,12 +152,12 @@ class PluginPage extends Component<PluginProps, {
                 : ''
               }
               { this.state.plugin.files.image && this.state.plugin.files.image.size ?
-                <img className={styles.image} src={`https://github.com/${pathGetRepo(this.state.plugin.id || '')}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.image.name}`} alt={this.state.plugin.name || ''} />
+                <img className={styles.image} src={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.image.name}`} alt={this.state.plugin.name || ''} />
                 : ''
               }
               </div>
               { this.state.plugin.files.audio && this.state.plugin.files.audio.size ?
-                <audio src={`https://github.com/${pathGetRepo(this.state.plugin.id || '')}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.audio.name}`} id="audio">Your browser does not support the audio element.</audio>
+                <audio src={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.audio.name}`} id="audio">Your browser does not support the audio element.</audio>
                 : ''
               }
             </div>
@@ -190,15 +191,15 @@ class PluginPage extends Component<PluginProps, {
               <div className={`${styles.cell} ${styles.download}`}>
                 <p>Download and install manually:</p>
                 { this.state.plugin.files.linux ? 
-                  <a className={`button ${styles.button}`} href={`https://github.com/${pathGetRepo(this.state.plugin.id || '')}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.linux.name}`}>Linux</a>
+                  <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.linux.name}`}>Linux</a>
                   : ''
                 }
                 { this.state.plugin.files.mac ?
-                  <a className={`button ${styles.button}`} href={`https://github.com/${pathGetRepo(this.state.plugin.id || '')}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.mac.name}`}>MacOS</a>
+                  <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.mac.name}`}>MacOS</a>
                   : ''
                 }
                 { this.state.plugin.files.win ?
-                  <a className={`button ${styles.button}`} href={`https://github.com/${pathGetRepo(this.state.plugin.id || '')}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.win.name}`}>Windows</a>
+                  <a className={`button ${styles.button}`} href={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.win.name}`}>Windows</a>
                   : ''
                 }
               </div>
@@ -225,35 +226,17 @@ class PluginPage extends Component<PluginProps, {
 }
 export default withRouter(PluginPage)
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await pluginsGet()
-  const list = []
-  for (const pluginId in paths) {
-    list.push({
-      params: {
-        slug: idToSlug(pluginId)
-      }
-    })
-  }
-  return {
-    paths: list,
-    fallback: false
-  }
-}
-
-type Params = {
-  params: {
-    slug: string
-  }
-}
-
-export async function getStaticProps({ params }: Params) {
+export const getServerSideProps: GetServerSideProps = async ({ params }: Params) => {
   const pluginId = slugToId(params.slug)
-  const plugin: PluginLocal = await pluginGet(pluginId) as PluginLocal
-  const pluginLocal = await pluginGetLocal(pluginId);
-  if (pluginLocal) {
-    plugin.path = pluginLocal.path;
-    plugin.status = pluginLocal.status;
+  let plugin: PluginLocal;
+  try {
+    // If exists, use live plugin registry metadata
+    console.log('pluginGet', pluginId, await pluginGet(pluginId));
+    plugin = await pluginGet(pluginId) as PluginLocal;
+  } catch(error) {
+    // Otherwise fallback to local plugin metadata
+    console.log('pluginGetLocal', pluginId, await pluginGetLocal(pluginId));
+    plugin = await pluginGetLocal(pluginId);
   }
   return {
     props: {

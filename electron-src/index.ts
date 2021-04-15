@@ -97,14 +97,15 @@ ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
 // Install plugin into root plugin folder locally
 ipcMain.handle('pluginInstall', async (_event, plugin: PluginInterface) => {
   console.log('pluginInstall', plugin);
-  return await pluginInstall(plugin.id || 'none', plugin.version);
+  return await pluginInstall(`${plugin.repo}/${plugin.id}`, plugin.version);
 });
 
 // Install plugin into root plugin folder locally
 ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
   console.log('pluginsInstall', plugins);
   const promises = Object.keys(plugins).map((pluginId: string) => {
-    return pluginInstall(pluginId, plugins[pluginId]);
+    const plugin = plugins[pluginId];
+    return pluginInstall(`${plugin.repo}/${plugin.id}`, plugin.version);
   })
   return Promise.all(promises);
 });
@@ -112,7 +113,7 @@ ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
 // Uninstall plugin from root plugin folder locally
 ipcMain.handle('pluginUninstall', async (_event, plugin) => {
   console.log('pluginUninstall', plugin);
-  return await pluginUninstall(plugin.id, plugin.version);
+  return await pluginUninstall(`${plugin.repo}/${plugin.id}`, plugin.version);
 });
 
 // Get projects installed locally
