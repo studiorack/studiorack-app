@@ -229,15 +229,24 @@ export default withRouter(PluginPage)
 export const getServerSideProps: GetServerSideProps = async ({ params }: Params) => {
   const pluginId = slugToId(params.slug)
   let plugin: PluginLocal;
+
   try {
-    // If exists, use live plugin registry metadata
+    // Check if live plugin registry metadata exists
     console.log('pluginGet', pluginId, await pluginGet(pluginId));
     plugin = await pluginGet(pluginId) as PluginLocal;
+
+    try {
+      // If local plugin exists, use the path and status
+      const pluginLocal = await pluginGetLocal(pluginId);
+      plugin.path = pluginLocal.path;
+      plugin.status = pluginLocal.status;
+    } catch(error) {}
   } catch(error) {
     // Otherwise fallback to local plugin metadata
     console.log('pluginGetLocal', pluginId, await pluginGetLocal(pluginId));
     plugin = await pluginGetLocal(pluginId);
   }
+
   return {
     props: {
       plugin
