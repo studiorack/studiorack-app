@@ -4,14 +4,14 @@ title: 'Add & remove plugins'
 
 Search the plugin registry using:
 
-    studiorack search delay
+    studiorack plugin search delay
 
 Add a plugin and update project.json config using:
 
-    studiorack install studiorack/studiorack-plugin-steinberg/adelay --global
+    studiorack project install <project-id> <plugin-id>
 
 Remove a plugin and update project.json config using:
  
-    studiorack uninstall studiorack/studiorack-plugin-steinberg/adelay --global
+    studiorack plugin uninstall <project-id> <plugin-id>
 
 [Launch project config &gt;](/docs/04-launch-project-config)

@@ -13,7 +13,7 @@ We have plugin templates which automate plugin builds
 
 You can fork the repos on GitHub or use our command line tool. Create a new plugin using a starter template (dplug, iplug, juce, steinberg):
 
-    studiorack create myplugin --type steinberg
+    studiorack plugin create myplugin --type steinberg
 
 This creates a new plugin using the starter template with the following structure:
 

@@ -2,41 +2,45 @@
 title: 'Create a project config'
 ---
 
-If music project folder does not contain a project.json, you can create a new one using:
+You can create a new studiorack project .json file using:
 
-    studiorack init
+    studiorack project create <project-id>
 
-This will create a project.json with your configuration:
+This will create a studiorack .json file with your configuration:
 
     {
-      "author": "yourname",
-      "homepage": "https://yoursite.com",
-      "name": "My Song",
-      "description": "Chillout tune",
+      "id": "example",
+      "author": "studiorack-user",
+      "homepage": "https://studiorack.github.io/studiorack-site/",
+      "name": "StudioRack Project",
+      "description": "Created using StudioRack",
+      "repo": "songs/april",
       "tags": [
-        "ableton"
+        "StudioRack"
       ],
       "version": "1.0.0",
-      "date": "2021-01-29T01:09:28.701Z",
-      "type": "ableton",
+      "date": "2021-05-30T21:58:39.138Z",
+      "type": {
+        "name": "Ableton",
+        "ext": "als"
+      },
       "files": {
-        "project": {
-          "name": "My Song.als",
-          "size": 253018
-        },
         "audio": {
-          "name": "My Song.wav",
+          "name": "example.wav",
           "size": 1902788
         },
         "image": {
-          "name": "My Song.png",
+          "name": "example.png",
           "size": 16360
+        },
+        "project": {
+          "name": "example.als",
+          "size": 253018
         }
       },
       "plugins": {},
-      "id": "yourname/my-song",
-      "path": "/Users/yourname/Ableton/My Song.als",
-      "slug": "yourname_my-song"
+      "path": "songs/april",
+      "status": "installed"
     }
 
 [Add &amp; remove plugins &gt;](/docs/03-add-remove-plugins)

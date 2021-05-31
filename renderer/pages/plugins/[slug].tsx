@@ -268,7 +268,7 @@ class PluginPage extends Component<
                 </div>
                 <div className={`${styles.cell} ${styles.install}`}>
                   <p>Install via command line:</p>
-                  <pre className={styles.codeBox}>studiorack install {this.state.plugin.id}</pre>
+                  <pre className={styles.codeBox}>studiorack plugin install {this.state.plugin.id}</pre>
                 </div>
               </div>
             </div>

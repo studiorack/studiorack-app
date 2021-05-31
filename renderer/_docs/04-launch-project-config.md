@@ -2,12 +2,17 @@
 title: 'Launch project config'
 ---
 
-Navigate to a music project folder containing a project.json config, install all plugins using:
+List the projects found in projectFolder using:
 
-    studiorack install --global
+    studiorack project listLocal
 
-Then start the project using
+Install a project's plugins using:
 
-    studiorack start
+    studiorack project install <project-id>
+
+Then open the project using:
+
+    studiorack project open <project-id>
+
 
 [Read the API Reference &gt;](/docs/06-command-line)
