@@ -64,7 +64,7 @@ class PluginList extends Component<
         (this.state.category === 'all' || this.state.category === plugin.status) &&
         (plugin.name.toLowerCase().indexOf(this.state.query) !== -1 ||
           plugin.description.toLowerCase().indexOf(this.state.query) !== -1 ||
-          plugin.tags.includes(this.state.query))
+          plugin.tags.filter(tag => tag.toLowerCase().indexOf(this.state.query) !== -1).length)
       ) {
         return plugin;
       }
