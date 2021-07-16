@@ -47,6 +47,10 @@
   margin-bottom: .5rem;
 }
 
+.metadata a {
+  border-bottom: none;
+}
+
 .tags {
   display: flex;
   list-style: none;

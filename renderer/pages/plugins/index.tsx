@@ -60,11 +60,12 @@ class PluginList extends Component<
   filterPlugins = () => {
     console.log('filterPlugins', this.state);
     return this.state.plugins.filter((plugin) => {
+      if (!plugin.name) return false;
       if (
         (this.state.category === 'all' || this.state.category === plugin.status) &&
         (plugin.name.toLowerCase().indexOf(this.state.query) !== -1 ||
           plugin.description.toLowerCase().indexOf(this.state.query) !== -1 ||
-          plugin.tags.filter(tag => tag.toLowerCase().indexOf(this.state.query) !== -1).length)
+          plugin.tags.filter((tag) => tag.toLowerCase().indexOf(this.state.query) !== -1).length)
       ) {
         return plugin;
       }
@@ -172,11 +173,12 @@ class PluginList extends Component<
                         src={`${this.state.router.basePath}/images/icon-tag.svg`}
                         alt="Tags"
                       />
-                      {plugin.tags.map((tag: string, tagIndex: number) => (
-                        <li className={styles.pluginTag} key={`${tag}-${tagIndex}-${pluginIndex}`}>
-                          {tag},
-                        </li>
-                      ))}
+                      {plugin.tags &&
+                        plugin.tags.map((tag: string, tagIndex: number) => (
+                          <li className={styles.pluginTag} key={`${tag}-${tagIndex}-${pluginIndex}`}>
+                            {tag},
+                          </li>
+                        ))}
                     </ul>
                   </div>
                   {plugin.files.image && plugin.files.image.size ? (

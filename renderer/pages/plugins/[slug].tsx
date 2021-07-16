@@ -207,6 +207,20 @@ class PluginPage extends Component<
                     {this.timeSince(this.state.plugin.date)} ago
                   </div>
                   <div className={styles.metadata}>
+                    <img
+                      className={styles.icon}
+                      src={`${this.state.router.basePath}/images/icon-license.svg`}
+                      alt="License"
+                    />{' '}
+                    {this.state.plugin.license ? (
+                      <a href={this.state.plugin.license.url} target="_blank">
+                        {this.state.plugin.license.name}
+                      </a>
+                    ) : (
+                      'none'
+                    )}
+                  </div>
+                  <div className={styles.metadata}>
                     <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
                     <ul className={styles.tags}>
                       {this.state.plugin.tags &&
@@ -268,7 +282,9 @@ class PluginPage extends Component<
                 </div>
                 <div className={`${styles.cell} ${styles.install}`}>
                   <p>Install via command line:</p>
-                  <pre className={styles.codeBox}>studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}</pre>
+                  <pre className={styles.codeBox}>
+                    studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}
+                  </pre>
                 </div>
               </div>
             </div>
