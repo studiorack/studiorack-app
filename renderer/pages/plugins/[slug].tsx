@@ -232,8 +232,8 @@ class PluginPage extends Component<
                     </ul>
                   </div>
                   {this.state.plugin.status !== 'installed' ? (
-                    <button className="button" onClick={this.install} disabled={this.state.isDisabled}>
-                      Install
+                    <button className={styles.button} onClick={this.install} disabled={this.state.isDisabled}>
+                      Install<span className={styles.progress}>ing...</span>
                     </button>
                   ) : (
                     <button className="button button-clear" onClick={this.uninstall} disabled={this.state.isDisabled}>

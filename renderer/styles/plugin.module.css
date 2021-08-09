@@ -82,6 +82,14 @@
   margin-right: .5rem;
 }
 
+.button .progress {
+  display: none;
+}
+
+.button:disabled .progress {
+  display: inline;
+}
+
 .codeBox {
   background-color: #111;
   border-radius: .25rem;
