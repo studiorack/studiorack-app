@@ -5,10 +5,9 @@ import styles from '../../styles/plugins.module.css';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
-import { pluginLatest, PluginLocal, pluginsGet, pluginsGetLocal } from '@studiorack/core';
-import { idToSlug, pathGetId, pathGetRepo } from '../../../node_modules/@studiorack/core/dist/utils';
+import { pluginInstalled, pluginLatest, PluginLocal, pluginsGet, pluginsGetLocal } from '@studiorack/core';
+import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils';
 import { IpcRenderer } from 'electron';
-import { store } from '../../../electron-src/store';
 
 declare global {
   namespace NodeJS {
@@ -208,31 +207,18 @@ class PluginList extends Component<
 export default withRouter(PluginList);
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const pluginsInstalled: any = {};
-  let plugins: PluginLocal[] = [];
-  const pluginsLocal = await pluginsGetLocal();
+  let plugins: PluginLocal[] = await pluginsGetLocal();
+  console.log(plugins);
   const pluginsRemote = await pluginsGet();
-  pluginsLocal.forEach((plugin: PluginLocal) => {
-    const relativePath = (plugin.path || '').replace(store.get('pluginFolder') + '/', '');
-    const pluginId = pathGetId(relativePath);
-    const repoId = pathGetRepo(relativePath);
-    const fullId = `${repoId}/${pluginId}`;
-    pluginsInstalled[fullId] = true;
-    if (pluginsRemote[fullId]) {
-      const pluginVersion: PluginLocal = pluginLatest(pluginsRemote[fullId]) as PluginLocal;
-      pluginVersion.status = 'installed';
-      console.log('✓', fullId, 'updated remote plugin');
-    } else {
-      plugin.status = 'installed';
+  Object.keys(pluginsRemote).map((pluginKey: string) => {
+    const plugin: PluginLocal = pluginLatest(pluginsRemote[pluginKey]) as PluginLocal;
+    if (!pluginInstalled(plugin)) {
+      console.log('☓', `${plugin.repo}/${plugin.id}`);
+      plugin.status = 'available';
       plugins.push(plugin);
-      console.log('✓', fullId);
+    } else {
+      console.log('✓', `${plugin.repo}/${plugin.id}`);
     }
-  });
-  Object.keys(pluginsRemote).forEach((pluginId: string) => {
-    const plugin: PluginLocal = pluginLatest(pluginsRemote[pluginId]) as PluginLocal;
-    plugin.status = pluginsInstalled[pluginId] ? 'installed' : 'available';
-    console.log('☓', pluginId);
-    plugins.push(plugin);
   });
   plugins = plugins.sort((a: PluginLocal, b: PluginLocal) => {
     return a.date < b.date ? 1 : -1;
