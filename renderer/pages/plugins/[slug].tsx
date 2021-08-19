@@ -47,7 +47,7 @@ class PluginPage extends Component<
       this.setState({ isDisabled: true });
       global.ipcRenderer.invoke('pluginInstall', this.state.plugin).then((pluginInstalled) => {
         console.log('pluginInstall response', pluginInstalled);
-        this.state.plugin.path = pluginInstalled.path;
+        this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;
         this.setState({
           isDisabled: false,
@@ -63,7 +63,7 @@ class PluginPage extends Component<
       this.setState({ isDisabled: true });
       global.ipcRenderer.invoke('pluginUninstall', this.state.plugin).then((pluginInstalled) => {
         console.log('pluginUninstall response', pluginInstalled);
-        this.state.plugin.path = pluginInstalled.path;
+        this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;
         this.setState({
           isDisabled: false,
@@ -293,7 +293,10 @@ class PluginPage extends Component<
               <div className={styles.row}>
                 <div className={`${styles.cell} ${styles.download}`}>
                   <p>Plugin location:</p>
-                  <pre className={styles.codeBox}>{this.state.plugin.path}</pre>
+                  <pre className={styles.codeBox}>
+                      { this.state.plugin.paths.map((path: string) => `${path}
+                      `) }
+                  </pre>
                 </div>
               </div>
             </div>
@@ -317,7 +320,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }: Params)
     try {
       // If local plugin exists, use the path and status
       const pluginLocal = await pluginGetLocal(pluginId);
-      plugin.path = pluginLocal.path;
+      plugin.paths = pluginLocal.paths;
       plugin.status = pluginLocal.status;
     } catch (error) {}
   } catch (error) {
