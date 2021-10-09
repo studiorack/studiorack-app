@@ -236,7 +236,7 @@ class PluginPage extends Component<
                       Install<span className={styles.progress}>ing...</span>
                     </button>
                   ) : (
-                    <button className="button button-clear" onClick={this.uninstall} disabled={this.state.isDisabled}>
+                    <button className="button button" onClick={this.uninstall} disabled={this.state.isDisabled}>
                       Uninstall
                     </button>
                   )}

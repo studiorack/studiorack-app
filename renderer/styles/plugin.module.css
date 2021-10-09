@@ -117,7 +117,12 @@
     margin: 0;
   }
 
+  .media {
+    flex-basis: 33.33%;
+  }
+
   .details {
+    flex-basis: 66.66%;
     margin-left: 3rem;
   }
 
