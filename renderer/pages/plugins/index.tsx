@@ -154,6 +154,7 @@ class PluginList extends Component<
                             className={styles.pluginButtonIcon}
                             src={`${this.state.router.basePath}/images/icon-installed.svg`}
                             alt="Installed"
+                            loading="lazy"
                           />
                         </span>
                       ) : (
@@ -162,6 +163,7 @@ class PluginList extends Component<
                             className={styles.pluginButtonIcon}
                             src={`${this.state.router.basePath}/images/icon-download.svg`}
                             alt="Download"
+                            loading="lazy"
                           />
                         </span>
                       )}
@@ -171,6 +173,7 @@ class PluginList extends Component<
                         className={styles.pluginIcon}
                         src={`${this.state.router.basePath}/images/icon-tag.svg`}
                         alt="Tags"
+                        loading="lazy"
                       />
                       {plugin.tags &&
                         plugin.tags.map((tag: string, tagIndex: number) => (
@@ -186,6 +189,7 @@ class PluginList extends Component<
                       src={`https://github.com/${plugin.repo}/releases/download/${plugin.release}/${plugin.files.image.name}`}
                       alt={plugin.name}
                       onError={this.imageError}
+                      loading="lazy"
                     />
                   ) : (
                     <img
@@ -193,6 +197,7 @@ class PluginList extends Component<
                       src={`${this.state.router.basePath}/images/plugin.png`}
                       alt={plugin.name}
                       onError={this.imageError}
+                      loading="lazy"
                     />
                   )}
                 </div>

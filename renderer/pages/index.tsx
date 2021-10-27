@@ -38,6 +38,7 @@ class Home extends Component<
                 className={styles.sectionImage}
                 src={`${this.state.router.basePath}/images/studio-audio-rack-mobile.jpg`}
                 alt="Open source"
+                loading="lazy"
               />
               <h2 className={styles.title}>An open-source audio plugin ecosystem</h2>
               <p>
@@ -57,6 +58,7 @@ class Home extends Component<
                 className={styles.sectionImage}
                 src={`${this.state.router.basePath}/images/producers-mobile.jpg`}
                 alt="Producers"
+                loading="lazy"
               />
               <h2 className={styles.title}>Easy plugin installation &amp; management</h2>
               <p>
@@ -79,6 +81,7 @@ class Home extends Component<
                 className={styles.sectionImage}
                 src={`${this.state.router.basePath}/images/creators-mobile.jpg`}
                 alt="Creators"
+                loading="lazy"
               />
               <h2 className={styles.title}>Automate your plugin publishing workflow</h2>
               <p>

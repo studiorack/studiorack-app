@@ -141,6 +141,7 @@ class ProjectPage extends Component<
           src={`${this.state.router.basePath}/images/icon-pause.svg`}
           alt="Pause"
           onClick={this.pause}
+          loading="lazy"
         />
       );
     } else {
@@ -150,6 +151,7 @@ class ProjectPage extends Component<
           src={`${this.state.router.basePath}/images/icon-play.svg`}
           alt="Play"
           onClick={this.play}
+          loading="lazy"
         />
       );
     }
@@ -187,6 +189,7 @@ class ProjectPage extends Component<
                         this.state.project.files.image.name
                       }`}
                       alt={this.state.project.name || ''}
+                      loading="lazy"
                     />
                   ) : (
                     ''
@@ -222,6 +225,7 @@ class ProjectPage extends Component<
                       className={styles.icon}
                       src={`${this.state.router.basePath}/images/icon-filesize.svg`}
                       alt="Filesize"
+                      loading="lazy"
                     />{' '}
                     {this.formatBytes(this.state.project.files.project?.size || 0)}
                   </div>
@@ -230,11 +234,12 @@ class ProjectPage extends Component<
                       className={styles.icon}
                       src={`${this.state.router.basePath}/images/icon-date.svg`}
                       alt="Date updated"
+                      loading="lazy"
                     />{' '}
                     {this.timeSince(this.state.project.date)} ago
                   </div>
                   <div className={styles.metadata}>
-                    <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" />
+                    <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
                     <ul className={styles.tags}>
                       {this.state.project.tags &&
                         this.state.project.tags.map((tag: string, tagIndex: number) => (
@@ -310,6 +315,7 @@ class ProjectPage extends Component<
                               className={stylesPlugin.pluginButtonIcon}
                               src={`${this.state.router.basePath}/images/icon-installed.svg`}
                               alt="Installed"
+                              loading="lazy"
                             />
                           </span>
                         ) : (
@@ -318,6 +324,7 @@ class ProjectPage extends Component<
                               className={stylesPlugin.pluginButtonIcon}
                               src={`${this.state.router.basePath}/images/icon-download.svg`}
                               alt="Download"
+                              loading="lazy"
                             />
                           </span>
                         )}
@@ -327,6 +334,7 @@ class ProjectPage extends Component<
                           className={stylesPlugin.pluginIcon}
                           src={`${this.state.router.basePath}/images/icon-tag.svg`}
                           alt="Tags"
+                          loading="lazy"
                         />
                         {plugin.tags.map((tag: string, tagIndex: number) => (
                           <li className={stylesPlugin.pluginTag} key={`${tag}-${tagIndex}-${pluginIndex}`}>
@@ -341,6 +349,7 @@ class ProjectPage extends Component<
                         src={`https://github.com/${plugin.repo}/releases/download/${plugin.release}/${plugin.files.image.name}`}
                         alt={plugin.name}
                         onError={this.imageError}
+                        loading="lazy"
                       />
                     ) : (
                       <img
@@ -348,6 +357,7 @@ class ProjectPage extends Component<
                         src={`${this.state.router.basePath}/images/plugin.png`}
                         alt={plugin.name}
                         onError={this.imageError}
+                        loading="lazy"
                       />
                     )}
                   </div>

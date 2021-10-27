@@ -153,6 +153,7 @@ class ProjectList extends Component<
                             className={styles.projectButtonIcon}
                             src={`${this.state.router.basePath}/icons/icon-${project.type.ext}.png`}
                             alt={project.type.name}
+                            loading="lazy"
                           />
                         </span>
                       ) : (
@@ -164,6 +165,7 @@ class ProjectList extends Component<
                         className={styles.pluginIcon}
                         src={`${this.state.router.basePath}/images/icon-tag.svg`}
                         alt="Tags"
+                        loading="lazy"
                       />
                       {project.tags.map((tag: string, tagIndex: number) => (
                         <li className={styles.pluginTag} key={`${tag}-${tagIndex}-${projectIndex}`}>
@@ -178,6 +180,7 @@ class ProjectList extends Component<
                       src={`media://${this.getFolder(project.path || 'none')}/${project.files.image.name}`}
                       alt={project.name}
                       onError={this.imageError}
+                      loading="lazy"
                     />
                   ) : (
                     <img
@@ -185,6 +188,7 @@ class ProjectList extends Component<
                       src={`${this.state.router.basePath}/images/project.png`}
                       alt={project.name}
                       onError={this.imageError}
+                      loading="lazy"
                     />
                   )}
                 </div>
