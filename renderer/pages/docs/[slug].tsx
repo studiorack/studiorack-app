@@ -4,7 +4,7 @@ import Layout from '../../components/layout';
 import { getDocBySlug, getAllDocs } from '../../lib/api';
 import Doc from '../../types/doc';
 import markdownStyles from '../../styles/doc.module.css';
-import remark from 'remark';
+import { remark } from 'remark';
 import html from 'remark-html';
 import { withRouter, Router } from 'next/router';
 

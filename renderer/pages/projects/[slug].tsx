@@ -8,8 +8,8 @@ import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
 import { configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core';
 import { idToSlug, slugToId } from '../../../node_modules/@studiorack/core/dist/utils';
-import { Params } from 'next/dist/next-server/server/router';
 import { store } from '../../../electron-src/store';
+import { Params } from 'next/dist/server/router';
 
 type ProjectProps = {
   pluginsFiltered: PluginLocal[];

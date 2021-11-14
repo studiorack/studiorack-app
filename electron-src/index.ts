@@ -65,7 +65,6 @@ app.on('ready', async () => {
       // contextIsolation: true,
       nodeIntegration: false,
       preload: join(__dirname, 'preload.js'),
-      worldSafeExecuteJavaScript: true,
       webSecurity: false,
     },
   });

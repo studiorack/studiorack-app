@@ -6,7 +6,17 @@ import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
 import { pluginGet, pluginGetLocal, PluginLocal } from '@studiorack/core';
 import { slugToId } from '../../../node_modules/@studiorack/core/dist/utils';
-import { Params } from 'next/dist/next-server/server/router';
+import { Params } from 'next/dist/server/router';
+import { IpcRenderer } from 'electron';
+
+declare global {
+  var ipcRenderer: IpcRenderer;
+}
+
+declare global {
+  function someFunction(): string;
+  var someVariable: string;
+}
 
 type PluginProps = {
   plugin: PluginLocal;

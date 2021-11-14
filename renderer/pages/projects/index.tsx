@@ -7,16 +7,7 @@ import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
 import { configGet, configSet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core';
 import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils';
-import { IpcRenderer } from 'electron';
 import { store } from '../../../electron-src/store';
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      ipcRenderer: IpcRenderer;
-    }
-  }
-}
 
 type ProjectListProps = {
   category: string;

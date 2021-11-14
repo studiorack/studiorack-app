@@ -4,15 +4,6 @@ import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/settings.module.css';
 import { GetStaticProps } from 'next';
 import { withRouter, Router } from 'next/router';
-import { IpcRenderer } from 'electron';
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      ipcRenderer: IpcRenderer;
-    }
-  }
-}
 
 declare module 'react' {
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {

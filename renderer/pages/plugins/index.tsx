@@ -7,15 +7,6 @@ import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
 import { pluginInstalled, pluginLatest, PluginLocal, pluginsGet, pluginsGetLocal } from '@studiorack/core';
 import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils';
-import { IpcRenderer } from 'electron';
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      ipcRenderer: IpcRenderer;
-    }
-  }
-}
 
 type PluginListProps = {
   category: string;
