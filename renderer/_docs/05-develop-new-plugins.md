@@ -6,11 +6,11 @@ title: 'Develop new plugins'
 
 We have plugin templates which automate plugin builds
 
-- [studiorack-plugin-dpf](https://github.com/studiorack/studiorack-plugin-dpf)
-- [studiorack-plugin-dplug](https://github.com/studiorack/studiorack-plugin-dplug)
-- [studiorack-plugin-iplug](https://github.com/studiorack/studiorack-plugin-iplug)
-- [studiorack-plugin-juce](https://github.com/studiorack/studiorack-plugin-juce)
-- [studiorack-plugin-steinberg](https://github.com/studiorack/studiorack-plugin-steinberg)
+- [studiorack-template-dpf](https://github.com/studiorack/studiorack-template-dpf)
+- [studiorack-template-dplug](https://github.com/studiorack/studiorack-template-dplug)
+- [studiorack-template-iplug](https://github.com/studiorack/studiorack-template-iplug)
+- [studiorack-template-juce](https://github.com/studiorack/studiorack-template-juce)
+- [studiorack-template-steinberg](https://github.com/studiorack/studiorack-template-steinberg)
 
 You can fork the repos on GitHub or use our command line tool. Create a new plugin using a starter template (dplug, iplug, juce, steinberg):
 

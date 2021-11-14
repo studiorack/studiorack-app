@@ -95,11 +95,11 @@ Follow the instructions in generated README.md to install and build your plugin.
 
 `studiorack plugin get <input>` Get registry plugin metadata by id:
 
-    $ studiorack plugin get studiorack/studiorack-plugin-steinberg/adelay
+    $ studiorack plugin get studiorack/studiorack-template-steinberg/adelay
     ┌────────────────────────────────────┬────────────────────┬─────────────┬────────────┬─────────┬───────────┐
     │ Id                                 │ Name               │ Description │ Date       │ Version │ Tags      │
     ├────────────────────────────────────┼────────────────────┼─────────────┼────────────┼─────────┼───────────┤
-    │ studiorack/plugin-steinberg/adelay │ ADelayTest Factory │ Test Class  │ 2020-12-25 │ 1.1.0   │ Fx, Delay │
+    │ studiorack/template-steinberg/adelay │ ADelayTest Factory │ Test Class  │ 2020-12-25 │ 1.1.0   │ Fx, Delay │
     └────────────────────────────────────┴────────────────────┴─────────────┴────────────┴─────────┴───────────┘
 
 
@@ -107,11 +107,11 @@ Follow the instructions in generated README.md to install and build your plugin.
 
 `studiorack plugin getLocal <input>` Get local plugin details by id:
 
-    $ studiorack plugin getLocal studiorack/studiorack-plugin-steinberg/adelay
+    $ studiorack plugin getLocal studiorack/studiorack-template-steinberg/adelay
     ┌────────────────────────────────────┬────────────────────┬─────────────┬────────────┬─────────┬───────────┐
     │ Id                                 │ Name               │ Description │ Date       │ Version │ Tags      │
     ├────────────────────────────────────┼────────────────────┼─────────────┼────────────┼─────────┼───────────┤
-    │ studiorack/plugin-steinberg/adelay │ ADelayTest Factory │ Test Class  │ 2020-12-25 │ 1.1.0   │ Fx, Delay │
+    │ studiorack/template-steinberg/adelay │ ADelayTest Factory │ Test Class  │ 2020-12-25 │ 1.1.0   │ Fx, Delay │
     └────────────────────────────────────┴────────────────────┴─────────────┴────────────┴─────────┴───────────┘
 
 
@@ -119,7 +119,7 @@ Follow the instructions in generated README.md to install and build your plugin.
 
 `studiorack plugin install <input>` Install a plugin manually by id:
 
-    studiorack plugin install studiorack/studiorack-plugin-steinberg/adelay
+    studiorack plugin install studiorack/studiorack-template-steinberg/adelay
 
 
 ## Plugin list
@@ -161,7 +161,7 @@ Follow the instructions in generated README.md to install and build your plugin.
 
 `studiorack plugin <input>` Uninstall a plugin manually by id:
 
-    studiorack plugin uninstall studiorack/studiorack-plugin-steinberg/adelay
+    studiorack plugin uninstall studiorack/studiorack-template-steinberg/adelay
 
 
 ## Project create
@@ -215,7 +215,7 @@ Follow the instructions in generated README.md to install and build your plugin.
 
 `studiorack project uninstall <id> [input]` Uninstall a project's plugins by id:
 
-    studiorack plugin uninstall studiorack/studiorack-plugin-steinberg/adelay
+    studiorack plugin uninstall studiorack/studiorack-template-steinberg/adelay
 
 
 ## Validate
