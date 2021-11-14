@@ -88,6 +88,9 @@ class Home extends Component<
                 Our plugin starter templates use GitHub Actions to automatically build your plugin, publishing Windows,
                 Mac and Linux versions directly to GitHub Releases.
               </p>
+              <a className="button" href="https://github.com/studiorack/studiorack-plugin-dpf" target="_blank">
+                DPF
+              </a>
               <a className="button" href="https://github.com/studiorack/studiorack-plugin-dplug" target="_blank">
                 Dplug
               </a>
