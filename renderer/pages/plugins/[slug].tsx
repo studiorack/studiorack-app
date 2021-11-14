@@ -286,7 +286,7 @@ class PluginPage extends Component<
                   )}
                 </div>
                 <div className={`${styles.cell} ${styles.install}`}>
-                  <p>Install via command line:</p>
+                  <p>Install via <a href="https://www.npmjs.com/package/@studiorack/cli" target="_blank">StudioRack CLI</a>:</p>
                   <pre className={styles.codeBox}>
                     studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}
                   </pre>
