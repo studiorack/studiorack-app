@@ -47,8 +47,8 @@ app.on('ready', async () => {
           default-src 'self';
           connect-src 'self' *.github.io data:;
           font-src 'self' fonts.gstatic.com;
-          img-src 'self' github.com github-releases.githubusercontent.com *.s3.amazonaws.com data: media:;
-          media-src 'self' github.com github-releases.githubusercontent.com *.s3.amazonaws.com media:;
+          img-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com data: media:;
+          media-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com media:;
           object-src 'none';
           script-src 'self' 'unsafe-inline' 'unsafe-eval';
           style-src 'self' 'unsafe-inline' fonts.googleapis.com
