@@ -1,11 +1,12 @@
 // Native
 import { join } from 'path';
-import { format } from 'url';
+import { parse } from 'url';
 
 // Packages
 import { BrowserWindow, app, dialog, session, ipcMain, IpcMainEvent, protocol } from 'electron';
 import isDev from 'electron-is-dev';
-import prepareNext from 'electron-next';
+import { createServer } from 'http';
+import next from 'next';
 
 // custom code
 import {
@@ -24,7 +25,24 @@ const DEFAULT_PAGE = 'projects';
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
-  await prepareNext('./renderer');
+
+  // Use server-side rendering for both dev and production builds
+  const nextApp = next({
+    dev: isDev,
+    dir: app.getAppPath() + '/renderer'
+  });
+  const requestHandler = nextApp.getRequestHandler();
+
+  // Build the renderer code and watch the files
+  await nextApp.prepare();
+
+  // Create a new native HTTP server (which supports hot code reloading)
+  createServer((req: any, res: any) => {
+    const parsedUrl = parse(req.url, true)
+    requestHandler(req, res, parsedUrl)
+  }).listen(3000, () => {
+    console.log('> Ready on http://localhost:3000')
+  })
 
   // Register custom media protocol for local images
   protocol.registerFileProtocol('media', (request, callback) => {
@@ -69,15 +87,7 @@ app.on('ready', async () => {
     },
   });
 
-  const url = isDev
-    ? `http://localhost:8000/${DEFAULT_PAGE}`
-    : format({
-        pathname: join(__dirname, `../renderer/out/${DEFAULT_PAGE}.html`),
-        protocol: 'file:',
-        slashes: true,
-      });
-
-  mainWindow.loadURL(url);
+  mainWindow.loadURL(`http://localhost:3000/${DEFAULT_PAGE}`)
 
   // If developing locally, open developer tools
   if (isDev) {
