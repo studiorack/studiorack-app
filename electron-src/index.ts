@@ -77,7 +77,7 @@ app.on('ready', async () => {
   });
 
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: isDev ? 800 + 445 : 800,
     height: 600,
     webPreferences: {
       // contextIsolation: true,
