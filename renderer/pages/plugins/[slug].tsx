@@ -236,7 +236,12 @@ class PluginPage extends Component<
                     )}
                   </div>
                   <div className={styles.metadata}>
-                    <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
+                    <img
+                      className={styles.icon}
+                      src={`${this.state.router.basePath}/images/icon-tag.svg`}
+                      alt="Tags"
+                      loading="lazy"
+                    />
                     <ul className={styles.tags}>
                       {this.state.plugin.tags &&
                         this.state.plugin.tags.map((tag: string, tagIndex: number) => (
@@ -296,7 +301,13 @@ class PluginPage extends Component<
                   )}
                 </div>
                 <div className={`${styles.cell} ${styles.install}`}>
-                  <p>Install via <a href="https://www.npmjs.com/package/@studiorack/cli" target="_blank">StudioRack CLI</a>:</p>
+                  <p>
+                    Install via{' '}
+                    <a href="https://www.npmjs.com/package/@studiorack/cli" target="_blank">
+                      StudioRack CLI
+                    </a>
+                    :
+                  </p>
                   <pre className={styles.codeBox}>
                     studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}
                   </pre>
@@ -309,8 +320,10 @@ class PluginPage extends Component<
                 <div className={`${styles.cell} ${styles.download}`}>
                   <p>Plugin location:</p>
                   <pre className={styles.codeBox}>
-                      { this.state.plugin.paths.map((path: string) => `${path}
-                      `) }
+                    {this.state.plugin.paths.map(
+                      (path: string) => `${path}
+                      `
+                    )}
                   </pre>
                 </div>
               </div>
