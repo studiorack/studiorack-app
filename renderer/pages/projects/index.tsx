@@ -1,4 +1,4 @@
-import { Component, ChangeEvent, MouseEvent, SyntheticEvent } from 'react';
+import { Component, ChangeEvent } from 'react';
 import Head from 'next/head';
 import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/plugins.module.css';
@@ -8,38 +8,38 @@ import { withRouter, Router } from 'next/router';
 import { configGet, configSet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core';
 import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils';
 import { store } from '../../../electron-src/store';
+import { imageError } from '../../lib/image';
 
 type ProjectListProps = {
   category: string;
-  projects: ProjectLocal[];
   projectTypes: { [property: string]: ProjectType };
+  projects: ProjectLocal[];
+  projectsFiltered: ProjectLocal[];
   router: Router;
+  query: string;
 };
 
 class ProjectList extends Component<
   ProjectListProps,
   {
     category: string;
+    projectTypes: { [property: string]: ProjectType };
     projects: ProjectLocal[];
     projectsFiltered: ProjectLocal[];
-    projectTypes: { [property: string]: ProjectType };
     router: Router;
     query: string;
   }
 > {
-  list: ProjectLocal[];
-
   constructor(props: ProjectListProps) {
     super(props);
     this.state = {
       category: 'all',
+      projectTypes: props.projectTypes,
       projects: props.projects || [],
       projectsFiltered: props.projects || [],
-      projectTypes: props.projectTypes,
       router: props.router,
       query: '',
     };
-    this.list = props.projects;
   }
 
   filterProjects = () => {
@@ -60,7 +60,7 @@ class ProjectList extends Component<
   handleChange = (event: ChangeEvent) => {
     const el = event.target as HTMLInputElement;
     const query = el.value ? el.value.toLowerCase() : '';
-    this.setState({ query: query }, () => {
+    this.setState({ query }, () => {
       this.setState({ projectsFiltered: this.filterProjects() });
     });
   };
@@ -69,20 +69,11 @@ class ProjectList extends Component<
     return this.state.category === path ? 'selected' : '';
   };
 
-  selectCategory = (event: MouseEvent) => {
-    const category = event.currentTarget.getAttribute('data-category') || '';
-    this.setState({ category: category }, () => {
+  selectCategory = (event: React.MouseEvent): void => {
+    const category = (event.currentTarget as HTMLTextAreaElement).getAttribute('data-category') || '';
+    this.setState({ category }, () => {
       this.setState({ projectsFiltered: this.filterProjects() });
     });
-  };
-
-  imageError = (event: SyntheticEvent) => {
-    const el = event.target as HTMLImageElement;
-    const fallback = `${this.state.router.basePath}/images/project.png`;
-    if (el.getAttribute('src') !== fallback) {
-      el.setAttribute('src', fallback);
-    }
-    return undefined;
   };
 
   getFolder(path: string) {
@@ -107,7 +98,8 @@ class ProjectList extends Component<
               onChange={this.handleChange}
             />
           </div>
-          <ul className={styles.pluginsCategory}>
+          <div className={styles.pluginsCategoryWrapper}>
+            <ul className={styles.pluginsCategory}>
             <li>
               <a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>
                 All
@@ -124,7 +116,8 @@ class ProjectList extends Component<
                 </a>
               </li>
             ))}
-          </ul>
+            </ul>
+          </div>
           <div className={styles.pluginsList}>
             {this.state.projectsFiltered.map((project: ProjectLocal, projectIndex: number) => (
               <Link
@@ -170,7 +163,7 @@ class ProjectList extends Component<
                       className={styles.pluginImage}
                       src={`media://${this.getFolder(project.path || 'none')}/${project.files.image.name}`}
                       alt={project.name}
-                      onError={this.imageError}
+                      onError={imageError}
                       loading="lazy"
                     />
                   ) : (
@@ -178,7 +171,7 @@ class ProjectList extends Component<
                       className={styles.pluginImage}
                       src={`${this.state.router.basePath}/images/project.png`}
                       alt={project.name}
-                      onError={this.imageError}
+                      onError={imageError}
                       loading="lazy"
                     />
                   )}
