@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import Container from '../../components/container';
+import SubNav from '../../components/subnav';
 import Layout from '../../components/layout';
 import { getDocBySlug, getAllDocs } from '../../lib/api';
 import Doc from '../../types/doc';
@@ -46,10 +46,10 @@ class DocPage extends Component<
     );
     return (
       <Layout>
-        <Container docs={this.state.allDocs}>
+        <SubNav docs={this.state.allDocs}>
           <h1>{this.state.doc.title}</h1>
           <div className={markdownStyles.markdown} dangerouslySetInnerHTML={{ __html: content }} />
-        </Container>
+        </SubNav>
       </Layout>
     );
   }

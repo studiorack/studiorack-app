@@ -10,6 +10,7 @@ We have plugin templates which automate plugin builds
 - [studiorack-template-dplug](https://github.com/studiorack/studiorack-template-dplug)
 - [studiorack-template-iplug](https://github.com/studiorack/studiorack-template-iplug)
 - [studiorack-template-juce](https://github.com/studiorack/studiorack-template-juce)
+- [studiorack-template-sfz](https://github.com/studiorack/studiorack-template-sfz)
 - [studiorack-template-steinberg](https://github.com/studiorack/studiorack-template-steinberg)
 
 You can fork the repos on GitHub or use our command line tool. Create a new plugin using a starter template (dplug, iplug, juce, steinberg):

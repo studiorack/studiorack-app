@@ -1,0 +1,18 @@
+.crumb {
+  margin-bottom: 1rem;
+}
+
+.crumbList {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.crumbList li:first-child {
+  display: none;
+}
+
+.crumbLink {
+  margin: 0 .25rem;
+}

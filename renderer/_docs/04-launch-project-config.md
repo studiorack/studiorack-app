@@ -14,5 +14,4 @@ Then open the project using:
 
     studiorack project open <project-id>
 
-
 [Read the API Reference &gt;](/docs/06-command-line)

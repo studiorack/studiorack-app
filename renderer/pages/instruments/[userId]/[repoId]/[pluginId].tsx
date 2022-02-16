@@ -1,21 +1,15 @@
 import { Component } from 'react';
-import Layout from '../../components/layout';
+import Crumb from '../../../../components/crumb';
+import Layout from '../../../../components/layout';
 import Head from 'next/head';
-import styles from '../../styles/plugin.module.css';
-import { GetServerSideProps } from 'next';
+import styles from '../../../../styles/plugin.module.css';
 import { withRouter, Router } from 'next/router';
-import { pluginGet, pluginGetLocal, PluginLocal } from '@studiorack/core';
-import { slugToId } from '../../../node_modules/@studiorack/core/dist/utils';
-import { Params } from 'next/dist/server/router';
+import { PluginInterface, PluginLocal, pluginGet } from '@studiorack/core';
+import { pluginFileUrl } from '@studiorack/core/dist/utils';
 import { IpcRenderer } from 'electron';
 
 declare global {
   var ipcRenderer: IpcRenderer;
-}
-
-declare global {
-  function someFunction(): string;
-  var someVariable: string;
 }
 
 type PluginProps = {
@@ -28,8 +22,8 @@ class PluginPage extends Component<
   {
     isDisabled: boolean;
     isPlaying: boolean;
-    plugin: PluginLocal;
     router: Router;
+    plugin: PluginLocal;
   }
 > {
   constructor(props: PluginProps) {
@@ -40,15 +34,6 @@ class PluginPage extends Component<
       plugin: props.plugin,
       router: props.router,
     };
-    console.log('plugin', props.router.query.slug);
-
-    // If plugin is not found in registry, fallback to auto-generated local metadata
-    // if (!props.plugin.name && global && global.ipcRenderer) {
-    //   global.ipcRenderer.invoke('pluginGetLocal', slugToId(props.router.query.slug as string)).then((plugin) => {
-    //     console.log('pluginGetLocal', plugin)
-    //     this.setState({ plugin: plugin })
-    //   })
-    // }
   }
 
   install = () => {
@@ -148,7 +133,6 @@ class PluginPage extends Component<
           src={`${this.state.router.basePath}/images/icon-pause.svg`}
           alt="Pause"
           onClick={this.pause}
-          loading="lazy"
         />
       );
     } else {
@@ -158,7 +142,6 @@ class PluginPage extends Component<
           src={`${this.state.router.basePath}/images/icon-play.svg`}
           alt="Play"
           onClick={this.play}
-          loading="lazy"
         />
       );
     }
@@ -172,26 +155,27 @@ class PluginPage extends Component<
         </Head>
         <article>
           <div className={styles.header}>
+            <div className={styles.headerInner2}>
+              <Crumb
+                items={['instruments', this.state.plugin.repo.split('/')[0], this.state.plugin.repo.split('/')[1]]}
+              ></Crumb>
+            </div>
             <div className={styles.headerInner}>
               <div className={styles.media}>
                 <div className={styles.imageContainer}>
-                  {this.state.plugin.files.audio && this.state.plugin.files.audio.size ? this.getPlayButton() : ''}
-                  {this.state.plugin.files.image && this.state.plugin.files.image.size ? (
+                  {this.state.plugin.files.audio ? this.getPlayButton() : ''}
+                  {this.state.plugin.files.image ? (
                     <img
                       className={styles.image}
-                      src={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.image.name}`}
+                      src={pluginFileUrl(this.state.plugin, 'image')}
                       alt={this.state.plugin.name || ''}
-                      loading="lazy"
                     />
                   ) : (
                     ''
                   )}
                 </div>
-                {this.state.plugin.files.audio && this.state.plugin.files.audio.size ? (
-                  <audio
-                    src={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.audio.name}`}
-                    id="audio"
-                  >
+                {this.state.plugin.files.audio ? (
+                  <audio src={pluginFileUrl(this.state.plugin, 'audio')} id="audio">
                     Your browser does not support the audio element.
                   </audio>
                 ) : (
@@ -208,7 +192,21 @@ class PluginPage extends Component<
                     {this.state.plugin.author}
                   </a>
                 </p>
-                <p>{this.state.plugin.description}</p>
+                <p>
+                  {this.state.plugin.description}
+                  {this.state.plugin.tags.includes('sfz') ? (
+                    <span>
+                      {' '}
+                      (This instrument needs to be loaded into a{' '}
+                      <a href="/instruments/studiorack_sfizz_sfizz" target="_blank">
+                        SFZ player
+                      </a>
+                      )
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                </p>
                 <div className={styles.metadataList}>
                   {/* <div className={styles.metadata}><img className={styles.icon} src={`${this.state.router.basePath}/images/icon-filesize.svg`} alt="Filesize" loading="lazy" /> {this.formatBytes(this.state.plugin.size)}</div> */}
                   <div className={styles.metadata}>
@@ -236,14 +234,18 @@ class PluginPage extends Component<
                     )}
                   </div>
                   <div className={styles.metadata}>
-                    <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
+                    <img
+                      className={styles.icon}
+                      src={`${this.state.router.basePath}/images/icon-tag.svg`}
+                      alt="Tags"
+                      loading="lazy"
+                    />
                     <ul className={styles.tags}>
-                      {this.state.plugin.tags &&
-                        this.state.plugin.tags.map((tag: string, tagIndex: number) => (
-                          <li className={styles.tag} key={`${tag}-${tagIndex}`}>
-                            {tag},
-                          </li>
-                        ))}
+                      {this.state.plugin.tags.map((tag: string, tagIndex: number) => (
+                        <li className={styles.tag} key={`${tag}-${tagIndex}`}>
+                          {tag},
+                        </li>
+                      ))}
                     </ul>
                   </div>
                   {this.state.plugin.status !== 'installed' ? (
@@ -259,63 +261,63 @@ class PluginPage extends Component<
               </div>
             </div>
           </div>
-          {this.state.plugin.status !== 'installed' ? (
-            <div className={styles.options}>
-              <div className={styles.row}>
-                <div className={`${styles.cell} ${styles.download}`}>
-                  <p>Download and install manually:</p>
-                  {this.state.plugin.files.linux ? (
-                    <a
-                      className={`button ${styles.button}`}
-                      href={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.linux.name}`}
-                    >
-                      Linux
-                    </a>
-                  ) : (
-                    ''
-                  )}
-                  {this.state.plugin.files.mac ? (
-                    <a
-                      className={`button ${styles.button}`}
-                      href={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.mac.name}`}
-                    >
-                      MacOS
-                    </a>
-                  ) : (
-                    ''
-                  )}
-                  {this.state.plugin.files.win ? (
-                    <a
-                      className={`button ${styles.button}`}
-                      href={`https://github.com/${this.state.plugin.repo}/releases/download/${this.state.plugin.release}/${this.state.plugin.files.win.name}`}
-                    >
-                      Windows
-                    </a>
-                  ) : (
-                    ''
-                  )}
-                </div>
-                <div className={`${styles.cell} ${styles.install}`}>
-                  <p>Install via <a href="https://www.npmjs.com/package/@studiorack/cli" target="_blank">StudioRack CLI</a>:</p>
-                  <pre className={styles.codeBox}>
-                    studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}
-                  </pre>
-                </div>
+          <div className={styles.options}>
+            <div className={styles.row}>
+              <div className={`${styles.cell} ${styles.download}`}>
+                <p>Download and install manually:</p>
+                {this.state.plugin.files.linux ? (
+                  <a
+                    className={`button ${styles.button}`}
+                    href={pluginFileUrl(this.state.plugin, 'linux')}
+                    title="Linux x64"
+                  >
+                    Linux
+                  </a>
+                ) : (
+                  ''
+                )}
+                {this.state.plugin.files.mac ? (
+                  <a
+                    className={`button ${styles.button}`}
+                    href={pluginFileUrl(this.state.plugin, 'mac')}
+                    title="MacOS x64"
+                  >
+                    MacOS
+                  </a>
+                ) : (
+                  ''
+                )}
+                {this.state.plugin.files.win ? (
+                  <a
+                    className={`button ${styles.button}`}
+                    href={pluginFileUrl(this.state.plugin, 'win')}
+                    title="Windows x64"
+                  >
+                    Windows
+                  </a>
+                ) : (
+                  ''
+                )}
+              </div>
+              <div className={`${styles.cell} ${styles.install}`}>
+                <p>
+                  Install via{' '}
+                  <a href="https://www.npmjs.com/package/@studiorack/cli" target="_blank">
+                    StudioRack CLI
+                  </a>
+                  :
+                </p>
+                {this.state.plugin.tags.includes('sfz') ? (
+                  <pre className={styles.codeBox}>studiorack plugin install studiorack/sfizz/sfizz</pre>
+                ) : (
+                  ''
+                )}
+                <pre className={styles.codeBox}>
+                  studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}
+                </pre>
               </div>
             </div>
-          ) : (
-            <div className={styles.options}>
-              <div className={styles.row}>
-                <div className={`${styles.cell} ${styles.download}`}>
-                  <p>Plugin location:</p>
-                  <pre className={styles.codeBox}>
-                      { this.state.plugin.paths.map((path: string) => `${path}
-                      `) }
-                  </pre>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
         </article>
       </Layout>
     );
@@ -323,30 +325,19 @@ class PluginPage extends Component<
 }
 export default withRouter(PluginPage);
 
-export const getServerSideProps: GetServerSideProps = async ({ params }: Params) => {
-  const pluginId = slugToId(params.slug);
-  let plugin: PluginLocal;
+type Params = {
+  params: {
+    pluginId: string;
+    repoId: string;
+    userId: string;
+  };
+};
 
-  try {
-    // Check if live plugin registry metadata exists
-    console.log('pluginGet', pluginId, await pluginGet(pluginId));
-    plugin = (await pluginGet(pluginId)) as PluginLocal;
-
-    try {
-      // If local plugin exists, use the path and status
-      const pluginLocal = await pluginGetLocal(pluginId);
-      plugin.paths = pluginLocal.paths;
-      plugin.status = pluginLocal.status;
-    } catch (error) {}
-  } catch (error) {
-    // Otherwise fallback to local plugin metadata
-    console.log('pluginGetLocal', pluginId, await pluginGetLocal(pluginId));
-    plugin = await pluginGetLocal(pluginId);
-  }
-
+export async function getServerSideProps({ params }: Params) {
+  const plugin: PluginInterface = await pluginGet(`${params.userId}/${params.repoId}/${params.pluginId}`);
   return {
     props: {
       plugin,
     },
   };
-};
+}

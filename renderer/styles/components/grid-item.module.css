@@ -1,0 +1,75 @@
+.plugin {
+  background-color: #111;
+  border-radius: .5rem;
+  cursor: pointer;
+  max-height: 200px;
+  overflow: hidden;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  margin-bottom: 1rem;
+  transition: background-color .25s ease-out;
+}
+
+.plugin:hover {
+  background-color: #222;
+}
+
+.pluginDetails {
+  margin-bottom: 1.5rem;
+}
+
+.pluginHead {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pluginTitle {
+  flex-shrink: 1;
+  margin: 0;
+}
+
+.pluginButton,
+.pluginButtonInstalled {
+  background-color: #0d51ff;
+  border-radius: 100%;
+  display: flex;
+  flex-shrink: 0;
+  height: 15px;
+  justify-content: center;
+  margin-left: .5rem;
+  padding: 8px;
+  width: 15px;
+}
+
+.pluginButtonIcon {
+  max-width: 100%;
+}
+
+.pluginButtonInstalled {
+  background-color: #48ad6a;
+}
+
+.pluginVersion {
+  color: #666;
+  font-size: .75rem;
+}
+
+.pluginTags {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pluginIcon {
+  margin-right: .5rem;
+  width: 15px;
+}
+
+.pluginTag {
+  margin-right: .25rem;
+}
+
+.pluginImage {
+  display: cover;
+  width: 100%;
+}

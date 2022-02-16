@@ -15,11 +15,20 @@
   max-width: 1024px;
 }
 
+.innerCol iframe {
+  max-width: 100%;
+}
+
 .sectionProducers .inner {
   margin: 0 0 0 auto;
 }
 
 @media (min-width: 48rem) {
+  .containerCols {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .section {
     padding-bottom: 15rem;
     padding-top: 15rem;
@@ -27,6 +36,10 @@
 
   .inner {
     max-width: 360px;
+  }
+
+  .innerCol {
+    max-width: none;
   }
 
   .sectionOpenSource {

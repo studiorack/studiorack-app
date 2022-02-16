@@ -62,13 +62,13 @@ app.on('ready', async () => {
         ...details.responseHeaders,
         'Content-Security-Policy': [
           `
-          default-src 'self';
+          default-src 'self' *.youtube.com;
           connect-src 'self' *.github.io data:;
           font-src 'self' fonts.gstatic.com;
-          img-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com data: media:;
-          media-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com media:;
+          img-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com *.youtube.com data: media:;
+          media-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com *.youtube.com media:;
           object-src 'none';
-          script-src 'self' 'unsafe-inline' 'unsafe-eval';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval' *.doubleclick.net *.google.com *.gstatic.com;
           style-src 'self' 'unsafe-inline' fonts.googleapis.com
           `,
         ],

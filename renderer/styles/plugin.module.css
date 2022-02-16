@@ -113,6 +113,11 @@
     max-width: 1024px;
   }
 
+  .headerInner2 {
+    margin: 0 auto;
+    max-width: 1024px;
+  }
+
   .image {
     margin: 0;
   }

@@ -2,7 +2,7 @@ import { Component } from 'react';
 import Head from 'next/head';
 import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/settings.module.css';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
 
 declare module 'react' {
@@ -120,7 +120,7 @@ class Settings extends Component<
 }
 export default withRouter(Settings);
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {},
   };
