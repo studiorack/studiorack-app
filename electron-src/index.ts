@@ -79,10 +79,9 @@ app.on('ready', async () => {
     width: isDev ? 800 + 445 : 800,
     height: 600,
     webPreferences: {
-      // contextIsolation: true,
       nodeIntegration: false,
+      contextIsolation: false,
       preload: join(__dirname, 'preload.js'),
-      webSecurity: false,
     },
   });
 
