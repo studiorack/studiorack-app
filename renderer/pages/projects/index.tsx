@@ -2,20 +2,16 @@ import { Component, ChangeEvent } from 'react';
 import Head from 'next/head';
 import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/plugins.module.css';
-import Link from 'next/link';
+import GridItem from '../../components/grid-item';
 import { GetServerSideProps } from 'next';
-import { withRouter, Router } from 'next/router';
 import { configGet, configSet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core';
-import { idToSlug } from '../../../node_modules/@studiorack/core/dist/utils';
 import { store } from '../../../electron-src/store';
-import { imageError } from '../../lib/image';
 
 type ProjectListProps = {
   category: string;
   projectTypes: { [property: string]: ProjectType };
   projects: ProjectLocal[];
   projectsFiltered: ProjectLocal[];
-  router: Router;
   query: string;
 };
 
@@ -26,7 +22,6 @@ class ProjectList extends Component<
     projectTypes: { [property: string]: ProjectType };
     projects: ProjectLocal[];
     projectsFiltered: ProjectLocal[];
-    router: Router;
     query: string;
   }
 > {
@@ -37,7 +32,6 @@ class ProjectList extends Component<
       projectTypes: props.projectTypes,
       projects: props.projects || [],
       projectsFiltered: props.projects || [],
-      router: props.router,
       query: '',
     };
   }
@@ -120,63 +114,12 @@ class ProjectList extends Component<
           </div>
           <div className={styles.pluginsList}>
             {this.state.projectsFiltered.map((project: ProjectLocal, projectIndex: number) => (
-              <Link
-                href="/projects/[slug]"
-                as={`/projects/${idToSlug(project.repo + '/' + project.id)}`}
-                key={`${idToSlug(project.repo + '/' + project.id)}-${projectIndex}`}
-              >
-                <div className={styles.plugin}>
-                  <div className={styles.pluginDetails}>
-                    <div className={styles.pluginHead}>
-                      <h4 className={styles.pluginTitle}>
-                        {project.name} <span className={styles.pluginVersion}>v{project.version}</span>
-                      </h4>
-                      {project.type && project.type.ext ? (
-                        <span className={styles.projectButton}>
-                          <img
-                            className={styles.projectButtonIcon}
-                            src={`${this.state.router.basePath}/icons/icon-${project.type.ext}.png`}
-                            alt={project.type.name}
-                            loading="lazy"
-                          />
-                        </span>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                    <ul className={styles.pluginTags}>
-                      <img
-                        className={styles.pluginIcon}
-                        src={`${this.state.router.basePath}/images/icon-tag.svg`}
-                        alt="Tags"
-                        loading="lazy"
-                      />
-                      {project.tags.map((tag: string, tagIndex: number) => (
-                        <li className={styles.pluginTag} key={`${tag}-${tagIndex}-${projectIndex}`}>
-                          {tag},
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  {project.files.image && project.files.image.size ? (
-                    <img
-                      className={styles.pluginImage}
-                      src={`media://${this.getFolder(project.path || 'none')}/${project.files.image.name}`}
-                      alt={project.name}
-                      onError={imageError}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <img
-                      className={styles.pluginImage}
-                      src={`${this.state.router.basePath}/images/project.png`}
-                      alt={project.name}
-                      onError={imageError}
-                      loading="lazy"
-                    />
-                  )}
-                </div>
-              </Link>
+              <GridItem
+                section="projects"
+                plugin={project}
+                pluginIndex={projectIndex}
+                key={`${project.repo}/${project.id}-${projectIndex}`}
+              ></GridItem>
             ))}
           </div>
         </section>
@@ -184,7 +127,7 @@ class ProjectList extends Component<
     );
   }
 }
-export default withRouter(ProjectList);
+export default ProjectList;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   configSet('projectFolder', store.get('projectFolder'));

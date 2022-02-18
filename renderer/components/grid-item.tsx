@@ -2,7 +2,7 @@ import styles from '../styles/components/grid-item.module.css';
 import Link from 'next/link';
 import { getBasePath } from '../lib/path';
 import { imageError } from '../lib/image';
-import { pluginFileUrl } from '../../node_modules/@studiorack/core/dist/utils';
+import { pathGetDirectory, pluginFileUrl } from '../../node_modules/@studiorack/core/dist/utils';
 
 type GridItemProps = {
   section: string;
@@ -18,14 +18,25 @@ const GridItem = ({ section, plugin, pluginIndex }: GridItemProps) => (
           <h4 className={styles.pluginTitle}>
             {plugin.name} <span className={styles.pluginVersion}>v{plugin.version}</span>
           </h4>
-          <span className={styles.pluginButton}>
-            <img
-              className={styles.pluginButtonIcon}
-              src={`${getBasePath()}/images/icon-download.svg`}
-              alt="Download"
-              loading="lazy"
-            />
-          </span>
+          {plugin.type && plugin.type.ext ? (
+              <span className={styles.projectButton}>
+                <img
+                  className={styles.projectButtonIcon}
+                  src={`${getBasePath()}/icons/icon-${plugin.type.ext}.png`}
+                  alt={plugin.type.name}
+                  loading="lazy"
+                />
+              </span>
+            ) : (
+              <span className={styles.pluginButton}>
+                <img
+                  className={styles.pluginButtonIcon}
+                  src={`${getBasePath()}/images/icon-download.svg`}
+                  alt="Download"
+                  loading="lazy"
+                />
+              </span>
+            )}
         </div>
         <ul className={styles.pluginTags}>
           <img className={styles.pluginIcon} src={`${getBasePath()}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
@@ -36,16 +47,34 @@ const GridItem = ({ section, plugin, pluginIndex }: GridItemProps) => (
           ))}
         </ul>
       </div>
-      {plugin.files.image ? (
+      { plugin.files.image && plugin.files.image.size ? (
+        <div>
+          { section === 'projects' ? (
+            <img
+              className={styles.pluginImage}
+              src={`media://${plugin.path}/${plugin.files.image.name}`}
+              alt={plugin.name}
+              onError={imageError}
+              loading="lazy"
+            />
+          ) : (
+            <img
+              className={styles.pluginImage}
+              src={pluginFileUrl(plugin, 'image')}
+              alt={plugin.name}
+              onError={imageError}
+              loading="lazy"
+            />
+          )}
+        </div>
+      ) : (
         <img
           className={styles.pluginImage}
-          src={pluginFileUrl(plugin, 'image')}
+          src={`${getBasePath()}/images/project.png`}
           alt={plugin.name}
           onError={imageError}
           loading="lazy"
         />
-      ) : (
-        ''
       )}
     </div>
   </Link>

@@ -1,14 +1,14 @@
 import { Component, SyntheticEvent } from 'react';
-import Layout from '../../components/layout';
+import Layout from '../../../../components/layout';
 import Link from 'next/link';
 import Head from 'next/head';
-import styles from '../../styles/plugin.module.css';
-import stylesPlugin from '../../styles/plugins.module.css';
+import styles from '../../../../styles/plugin.module.css';
+import stylesPlugin from '../../../../styles/plugins.module.css';
 import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
 import { configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core';
-import { idToSlug, slugToId } from '../../../node_modules/@studiorack/core/dist/utils';
-import { store } from '../../../electron-src/store';
+import { idToSlug, slugToId } from '@studiorack/core/dist/utils';
+import { store } from '../../../../../electron-src/store';
 import { Params } from 'next/dist/server/router';
 
 type ProjectProps = {
@@ -379,9 +379,8 @@ export default withRouter(ProjectPage);
 
 export const getServerSideProps: GetServerSideProps = async ({ params }: Params) => {
   configSet('projectFolder', store.get('projectFolder'));
-  const projectId = slugToId(params.slug);
-  console.log(params.slug, projectId);
-  const project = await projectGetLocal(projectId);
+  console.log(`${params.userId}/${params.repoId}/${params.pluginId}`);
+  const project = await projectGetLocal(`${params.userId}/${params.repoId}/${params.pluginId}`);
   console.log(project);
   const promises = Object.keys(project.plugins).map(async (pluginId) => {
     const pluginLocal: PluginLocal = (await pluginGet(pluginId)) as PluginLocal;
