@@ -2,7 +2,7 @@ import styles from '../styles/components/grid-item.module.css';
 import Link from 'next/link';
 import { getBasePath } from '../lib/path';
 import { imageError } from '../lib/image';
-import { pathGetDirectory, pluginFileUrl } from '../../node_modules/@studiorack/core/dist/utils';
+import { pluginFileUrl } from '../../node_modules/@studiorack/core/dist/utils';
 
 type GridItemProps = {
   section: string;
