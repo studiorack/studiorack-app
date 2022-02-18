@@ -239,7 +239,12 @@ class ProjectPage extends Component<
                     {this.timeSince(this.state.project.date)} ago
                   </div>
                   <div className={styles.metadata}>
-                    <img className={styles.icon} src={`${this.state.router.basePath}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
+                    <img
+                      className={styles.icon}
+                      src={`${this.state.router.basePath}/images/icon-tag.svg`}
+                      alt="Tags"
+                      loading="lazy"
+                    />
                     <ul className={styles.tags}>
                       {this.state.project.tags &&
                         this.state.project.tags.map((tag: string, tagIndex: number) => (

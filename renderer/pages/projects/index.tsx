@@ -100,22 +100,22 @@ class ProjectList extends Component<
           </div>
           <div className={styles.pluginsCategoryWrapper}>
             <ul className={styles.pluginsCategory}>
-            <li>
-              <a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>
-                All
-              </a>
-            </li>
-            {Object.keys(this.state.projectTypes).map((projectTypeKey: string, projectTypeIndex: number) => (
-              <li key={`${projectTypeKey}-${projectTypeIndex}`}>
-                <a
-                  data-category={this.state.projectTypes[projectTypeKey].ext}
-                  onClick={this.selectCategory}
-                  className={this.isSelected(this.state.projectTypes[projectTypeKey].ext)}
-                >
-                  {this.state.projectTypes[projectTypeKey].name}
+              <li>
+                <a data-category="all" onClick={this.selectCategory} className={this.isSelected('all')}>
+                  All
                 </a>
               </li>
-            ))}
+              {Object.keys(this.state.projectTypes).map((projectTypeKey: string, projectTypeIndex: number) => (
+                <li key={`${projectTypeKey}-${projectTypeIndex}`}>
+                  <a
+                    data-category={this.state.projectTypes[projectTypeKey].ext}
+                    onClick={this.selectCategory}
+                    className={this.isSelected(this.state.projectTypes[projectTypeKey].ext)}
+                  >
+                    {this.state.projectTypes[projectTypeKey].name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
           <div className={styles.pluginsList}>

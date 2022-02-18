@@ -25,11 +25,10 @@ const DEFAULT_PAGE = 'projects';
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
-
   // Use server-side rendering for both dev and production builds
   const nextApp = next({
     dev: isDev,
-    dir: app.getAppPath() + '/renderer'
+    dir: app.getAppPath() + '/renderer',
   });
   const requestHandler = nextApp.getRequestHandler();
 
@@ -38,11 +37,11 @@ app.on('ready', async () => {
 
   // Create a new native HTTP server (which supports hot code reloading)
   createServer((req: any, res: any) => {
-    const parsedUrl = parse(req.url, true)
-    requestHandler(req, res, parsedUrl)
+    const parsedUrl = parse(req.url, true);
+    requestHandler(req, res, parsedUrl);
   }).listen(3000, () => {
-    console.log('> Ready on http://localhost:3000')
-  })
+    console.log('> Ready on http://localhost:3000');
+  });
 
   // Register custom media protocol for local images
   protocol.registerFileProtocol('media', (request, callback) => {
@@ -87,7 +86,7 @@ app.on('ready', async () => {
     },
   });
 
-  mainWindow.loadURL(`http://localhost:3000/${DEFAULT_PAGE}`)
+  mainWindow.loadURL(`http://localhost:3000/${DEFAULT_PAGE}`);
 
   // If developing locally, open developer tools
   if (isDev) {
