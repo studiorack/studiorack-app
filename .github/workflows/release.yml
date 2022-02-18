@@ -10,16 +10,18 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      upload_id: ${{ steps.draft_release.outputs.id }}
+      upload_url: ${{ steps.draft_release.outputs.upload_url }}
     steps:
-      - name: Create release
-        id: create_release
+      - name: Draft release
+        id: draft_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+          draft: true
 
   build_release:
     name: Build release
@@ -58,3 +60,14 @@ jobs:
           asset_path: ./dist/${{ matrix.file_name }}
           asset_name: ${{ matrix.file_name }}
           asset_content_type: application/octet-stream
+
+  publish_release:
+    name: Publish release
+    needs: [create_release, build_release]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_id: ${{ needs.create_release.outputs.upload_id }}
