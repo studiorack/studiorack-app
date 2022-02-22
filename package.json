@@ -15,12 +15,15 @@
     "format": "prettier --write \"electron-src/**/*.{ts,tsx}\" \"renderer/pages/**/*.{ts,tsx}\"",
     "lint": "tslint -p electron-src/tsconfig.json",
     "pack-app": "npm run build && electron-builder --dir",
+    "pack": "electron-builder --help",
     "test": "echo 'No tests were run'",
     "dist": "npm run build && electron-builder --publish never",
     "type-check": "tsc"
   },
   "build": {
-    "artifactName": "app-${os}.${ext}",
+    "appId": "io.github.studiorack",
+    "productName": "StudioRack",
+    "artifactName": "studiorack-${os}.${ext}",
     "asar": true,
     "files": [
       "main",
@@ -29,9 +32,16 @@
     "directories": {
       "buildResources": "renderer/out/icons"
     },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities"
+    },
     "linux": {
-      "executableName": "StudioRack",
-      "artifactName": "app-${os}.${ext}"
+      "target": "AppImage",
+      "category": "Utility"
+    },
+    "win": {
+      "target": "nsis"
     }
   },
   "author": "kmturley",
