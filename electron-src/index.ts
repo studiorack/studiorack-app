@@ -23,6 +23,20 @@ import { store } from './store';
 
 const DEFAULT_PAGE = 'projects';
 
+import fs from 'fs';
+import util  from 'util';
+
+// use a fixed path, to ensure log shows outside Electron dist
+const logPath = `/home/kim/Sites/studiorack-app/debug-${isDev ? 'dev' : 'prod'}.log`;
+const logFile = fs.createWriteStream(logPath, { flags: 'w' });
+const logStdout = process.stdout;
+
+console.log = function(...args) {
+  logFile.write(util.format.apply(null, args) + '\n');
+  logStdout.write(util.format.apply(null, args) + '\n');
+}
+console.error = console.log;
+
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
   // Use server-side rendering for both dev and production builds
