@@ -130,7 +130,10 @@ class ProjectList extends Component<
 export default ProjectList;
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  console.log('store.get.projectFolder', store.get('projectFolder'));
+  console.log('configGet.projectFolder', configGet('projectFolder'));
   configSet('projectFolder', store.get('projectFolder'));
+  console.log('configGet.projectFolder 2', configGet('projectFolder'));
   const projects = await projectsGetLocal();
   const projectTypesFound: { [property: string]: boolean } = {};
   projects.sort((a: ProjectLocal, b: ProjectLocal) => {

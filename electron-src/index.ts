@@ -31,10 +31,10 @@ const logPath = `/home/kim/Sites/studiorack-app/debug-${isDev ? 'dev' : 'prod'}.
 const logFile = fs.createWriteStream(logPath, { flags: 'w' });
 const logStdout = process.stdout;
 
-console.log = function(...args) {
+console.log = (...args) => {
   logFile.write(util.format.apply(null, args) + '\n');
   logStdout.write(util.format.apply(null, args) + '\n');
-}
+};
 console.error = console.log;
 
 // Prepare the renderer once the app is ready
