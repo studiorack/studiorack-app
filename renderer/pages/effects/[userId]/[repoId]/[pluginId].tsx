@@ -6,11 +6,6 @@ import styles from '../../../../styles/plugin.module.css';
 import { withRouter, Router } from 'next/router';
 import { PluginInterface, PluginLocal, pluginGet } from '@studiorack/core';
 import { pluginFileUrl } from '@studiorack/core/dist/utils';
-import { IpcRenderer } from 'electron';
-
-declare global {
-  var ipcRenderer: IpcRenderer;
-}
 
 type PluginProps = {
   plugin: PluginLocal;
@@ -38,9 +33,9 @@ class PluginPage extends Component<
 
   install = () => {
     console.log('install', this.state.plugin);
-    if (global && global.ipcRenderer) {
+    if (window.electronAPI) {
       this.setState({ isDisabled: true });
-      global.ipcRenderer.invoke('pluginInstall', this.state.plugin).then((pluginInstalled) => {
+      window.electronAPI.pluginInstall(this.state.plugin).then((pluginInstalled: PluginLocal) => {
         console.log('pluginInstall response', pluginInstalled);
         this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;
@@ -54,9 +49,9 @@ class PluginPage extends Component<
 
   uninstall = () => {
     console.log('uninstall', this.state.plugin);
-    if (global && global.ipcRenderer) {
+    if (window.electronAPI) {
       this.setState({ isDisabled: true });
-      global.ipcRenderer.invoke('pluginUninstall', this.state.plugin).then((pluginInstalled) => {
+      window.electronAPI.pluginUninstall(this.state.plugin).then((pluginInstalled: PluginLocal) => {
         console.log('pluginUninstall response', pluginInstalled);
         this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;

@@ -39,21 +39,20 @@ class ProjectPage extends Component<
     console.log('project', props.router.query.slug);
 
     // If project is not found in registry, fallback to auto-generated local metadata
-    if (!props.project.name && global && global.ipcRenderer) {
-      global.ipcRenderer
-        .invoke('projectGetLocal', slugToId(props.router.query.slug as string))
-        .then((project: ProjectLocal) => {
-          console.log('pluginGetLocal', project);
-          this.setState({ project });
-        });
+    if (!props.project.name && window.electronAPI) {
+      const projectId: string = slugToId(props.router.query.slug as string);
+      window.electronAPI.projectGetLocal(projectId).then((project: ProjectLocal) => {
+        console.log('pluginGetLocal', project);
+        this.setState({ project });
+      });
     }
   }
 
   install = () => {
     console.log('install', this.state.project);
-    if (global && global.ipcRenderer) {
+    if (window.electronAPI) {
       this.setState({ isDisabled: true });
-      global.ipcRenderer.invoke('pluginsInstall', this.state.project.plugins).then((pluginsInstalled) => {
+      window.electronAPI.pluginsInstall(this.state.project.plugins).then((pluginsInstalled: PluginLocal[]) => {
         console.log('pluginsInstall response', pluginsInstalled);
         this.setState({
           isDisabled: false,
@@ -65,9 +64,9 @@ class ProjectPage extends Component<
 
   open = () => {
     console.log('open', this.state.project);
-    if (global && global.ipcRenderer) {
+    if (window.electronAPI) {
       this.setState({ isDisabled: true });
-      global.ipcRenderer.invoke('projectOpen', this.state.project.path).then((projectOpened) => {
+      window.electronAPI.projectOpen(this.state.project.path).then((projectOpened: Buffer) => {
         console.log('projectOpen response', projectOpened);
         this.setState({
           isDisabled: false,

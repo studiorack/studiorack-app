@@ -54,10 +54,10 @@ class Settings extends Component<
     };
 
     // Prototype, find better way to do this
-    if (global && global.ipcRenderer) {
+    if (window.electronAPI) {
       const promises: Promise<any>[] = [];
       Object.keys(this.state.settingsFiltered).forEach((settingKey: string) => {
-        promises.push(global.ipcRenderer.invoke('storeGet', settingKey));
+        promises.push(window.electronAPI.storeGet(settingKey));
       });
       Promise.all(promises).then((responses) => {
         responses.forEach((response) => {
@@ -69,9 +69,9 @@ class Settings extends Component<
   }
 
   open = (settingKey: string) => {
-    if (global && global.ipcRenderer) {
+    if (window.electronAPI) {
       this.setState({ isDisabled: true });
-      global.ipcRenderer.invoke('folderSelect', this.state.settingsFiltered[settingKey].value).then((response) => {
+      window.electronAPI.folderSelect(this.state.settingsFiltered[settingKey].value).then((response: Electron.OpenDialogReturnValue) => {
         console.log('folderSelect response', response);
         if (!response || !response.filePaths[0]) return this.setState({ isDisabled: false });
         this.state.settingsFiltered[settingKey].value = response.filePaths[0];
@@ -79,7 +79,7 @@ class Settings extends Component<
           isDisabled: false,
           settingsFiltered: this.state.settingsFiltered,
         });
-        global.ipcRenderer.invoke('storeSet', settingKey, response.filePaths[0]).then((response) => {
+        window.electronAPI.storeSet(settingKey, response.filePaths[0]).then((response: any) => {
           if (!response) return;
           console.log('storeSet', settingKey, response);
         });

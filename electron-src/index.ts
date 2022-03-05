@@ -79,8 +79,6 @@ app.on('ready', async () => {
     width: isDev ? 800 + 445 : 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: false,
       preload: join(__dirname, 'preload.js'),
     },
   });
@@ -115,7 +113,7 @@ ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
 
 // Install plugin into root plugin folder locally
 ipcMain.handle('pluginInstall', async (_event, plugin: PluginInterface) => {
-  console.log('pluginInstall', plugin);
+  console.log('pluginInstall index', plugin);
   return await pluginInstall(`${plugin.repo}/${plugin.id}`, plugin.version);
 });
 
