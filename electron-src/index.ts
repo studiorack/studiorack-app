@@ -76,8 +76,8 @@ app.on('ready', async () => {
   });
 
   const mainWindow = new BrowserWindow({
-    width: isDev ? 800 + 445 : 800,
-    height: 600,
+    width: isDev ? 1024 + 445 : 1024,
+    height: 768,
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
     },
