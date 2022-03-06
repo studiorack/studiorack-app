@@ -71,19 +71,21 @@ class Settings extends Component<
   open = (settingKey: string) => {
     if (window.electronAPI) {
       this.setState({ isDisabled: true });
-      window.electronAPI.folderSelect(this.state.settingsFiltered[settingKey].value).then((response: Electron.OpenDialogReturnValue) => {
-        console.log('folderSelect response', response);
-        if (!response || !response.filePaths[0]) return this.setState({ isDisabled: false });
-        this.state.settingsFiltered[settingKey].value = response.filePaths[0];
-        this.setState({
-          isDisabled: false,
-          settingsFiltered: this.state.settingsFiltered,
+      window.electronAPI
+        .folderSelect(this.state.settingsFiltered[settingKey].value)
+        .then((response: Electron.OpenDialogReturnValue) => {
+          console.log('folderSelect response', response);
+          if (!response || !response.filePaths[0]) return this.setState({ isDisabled: false });
+          this.state.settingsFiltered[settingKey].value = response.filePaths[0];
+          this.setState({
+            isDisabled: false,
+            settingsFiltered: this.state.settingsFiltered,
+          });
+          window.electronAPI.storeSet(settingKey, response.filePaths[0]).then((response: any) => {
+            if (!response) return;
+            console.log('storeSet', settingKey, response);
+          });
         });
-        window.electronAPI.storeSet(settingKey, response.filePaths[0]).then((response: any) => {
-          if (!response) return;
-          console.log('storeSet', settingKey, response);
-        });
-      });
     }
   };
 

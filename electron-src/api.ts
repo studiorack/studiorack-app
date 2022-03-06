@@ -1,8 +1,8 @@
 import { ipcRenderer } from 'electron';
 import { PluginInterface } from '@studiorack/core';
 
-function message(message: any) {
-  return ipcRenderer.send('message', message);
+function message(val: any) {
+  return ipcRenderer.send('message', val);
 }
 
 async function pluginsGetLocal(): Promise<any> {
@@ -62,5 +62,5 @@ export default {
   projectOpen,
   folderSelect,
   storeGet,
-  storeSet
+  storeSet,
 };
