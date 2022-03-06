@@ -62,11 +62,11 @@ class ProjectPage extends Component<
     }
   };
 
-  open = () => {
+  open = (path: string) => {
     console.log('open', this.state.project);
     if (window.electronAPI) {
       this.setState({ isDisabled: true });
-      window.electronAPI.projectOpen(this.state.project.path).then((projectOpened: Buffer) => {
+      window.electronAPI.projectOpen(path).then((projectOpened: Buffer) => {
         console.log('projectOpen response', projectOpened);
         this.setState({
           isDisabled: false,
@@ -268,8 +268,11 @@ class ProjectPage extends Component<
                         ))}
                     </ul>
                   </div>
-                  <button className="button" onClick={this.open} disabled={this.state.isDisabled}>
-                    Open
+                  <button className="button" onClick={() => this.open(`${this.state.project.path}/${this.state.project.name}.${this.state.project.type.ext}`)} disabled={this.state.isDisabled}>
+                    Open project
+                  </button>
+                  <button className="button" onClick={() => this.open(this.state.project.path)} disabled={this.state.isDisabled}>
+                    Open folder
                   </button>
                 </div>
               </div>
