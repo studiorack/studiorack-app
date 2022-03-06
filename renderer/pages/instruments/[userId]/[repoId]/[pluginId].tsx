@@ -33,7 +33,7 @@ class PluginPage extends Component<
 
   install = () => {
     console.log('install', this.state.plugin);
-    if (window.electronAPI) {
+    if (typeof window !== 'undefined' && window.electronAPI) {
       console.log('install2', this.state.plugin);
       this.setState({ isDisabled: true });
       console.log('install3', this.state.plugin);
@@ -51,7 +51,7 @@ class PluginPage extends Component<
 
   uninstall = () => {
     console.log('uninstall', this.state.plugin);
-    if (window.electronAPI) {
+    if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
       window.electronAPI.pluginUninstall(this.state.plugin).then((pluginInstalled: PluginLocal) => {
         console.log('pluginUninstall response', pluginInstalled);

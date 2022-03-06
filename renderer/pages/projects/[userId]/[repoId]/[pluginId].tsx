@@ -50,7 +50,7 @@ class ProjectPage extends Component<
 
   install = () => {
     console.log('install', this.state.project);
-    if (window.electronAPI) {
+    if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
       window.electronAPI.pluginsInstall(this.state.project.plugins).then((pluginsInstalled: PluginLocal[]) => {
         console.log('pluginsInstall response', pluginsInstalled);
@@ -64,7 +64,7 @@ class ProjectPage extends Component<
 
   open = (path: string) => {
     console.log('open', this.state.project);
-    if (window.electronAPI) {
+    if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
       window.electronAPI.projectOpen(path).then((projectOpened: Buffer) => {
         console.log('projectOpen response', projectOpened);

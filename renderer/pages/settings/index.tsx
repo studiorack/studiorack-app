@@ -3,7 +3,6 @@ import Head from 'next/head';
 import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/settings.module.css';
 import { GetServerSideProps } from 'next';
-import { withRouter, Router } from 'next/router';
 
 declare module 'react' {
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -18,15 +17,12 @@ type Setting = {
   value: string;
 };
 
-type SettingsProps = {
-  router: Router;
-};
+type SettingsProps = {};
 
 class Settings extends Component<
   SettingsProps,
   {
     isDisabled: boolean;
-    router: Router;
     settingsFiltered: { [property: string]: Setting };
     query: string;
     value: string;
@@ -48,13 +44,12 @@ class Settings extends Component<
           value: '',
         },
       },
-      router: props.router,
       query: '',
       value: '',
     };
 
     // Prototype, find better way to do this
-    if (window.electronAPI) {
+    if (typeof window !== 'undefined' && window.electronAPI) {
       const promises: Promise<any>[] = [];
       Object.keys(this.state.settingsFiltered).forEach((settingKey: string) => {
         promises.push(window.electronAPI.storeGet(settingKey));
@@ -69,7 +64,7 @@ class Settings extends Component<
   }
 
   open = (settingKey: string) => {
-    if (window.electronAPI) {
+    if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
       window.electronAPI
         .folderSelect(this.state.settingsFiltered[settingKey].value)
@@ -120,7 +115,7 @@ class Settings extends Component<
     );
   }
 }
-export default withRouter(Settings);
+export default Settings;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
