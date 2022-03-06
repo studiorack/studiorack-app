@@ -4,7 +4,7 @@ import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/plugins.module.css';
 import GridItem from '../../components/grid-item';
 import { GetServerSideProps } from 'next';
-import { PluginCategory, PluginInterface, pluginLatest, PluginPack, pluginsGet } from '@studiorack/core';
+import { PluginCategory, pluginInstalled, PluginInterface, pluginLatest, PluginLocal, PluginPack, pluginsGet } from '@studiorack/core';
 import { configDefaults } from '@studiorack/core/dist/config-defaults';
 import { filterPlugins } from '../../lib/plugin';
 
@@ -124,7 +124,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const plugins: PluginPack = await pluginsGet('effects');
   const list: PluginInterface[] = [];
   for (const pluginId in plugins) {
-    const plugin: PluginInterface = pluginLatest(plugins[pluginId]);
+    const plugin: PluginLocal = pluginLatest(plugins[pluginId]) as PluginLocal;
+    plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
     list.push(plugin);
   }
   return {

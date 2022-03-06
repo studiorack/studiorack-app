@@ -4,7 +4,7 @@ import Crumb from '../../../../components/crumb';
 import Layout, { siteTitle } from '../../../../components/layout';
 import styles from '../../../../styles/plugins.module.css';
 import GridItem from '../../../../components/grid-item';
-import { PluginInterface, pluginLatest, pluginsGet } from '@studiorack/core';
+import { pluginInstalled, PluginInterface, pluginLatest, PluginLocal, pluginsGet } from '@studiorack/core';
 
 type PluginListProps = {
   plugins: PluginInterface[];
@@ -68,7 +68,8 @@ export async function getServerSideProps({ params }: Params) {
   const plugins = await pluginsGet('instruments');
   const list: PluginInterface[] = [];
   for (const pluginId in plugins) {
-    const plugin: PluginInterface = pluginLatest(plugins[pluginId]);
+    const plugin: PluginLocal = pluginLatest(plugins[pluginId]) as PluginLocal;
+    plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
     if (plugin.repo === `${params.userId}/${params.repoId}`) {
       list.push(plugin);
     }

@@ -18,25 +18,38 @@ const GridItem = ({ section, plugin, pluginIndex }: GridItemProps) => (
           <h4 className={styles.pluginTitle}>
             {plugin.name} <span className={styles.pluginVersion}>v{plugin.version}</span>
           </h4>
-          {plugin.type && plugin.type.ext ? (
-              <span className={styles.projectButton}>
-                <img
-                  className={styles.projectButtonIcon}
-                  src={`${getBasePath()}/icons/icon-${plugin.type.ext}.png`}
-                  alt={plugin.type.name}
-                  loading="lazy"
-                />
-              </span>
-            ) : (
-              <span className={styles.pluginButton}>
-                <img
-                  className={styles.pluginButtonIcon}
-                  src={`${getBasePath()}/images/icon-download.svg`}
-                  alt="Download"
-                  loading="lazy"
-                />
-              </span>
-            )}
+          { plugin.type && plugin.type.ext ? (
+            <span className={styles.projectButton}>
+              <img
+                className={styles.projectButtonIcon}
+                src={`${getBasePath()}/icons/icon-${plugin.type.ext}.png`}
+                alt={plugin.type.name}
+                loading="lazy"
+              />
+            </span>
+          ) : (
+            <div>
+              { plugin.status === 'installed' ? (
+                <span className={styles.pluginButtonInstalled}>
+                  <img
+                    className={styles.pluginButtonIcon}
+                    src={`${getBasePath()}/images/icon-installed.svg`}
+                    alt="Installed"
+                    loading="lazy"
+                  />
+                </span>
+              ) : (
+                <span className={styles.pluginButton}>
+                  <img
+                    className={styles.pluginButtonIcon}
+                    src={`${getBasePath()}/images/icon-download.svg`}
+                    alt="Download"
+                    loading="lazy"
+                  />
+                </span>
+              )}
+            </div>
+          )}
         </div>
         <ul className={styles.pluginTags}>
           <img className={styles.pluginIcon} src={`${getBasePath()}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
