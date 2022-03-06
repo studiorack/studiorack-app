@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout';
 import Head from 'next/head';
 import styles from '../../../../styles/plugin.module.css';
 import { withRouter, Router } from 'next/router';
-import { PluginInterface, PluginLocal, pluginGet } from '@studiorack/core';
+import { PluginInterface, PluginLocal, pluginGet, pluginInstalled } from '@studiorack/core';
 import { pluginFileUrl } from '@studiorack/core/dist/utils';
 
 type PluginProps = {
@@ -344,7 +344,8 @@ type Params = {
 };
 
 export async function getServerSideProps({ params }: Params) {
-  const plugin: PluginInterface = await pluginGet(`${params.userId}/${params.repoId}/${params.pluginId}`);
+  const plugin: PluginLocal = await pluginGet(`${params.userId}/${params.repoId}/${params.pluginId}`) as PluginLocal;
+  plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
   return {
     props: {
       plugin,
