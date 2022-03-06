@@ -344,7 +344,7 @@ type Params = {
 };
 
 export async function getServerSideProps({ params }: Params) {
-  const plugin: PluginLocal = await pluginGet(`${params.userId}/${params.repoId}/${params.pluginId}`) as PluginLocal;
+  const plugin: PluginLocal = (await pluginGet(`${params.userId}/${params.repoId}/${params.pluginId}`)) as PluginLocal;
   plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
   return {
     props: {

@@ -4,7 +4,15 @@ import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/plugins.module.css';
 import GridItem from '../../components/grid-item';
 import { GetServerSideProps } from 'next';
-import { PluginCategory, pluginInstalled, PluginInterface, pluginLatest, PluginLocal, PluginPack, pluginsGet } from '@studiorack/core';
+import {
+  PluginCategory,
+  pluginInstalled,
+  PluginInterface,
+  pluginLatest,
+  PluginLocal,
+  PluginPack,
+  pluginsGet,
+} from '@studiorack/core';
 import { configDefaults } from '@studiorack/core/dist/config-defaults';
 import { filterPlugins } from '../../lib/plugin';
 

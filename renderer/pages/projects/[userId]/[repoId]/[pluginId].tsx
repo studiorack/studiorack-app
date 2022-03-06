@@ -268,10 +268,20 @@ class ProjectPage extends Component<
                         ))}
                     </ul>
                   </div>
-                  <button className="button" onClick={() => this.open(`${this.state.project.path}/${this.state.project.name}.${this.state.project.type.ext}`)} disabled={this.state.isDisabled}>
+                  <button
+                    className="button"
+                    onClick={() =>
+                      this.open(`${this.state.project.path}/${this.state.project.name}.${this.state.project.type.ext}`)
+                    }
+                    disabled={this.state.isDisabled}
+                  >
                     Open project
                   </button>
-                  <button className="button" onClick={() => this.open(this.state.project.path)} disabled={this.state.isDisabled}>
+                  <button
+                    className="button"
+                    onClick={() => this.open(this.state.project.path)}
+                    disabled={this.state.isDisabled}
+                  >
                     Open folder
                   </button>
                 </div>
