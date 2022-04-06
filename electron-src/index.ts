@@ -4,9 +4,13 @@ import { parse } from 'url';
 
 // Packages
 import { BrowserWindow, app, dialog, session, ipcMain, IpcMainEvent, protocol } from 'electron';
+import fixPath from 'fix-path';
 import isDev from 'electron-is-dev';
 import { createServer } from 'http';
 import next from 'next';
+
+// Ensure Electron apps subprocess on macOS and Linux inherit system $PATH
+fixPath();
 
 // custom code
 import {
@@ -28,7 +32,7 @@ app.on('ready', async () => {
   // Use server-side rendering for both dev and production builds
   const nextApp = next({
     dev: isDev,
-    dir: app.getAppPath() + '/renderer',
+    dir: join(app.getAppPath(), 'renderer'),
   });
   const requestHandler = nextApp.getRequestHandler();
 
@@ -51,7 +55,7 @@ app.on('ready', async () => {
 
   // Dock is only available on MacOS
   if (app.dock) {
-    app.dock.setIcon(join(__dirname, '../renderer/out/icons/icon.png'));
+    app.dock.setIcon(join(app.getAppPath(), 'renderer', 'public', 'icons', 'icon.png'));
   }
 
   // enable more secure http header
@@ -79,7 +83,7 @@ app.on('ready', async () => {
     width: isDev ? 1024 + 445 : 1024,
     height: 768,
     webPreferences: {
-      preload: join(__dirname, 'preload.js'),
+      preload: join(app.getAppPath(), 'main', 'preload.js'),
     },
   });
 
