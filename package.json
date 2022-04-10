@@ -1,6 +1,6 @@
 {
   "name": "studiorack-app",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "productName": "StudioRack",
   "description": "Audio plugin app, searchable list of plugins to install and share",
   "main": "main/index.js",
