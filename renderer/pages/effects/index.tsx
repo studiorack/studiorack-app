@@ -38,7 +38,7 @@ class PluginList extends Component<
     super(props);
     this.state = {
       category: 'all',
-      pluginTypes: configDefaults().pluginEffectCategories,
+      pluginTypes: configDefaults('appFolder', 'pluginFolder', 'projectFolder').pluginEffectCategories,
       plugins: props.plugins || [],
       pluginsFiltered: props.plugins || [],
       query: '',
