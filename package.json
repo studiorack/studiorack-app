@@ -1,7 +1,7 @@
 {
   "name": "studiorack-app",
   "version": "0.0.30",
-  "productName": "StudioRack",
+  "productName": "StudioRack App",
   "description": "Audio plugin app, searchable list of plugins to install and share",
   "main": "main/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "build": {
     "appId": "io.github.studiorack",
-    "productName": "StudioRack",
+    "productName": "StudioRack App",
     "artifactName": "studiorack-${os}.${ext}",
     "asar": true,
     "asarUnpack": [
