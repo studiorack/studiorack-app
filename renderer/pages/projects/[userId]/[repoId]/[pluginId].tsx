@@ -6,9 +6,8 @@ import styles from '../../../../styles/plugin.module.css';
 import stylesPlugin from '../../../../styles/plugins.module.css';
 import { GetServerSideProps } from 'next';
 import { withRouter, Router } from 'next/router';
-import { configSet, pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core';
+import { pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core';
 import { idToSlug, slugToId } from '@studiorack/core/dist/utils';
-import { store } from '../../../../../electron-src/store';
 import { Params } from 'next/dist/server/router';
 
 type ProjectProps = {
@@ -405,7 +404,6 @@ class ProjectPage extends Component<
 export default withRouter(ProjectPage);
 
 export const getServerSideProps: GetServerSideProps = async ({ params }: Params) => {
-  configSet('projectFolder', store.get('projectFolder'));
   console.log(`${params.userId}/${params.repoId}/${params.pluginId}`);
   const project = await projectGetLocal(`${params.userId}/${params.repoId}/${params.pluginId}`);
   console.log(project);

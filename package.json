@@ -74,7 +74,6 @@
     "@studiorack/core": "^1.1.52",
     "electron-is-dev": "^2.0.0",
     "electron-next": "^3.1.5",
-    "electron-store": "^8.0.1",
     "fix-path": "^3.0.0",
     "gray-matter": "^4.0.3",
     "next": "^12.0.4",

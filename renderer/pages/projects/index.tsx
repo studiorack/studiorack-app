@@ -4,8 +4,7 @@ import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/plugins.module.css';
 import GridItem from '../../components/grid-item';
 import { GetServerSideProps } from 'next';
-import { configGet, configSet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core';
-import { store } from '../../../electron-src/store';
+import { configGet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core';
 
 type ProjectListProps = {
   category: string;
@@ -130,7 +129,6 @@ class ProjectList extends Component<
 export default ProjectList;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  configSet('projectFolder', store.get('projectFolder'));
   const projects = await projectsGetLocal();
   const projectTypesFound: { [property: string]: boolean } = {};
   projects.sort((a: ProjectLocal, b: ProjectLocal) => {

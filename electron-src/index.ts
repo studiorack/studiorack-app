@@ -22,8 +22,10 @@ import {
   pluginUninstall,
   projectGetLocal,
   projectsGetLocal,
+  configGet,
+  ConfigInterface,
+  configSet,
 } from '@studiorack/core';
-import { store } from './store';
 
 const DEFAULT_PAGE = 'projects';
 
@@ -166,18 +168,18 @@ ipcMain.handle('folderSelect', async (_event, path: string) => {
 });
 
 // Get user-specific setting
-ipcMain.handle('storeGet', async (_event, key: string) => {
-  console.log('storeGet', key);
+ipcMain.handle('storeGet', async (_event, key: keyof ConfigInterface) => {
+  console.log('storeGet', key, configGet(key));
   if (!key) return;
   return {
     key,
-    value: store.get(key),
+    value: configGet(key),
   };
 });
 
 // Set user-specific setting
-ipcMain.handle('storeSet', async (_event, key: string, val: any) => {
+ipcMain.handle('storeSet', async (_event, key: keyof ConfigInterface, val: any) => {
   console.log('storeSet', key, val);
   if (!key || !val) return;
-  return store.set(key, val);
+  return configSet(key, val);
 });

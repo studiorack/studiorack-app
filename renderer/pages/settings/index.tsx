@@ -56,6 +56,7 @@ class Settings extends Component<
       });
       Promise.all(promises).then((responses) => {
         responses.forEach((response) => {
+          console.log(response);
           this.state.settingsFiltered[response.key].value = response.value;
         });
         this.setState({ settingsFiltered: this.state.settingsFiltered });
