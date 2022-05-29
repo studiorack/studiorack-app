@@ -26,15 +26,7 @@
     "artifactName": "studiorack-${os}.${ext}",
     "asar": true,
     "asarUnpack": [
-      "node_modules/@studiorack",
-      "node_modules/@vscode",
-      "node_modules/adm-zip",
-      "node_modules/glob",
-      "node_modules/node-fetch",
-      "node_modules/nodejs-fs-utils",
-      "node_modules/readline-sync",
-      "node_modules/semver",
-      "node_modules/slugify"
+      "node_modules"
     ],
     "files": [
       "main",
