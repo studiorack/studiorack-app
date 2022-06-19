@@ -30,7 +30,7 @@ const Dependency = ({ plugin, message = false }: DependencyProps) => {
           {' '}
           (This instrument needs to be loaded into a{' '}
           <a href={`${getBasePath()}/instruments/studiorack/juicysf/juicysf`} target="_blank">
-            SoundsFont 2 player
+            SoundFont 2 player
           </a>
           )
         </span>
