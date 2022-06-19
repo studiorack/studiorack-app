@@ -1,4 +1,5 @@
 import styles from '../styles/plugin.module.css';
+import { getBasePath } from '../lib/path';
 import { PluginInterface } from '@studiorack/core';
 
 type DependencyProps = {
@@ -13,7 +14,7 @@ const Dependency = ({ plugin, message = false }: DependencyProps) => {
         <span>
           {' '}
           (This instrument needs to be loaded into a{' '}
-          <a href="/instruments/studiorack/sfizz/sfizz" target="_blank">
+          <a href={`${getBasePath()}/instruments/studiorack/sfizz/sfizz`} target="_blank">
             SFZ player
           </a>
           )
@@ -28,7 +29,7 @@ const Dependency = ({ plugin, message = false }: DependencyProps) => {
         <span>
           {' '}
           (This instrument needs to be loaded into a{' '}
-          <a href="/instruments/studiorack/juicysf/juicysf" target="_blank">
+          <a href={`${getBasePath()}/instruments/studiorack/juicysf/juicysf`} target="_blank">
             SoundsFont 2 player
           </a>
           )
