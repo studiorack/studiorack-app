@@ -6,10 +6,12 @@ title: 'Develop new plugins'
 
 We have plugin templates which automate plugin builds
 
+- [studiorack-template-clap](https://github.com/studiorack/studiorack-template-clap)
 - [studiorack-template-dpf](https://github.com/studiorack/studiorack-template-dpf)
 - [studiorack-template-dplug](https://github.com/studiorack/studiorack-template-dplug)
 - [studiorack-template-iplug](https://github.com/studiorack/studiorack-template-iplug)
 - [studiorack-template-juce](https://github.com/studiorack/studiorack-template-juce)
+- [studiorack-template-sf2](https://github.com/studiorack/studiorack-template-sf2)
 - [studiorack-template-sfz](https://github.com/studiorack/studiorack-template-sfz)
 - [studiorack-template-steinberg](https://github.com/studiorack/studiorack-template-steinberg)
 

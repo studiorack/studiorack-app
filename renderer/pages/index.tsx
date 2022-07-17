@@ -74,6 +74,9 @@ const Home = () => (
             Our plugin starter templates use GitHub Actions to automatically build your plugin, publishing Windows, Mac
             and Linux versions directly to GitHub Releases.
           </p>
+          <a className="button" href="https://github.com/studiorack/studiorack-template-clap" target="_blank">
+            CLAP
+          </a>
           <a className="button" href="https://github.com/studiorack/studiorack-template-dpf" target="_blank">
             DPF
           </a>
@@ -85,6 +88,9 @@ const Home = () => (
           </a>
           <a className="button" href="https://github.com/studiorack/studiorack-template-juce" target="_blank">
             JUCE
+          </a>
+          <a className="button" href="https://github.com/studiorack/studiorack-template-sf2" target="_blank">
+            SF2
           </a>
           <a className="button" href="https://github.com/studiorack/studiorack-template-sfz" target="_blank">
             SFZ

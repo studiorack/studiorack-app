@@ -83,9 +83,13 @@ Other commands:
 
 `studiorack plugin create <path> --type <type>` creates a new plugin using the starter template with one of the types:
 
+    clap
+    dpf
     dplug
     iplug
     juce
+    sf2
+    sfz
     steinberg
 
 Follow the instructions in generated README.md to install and build your plugin.
