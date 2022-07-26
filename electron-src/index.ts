@@ -68,12 +68,12 @@ app.on('ready', async () => {
         'Content-Security-Policy': [
           `
           default-src 'self' *.youtube.com;
-          connect-src 'self' *.github.io data:;
+          connect-src 'self' *.github.io data: *.google-analytics.com;
           font-src 'self' fonts.gstatic.com;
           img-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com *.youtube.com data: media:;
           media-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com *.youtube.com media:;
           object-src 'none';
-          script-src 'self' 'unsafe-inline' 'unsafe-eval' *.doubleclick.net *.google.com *.gstatic.com;
+          script-src 'self' 'unsafe-inline' 'unsafe-eval' *.doubleclick.net *.google.com *.gstatic.com *.googletagmanager.com *.google-analytics.com;
           style-src 'self' 'unsafe-inline' fonts.googleapis.com
           `,
         ],
