@@ -1,5 +1,7 @@
 .plugins {
+  box-sizing: border-box;
   padding: 2rem 1.5rem;
+  width: 100%;
 }
 
 .pluginsTitle {
@@ -87,6 +89,24 @@
     display: grid;
     grid-auto-rows: minmax(100px, auto);
     grid-gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 64rem) {
+  .pluginsList {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 120rem) {
+  .pluginsList {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 160rem) {
+  .pluginsList {
+    grid-template-columns: repeat(5, 1fr);
   }
 }

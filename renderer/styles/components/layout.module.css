@@ -29,7 +29,7 @@
   font-weight: 700;
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 64rem) {
   .headerLink {
     padding: 1rem 1.5rem;
   }
