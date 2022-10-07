@@ -1,5 +1,6 @@
 import { Component, ChangeEvent } from 'react';
 import Head from 'next/head';
+import { withRouter, Router } from 'next/router';
 import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/plugins.module.css';
 import GridItem from '../../components/grid-item';
@@ -22,6 +23,7 @@ type PluginListProps = {
   plugins: PluginInterface[];
   pluginsFiltered: PluginInterface[];
   query: string;
+  router: Router;
 };
 
 class PluginList extends Component<
@@ -32,32 +34,55 @@ class PluginList extends Component<
     plugins: PluginInterface[];
     pluginsFiltered: PluginInterface[];
     query: string;
+    router: Router;
   }
 > {
   constructor(props: PluginListProps) {
     super(props);
+    const params = props.router.query;
+    const category = (params.category as string) || 'all';
+    const pluginTypes = configDefaults('appFolder', 'pluginFolder', 'projectFolder').pluginEffectCategories;
+    const plugins = props.plugins || [];
+    const query = (params.query as string) || '';
     this.state = {
-      category: 'all',
-      pluginTypes: configDefaults('appFolder', 'pluginFolder', 'projectFolder').pluginEffectCategories,
-      plugins: props.plugins || [],
-      pluginsFiltered: props.plugins || [],
-      query: '',
+      category,
+      pluginTypes,
+      plugins,
+      pluginsFiltered: filterPlugins(category, plugins, pluginTypes, query),
+      query,
+      router: props.router,
     };
   }
+
+  componentDidUpdate(prevProps: any) {
+    const paramPrev = prevProps.router.query;
+    const params = this.props.router.query;
+    if (params.category !== paramPrev.category) {
+      this.setState({ category: params.category as string }, () => {
+        this.updateFilter();
+      });
+    }
+    if (params.query !== paramPrev.query) {
+      this.setState({ query: params.query as string }, () => {
+        this.updateFilter();
+      });
+    }
+  }
+
+  updateFilter() {
+    this.setState({
+      pluginsFiltered: filterPlugins(this.state.category, this.state.plugins, this.state.pluginTypes, this.state.query),
+    });
+  }
+
+  updateUrl = (category: string, query: string) => {
+    this.state.router.push(`/effects?category=${category}&query=${query}`, undefined, { shallow: true });
+  };
 
   handleChange = (event: ChangeEvent) => {
     const el = event.target as HTMLInputElement;
     const query = el.value ? el.value.toLowerCase() : '';
-    this.setState({ query }, () => {
-      this.setState({
-        pluginsFiltered: filterPlugins(
-          this.state.category,
-          this.state.plugins,
-          this.state.pluginTypes,
-          this.state.query
-        ),
-      });
-    });
+    this.updateUrl(this.state.category, query);
   };
 
   isSelected = (path: string) => {
@@ -66,16 +91,7 @@ class PluginList extends Component<
 
   selectCategory = (event: React.MouseEvent): void => {
     const category = (event.currentTarget as HTMLTextAreaElement).getAttribute('data-category') || '';
-    this.setState({ category }, () => {
-      this.setState({
-        pluginsFiltered: filterPlugins(
-          this.state.category,
-          this.state.plugins,
-          this.state.pluginTypes,
-          this.state.query
-        ),
-      });
-    });
+    this.updateUrl(category, this.state.query);
   };
 
   render() {
@@ -92,6 +108,7 @@ class PluginList extends Component<
             <input
               className={styles.pluginsSearch}
               placeholder="Filter by keyword"
+              type="search"
               value={this.state.query}
               onChange={this.handleChange}
             />
@@ -126,7 +143,7 @@ class PluginList extends Component<
     );
   }
 }
-export default PluginList;
+export default withRouter(PluginList);
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const plugins: PluginPack = await pluginsGet('effects');
