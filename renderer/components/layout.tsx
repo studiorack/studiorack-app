@@ -13,8 +13,9 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => (
   <div className={styles.container}>
     <Head>
+      <title>{siteTitle}</title>
       <meta name="description" content={siteDesc} />
-      <meta property="og:image" content={`${getBasePath()}/images/creators-mobile.jpg`} />
+      <meta name="og:image" content={`${getBasePath()}/images/creators-mobile.jpg`} />
       <meta name="og:title" content={siteTitle} />
       <meta name="twitter:card" content="summary_large_image" />
       <link
