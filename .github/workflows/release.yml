@@ -44,7 +44,7 @@ jobs:
       - name: Setup
         shell: bash
         run: |
-          npm install
+          npm ci
 
       - name: Build
         shell: bash
