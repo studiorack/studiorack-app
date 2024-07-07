@@ -1,7 +1,21 @@
 # studiorack-app
 ![Release](https://github.com/studiorack/studiorack-app/workflows/Release/badge.svg)
 
-Audio plugin app, searchable list of plugins to install and share using:
+Audio plugin app, searchable list of plugins to install and share.
+
+![StudioRack App](/screenshot.jpg)
+
+## Installation
+
+Navigate to GitHub Releases and find the latest download for your system:
+
+    https://github.com/studiorack/studiorack-app/releases
+
+Download the file and open to install the app on to your machine. Follow instructions within the app.
+
+## Developer information
+
+StudioRack App was built using:
 
 * NodeJS 17.x
 * TypeScript 4.x
