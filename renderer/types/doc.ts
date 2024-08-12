@@ -1,7 +1,7 @@
 type Doc = {
-  slug: string
-  title: string
-  content: string
-}
+  slug: string;
+  title: string;
+  content: string;
+};
 
-export default Doc
+export default Doc;

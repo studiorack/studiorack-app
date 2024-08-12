@@ -1,16 +1,24 @@
 import { Component } from 'react';
-import Crumb from '../../../../components/crumb';
-import Layout from '../../../../components/layout';
-import Head from 'next/head';
-import styles from '../../../../styles/plugin.module.css';
-import { withRouter, Router } from 'next/router';
-import { PluginLocal, pluginGet, pluginInstalled } from '@studiorack/core';
-import { pluginFileUrl } from '@studiorack/core/dist/utils';
-import Dependency from '../../../../components/dependency';
-import Downloads from '../../../../components/download';
+import Crumb from '../../../components/crumb';
+import Layout from '../../../components/layout';
+import Head from 'next/head.js';
+import styles from '../../../styles/plugin.module.css';
+import { withRouter, Router } from 'next/router.js';
+import { pluginGet, pluginInstalled } from '../../../../node_modules/@studiorack/core/build/plugin';
+import { PluginVersionLocal } from '@studiorack/core';
+import { pluginFileUrl } from '../../../../node_modules/@studiorack/core/build/utils';
+import Dependency from '../../../components/dependency';
+import Downloads from '../../../components/download';
+import { pluginLicense } from '../../../lib/plugin';
+
+declare global {
+  interface Window {
+    Sfz: any;
+  }
+}
 
 type PluginProps = {
-  plugin: PluginLocal;
+  plugin: PluginVersionLocal;
   router: Router;
 };
 
@@ -20,7 +28,7 @@ class PluginPage extends Component<
     isDisabled: boolean;
     isPlaying: boolean;
     router: Router;
-    plugin: PluginLocal;
+    plugin: PluginVersionLocal;
   }
 > {
   constructor(props: PluginProps) {
@@ -31,15 +39,14 @@ class PluginPage extends Component<
       plugin: props.plugin,
       router: props.router,
     };
+    console.log(props.plugin);
   }
 
   install = () => {
     console.log('install', this.state.plugin);
     if (typeof window !== 'undefined' && window.electronAPI) {
-      console.log('install2', this.state.plugin);
       this.setState({ isDisabled: true });
-      console.log('install3', this.state.plugin);
-      window.electronAPI.pluginInstall(this.state.plugin).then((pluginInstalled: PluginLocal) => {
+      window.electronAPI.pluginInstall(this.state.plugin).then((pluginInstalled: PluginVersionLocal) => {
         console.log('pluginInstall response', pluginInstalled);
         this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;
@@ -55,7 +62,7 @@ class PluginPage extends Component<
     console.log('uninstall', this.state.plugin);
     if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
-      window.electronAPI.pluginUninstall(this.state.plugin).then((pluginInstalled: PluginLocal) => {
+      window.electronAPI.pluginUninstall(this.state.plugin).then((pluginInstalled: PluginVersionLocal) => {
         console.log('pluginUninstall response', pluginInstalled);
         this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;
@@ -161,6 +168,29 @@ class PluginPage extends Component<
     }
   }
 
+  // Prototype of embedded sfz web player.
+  // There are better ways to do this.
+  loadSfzPlayer(event: React.MouseEvent) {
+    const el = document.getElementById('sfzPlayer');
+    if (!el) return;
+    if (el.className === 'open') {
+      el.className = '';
+      return;
+    }
+    const name = (event.currentTarget as HTMLTextAreaElement).getAttribute('data-name') || '';
+    const id = (event.currentTarget as HTMLTextAreaElement).getAttribute('data-id') || '';
+    console.log('loadSfzPlayer', name, id);
+    el.innerHTML = '';
+    const player = new window.Sfz.Player('sfzPlayer', {
+      audio: {},
+      instrument: { name, id },
+      interface: {},
+    });
+    window.setTimeout(() => {
+      el.className = 'open';
+    }, 0);
+  }
+
   render() {
     return (
       <Layout>
@@ -171,16 +201,34 @@ class PluginPage extends Component<
           <meta name="og:title" content={this.state.plugin.name || ''} />
         </Head>
         <article>
+          <div id="sfzPlayer"></div>
           <div className={styles.header}>
             <div className={styles.headerInner2}>
               <Crumb
-                items={['instruments', this.state.plugin.repo.split('/')[0], this.state.plugin.repo.split('/')[1]]}
+                items={[
+                  'instruments',
+                  this.state.plugin.id?.split('/')[0] || '',
+                  this.state.plugin.id?.split('/')[1] || '',
+                ]}
               ></Crumb>
             </div>
             <div className={styles.headerInner}>
               <div className={styles.media}>
                 <div className={styles.imageContainer}>
                   {this.state.plugin.files.audio ? this.getPlayButton() : ''}
+                  {this.state.plugin.tags.includes('sfz') ? (
+                    <img
+                      className={styles.sfzPlayer}
+                      data-name={this.state.plugin.name}
+                      data-id={this.state.plugin.id}
+                      src={`${this.state.router.basePath}/images/sfz-player.png`}
+                      alt="open in sfz player"
+                      loading="lazy"
+                      onClick={this.loadSfzPlayer}
+                    />
+                  ) : (
+                    ''
+                  )}
                   {this.state.plugin.files.image ? (
                     <img
                       className={styles.image}
@@ -232,8 +280,8 @@ class PluginPage extends Component<
                       loading="lazy"
                     />{' '}
                     {this.state.plugin.license ? (
-                      <a href={this.state.plugin.license.url} target="_blank">
-                        {this.state.plugin.license.name}
+                      <a href={pluginLicense(this.state.plugin.license).url} target="_blank">
+                        {pluginLicense(this.state.plugin.license).name}
                       </a>
                     ) : (
                       'none'
@@ -249,20 +297,26 @@ class PluginPage extends Component<
                     <ul className={styles.tags}>
                       {this.state.plugin.tags.map((tag: string, tagIndex: number) => (
                         <li className={styles.tag} key={`${tag}-${tagIndex}`}>
-                          {tag},
+                          {tag}
+                          {tagIndex !== this.state.plugin.tags.length - 1 ? ',' : ''}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  {this.state.plugin.status !== 'installed' ? (
-                    <button className={styles.button} onClick={this.install} disabled={this.state.isDisabled}>
-                      Install<span className={styles.progress}>ing...</span>
-                    </button>
-                  ) : (
-                    <button className="button button" onClick={this.uninstall} disabled={this.state.isDisabled}>
-                      Uninstall
-                    </button>
-                  )}
+                  <div className={styles.metadataFooter}>
+                    {this.state.plugin.status !== 'installed' ? (
+                      <button className={styles.button} onClick={this.install} disabled={this.state.isDisabled}>
+                        Install<span className={styles.progress}>ing...</span>
+                      </button>
+                    ) : (
+                      <button className="button button" onClick={this.uninstall} disabled={this.state.isDisabled}>
+                        Uninstall
+                      </button>
+                    )}
+                    <a href={this.state.plugin.homepage} target="_blank">
+                      <button className="button button-clear">View source</button>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -282,9 +336,7 @@ class PluginPage extends Component<
                   :
                 </p>
                 <Dependency plugin={this.state.plugin} />
-                <pre className={styles.codeBox}>
-                  studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}
-                </pre>
+                <pre className={styles.codeBox}>studiorack plugin install {this.state.plugin.id}</pre>
               </div>
             </div>
           </div>
@@ -298,14 +350,14 @@ export default withRouter(PluginPage);
 type Params = {
   params: {
     pluginId: string;
-    repoId: string;
     userId: string;
   };
 };
 
 export async function getServerSideProps({ params }: Params) {
-  const plugin: PluginLocal = (await pluginGet(`${params.userId}/${params.repoId}/${params.pluginId}`)) as PluginLocal;
+  const plugin: PluginVersionLocal = (await pluginGet(`${params.userId}/${params.pluginId}`)) as PluginVersionLocal;
   plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
+  console.log(plugin);
   return {
     props: {
       plugin,

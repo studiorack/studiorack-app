@@ -14,17 +14,17 @@
 
 .setting {
   background-color: #111;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   max-height: 200px;
   overflow: hidden;
   padding: 1.5rem 1.5rem 0 1.5rem;
   margin-bottom: 1rem;
-  transition: background-color .25s ease-out;
+  transition: background-color 0.25s ease-out;
 }
 
 .settingTitle {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 @media (min-width: 48rem) {

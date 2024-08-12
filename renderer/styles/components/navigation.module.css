@@ -4,7 +4,7 @@
   display: block;
   padding: 1.5rem;
   text-decoration: none;
-  transition: border .25s ease-out;
+  transition: border 0.25s ease-out;
 }
 
 .navItem:hover,
@@ -13,13 +13,13 @@
 }
 
 .navButton {
-  margin: .5rem;
+  margin: 0.5rem;
   padding: 1rem;
 }
 
 .navButtonIcon {
   height: 15px;
-  margin-left: .5rem;
+  margin-left: 0.5rem;
   width: 15px;
 }
 
@@ -33,7 +33,7 @@
 .menu {
   clear: both;
   max-height: 0;
-  transition: max-height .2s ease-out;
+  transition: max-height 0.2s ease-out;
 }
 
 .menuIcn {
@@ -49,7 +49,7 @@
   display: block;
   height: 2px;
   position: relative;
-  transition: background .2s ease-out;
+  transition: background 0.2s ease-out;
   width: 18px;
 }
 
@@ -60,7 +60,7 @@
   display: block;
   height: 100%;
   position: absolute;
-  transition: all .2s ease-out;
+  transition: all 0.2s ease-out;
   width: 100%;
 }
 
@@ -99,7 +99,7 @@
 
 @media (min-width: 48rem) {
   .navItem {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
   }
   .menu {
     clear: none;

@@ -1,0 +1,32 @@
+{
+  "id": "songs/april",
+  "author": "studiorack-user",
+  "homepage": "https://studiorack.github.io/studiorack-site/",
+  "name": "StudioRack Project",
+  "description": "Created using StudioRack",
+  "tags": ["StudioRack"],
+  "version": "1.0.0",
+  "license": "cc0-1.0",
+  "date": "2024-08-03T05:46:34.163Z",
+  "type": {
+    "name": "Ableton",
+    "ext": "als"
+  },
+  "files": {
+    "audio": {
+      "url": "",
+      "size": 0
+    },
+    "image": {
+      "url": "",
+      "size": 0
+    },
+    "project": {
+      "url": "",
+      "size": 0
+    }
+  },
+  "plugins": {},
+  "path": "songs/april/example.als",
+  "status": "installed"
+}

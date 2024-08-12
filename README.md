@@ -1,4 +1,5 @@
 # studiorack-app
+
 ![Release](https://github.com/studiorack/studiorack-app/workflows/Release/badge.svg)
 
 Audio plugin app, searchable list of plugins to install and share.
@@ -17,12 +18,11 @@ Download the file and open to install the app on to your machine. Follow instruc
 
 StudioRack App was built using:
 
-* NodeJS 17.x
-* TypeScript 4.x
-* NextJS 12.x
-* React 17.x
-* Electron 15.x
-
+- NodeJS 20.x
+- TypeScript 5.x
+- NextJS 14.x
+- React 18.x
+- Electron
 
 ## Installation
 
@@ -30,15 +30,19 @@ Install dependencies using:
 
     npm install
 
-
 ## Usage
 
 Run the development server using:
 
     npm run dev
 
-View the app in the application window opened automatically
+View the site at:
 
+    http://localhost:3000
+
+Get the api at:
+
+    http://localhost:3000/api/plugins
 
 ## Deployment
 
@@ -50,7 +54,6 @@ Release an updated version on GitHub by simply creating a version tag:
 This will run an automated build and deploy process on GitHub Actions:
 
     .github/workflows/release.yml
-
 
 ## Contact
 

@@ -42,7 +42,7 @@ class DocPage extends Component<
     let content = this.state.doc.content.replace('/docs', `${this.state.router.basePath}/docs`);
     content = content.replace(
       /<h2>(.*?)<\/h2>/g,
-      (tag, title) => `<span id="${this.convertToSlug(title)}"></span>${tag}`
+      (tag, title) => `<span id="${this.convertToSlug(title)}"></span>${tag}`,
     );
     return (
       <Layout>
@@ -67,7 +67,7 @@ async function markdownToHtml(markdown: string) {
   return result.toString();
 }
 
-export async function getStaticProps({ params }: Params) {
+export async function getServerSideProps({ params }: Params) {
   const allDocs = getAllDocs(['title', 'slug']);
 
   const doc = getDocBySlug(params.slug, ['title', 'slug', 'content']) as Doc;
@@ -81,20 +81,5 @@ export async function getStaticProps({ params }: Params) {
         content,
       },
     },
-  };
-}
-
-export async function getStaticPaths() {
-  const docs = getAllDocs(['slug']) as Doc[];
-
-  return {
-    paths: docs.map((doc) => {
-      return {
-        params: {
-          slug: doc.slug,
-        },
-      };
-    }),
-    fallback: false,
   };
 }

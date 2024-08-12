@@ -24,9 +24,9 @@
 }
 
 .pluginsCategoryWrapper:after {
-  background-image: linear-gradient(to right, rgba(255,255,255,0), black 90%);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), black 90%);
   bottom: 0;
-  content: "";
+  content: '';
   pointer-events: none;
   position: absolute;
   right: 0;
@@ -52,9 +52,9 @@
   border-radius: 1rem;
   cursor: pointer;
   display: inline-block;
-  margin-right: .5rem;
-  padding: .5rem .75rem;
-  transition: background-color .25s ease-out;
+  margin-right: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  transition: background-color 0.25s ease-out;
 }
 
 .pluginsCategory a:hover {
@@ -72,13 +72,13 @@
 
 .pluginsSearch {
   background-color: #111;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   border: 0;
   color: #999;
   font-size: 16px;
   max-width: 180px;
   margin-bottom: 1rem;
-  padding: .75rem 1rem;
+  padding: 0.75rem 1rem;
   text-overflow: ellipsis;
 }
 

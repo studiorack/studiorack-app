@@ -1,61 +1,86 @@
 import { Component, ChangeEvent } from 'react';
 import Head from 'next/head';
+import { withRouter, Router } from 'next/router';
 import Layout, { siteTitle } from '../../components/layout';
 import styles from '../../styles/plugins.module.css';
 import GridItem from '../../components/grid-item';
 import { GetServerSideProps } from 'next';
-import { configGet, ProjectLocal, projectsGetLocal, ProjectType, ProjectTypes } from '@studiorack/core';
+import { ProjectVersionLocal, ProjectTypes } from '@studiorack/core';
+import { projectsGetLocal } from '../../../node_modules/@studiorack/core/build/project';
+import { configDefaults } from '../../../node_modules/@studiorack/core/build/config-defaults';
+import { filterProjects } from '../../lib/project';
 
 type ProjectListProps = {
   category: string;
-  projectTypes: { [property: string]: ProjectType };
-  projects: ProjectLocal[];
-  projectsFiltered: ProjectLocal[];
+  projectTypes: ProjectTypes;
+  projects: ProjectVersionLocal[];
+  projectsFiltered: ProjectVersionLocal[];
   query: string;
+  router: Router;
 };
 
 class ProjectList extends Component<
   ProjectListProps,
   {
     category: string;
-    projectTypes: { [property: string]: ProjectType };
-    projects: ProjectLocal[];
-    projectsFiltered: ProjectLocal[];
+    projectTypes: ProjectTypes;
+    projects: ProjectVersionLocal[];
+    projectsFiltered: ProjectVersionLocal[];
     query: string;
+    router: Router;
   }
 > {
   constructor(props: ProjectListProps) {
     super(props);
+    const params = props.router.query;
+    const category = (params.category as string) || 'all';
+    const projectTypes = configDefaults('appFolder', 'pluginFolder', 'presetFolder', 'projectFolder').projectTypes;
+    const projects = props.projects || [];
+    const query = (params.query as string) || '';
     this.state = {
-      category: 'all',
-      projectTypes: props.projectTypes,
-      projects: props.projects || [],
-      projectsFiltered: props.projects || [],
-      query: '',
+      category,
+      projectTypes,
+      projects,
+      projectsFiltered: filterProjects(category, projects, projectTypes, query),
+      query,
+      router: props.router,
     };
   }
 
-  filterProjects = () => {
-    console.log('filterProjects', this.state);
-    return this.state.projects.filter((project) => {
-      if (
-        (this.state.category === 'all' || this.state.category === project.type?.ext) &&
-        (project.name.toLowerCase().indexOf(this.state.query) !== -1 ||
-          project.description.toLowerCase().indexOf(this.state.query) !== -1 ||
-          project.tags.includes(this.state.query))
-      ) {
-        return project;
-      }
-      return false;
+  componentDidUpdate(prevProps: any) {
+    const paramPrev = prevProps.router.query;
+    const params = this.props.router.query;
+    if (params.category !== paramPrev.category) {
+      this.setState({ category: params.category as string }, () => {
+        this.updateFilter();
+      });
+    }
+    if (params.query !== paramPrev.query) {
+      this.setState({ query: params.query as string }, () => {
+        this.updateFilter();
+      });
+    }
+  }
+
+  updateFilter() {
+    this.setState({
+      projectsFiltered: filterProjects(
+        this.state.category,
+        this.state.projects,
+        this.state.projectTypes,
+        this.state.query,
+      ),
     });
+  }
+
+  updateUrl = (category: string, query: string) => {
+    this.state.router.push(`/projects?category=${category}&query=${query}`, undefined, { shallow: true });
   };
 
   handleChange = (event: ChangeEvent) => {
     const el = event.target as HTMLInputElement;
     const query = el.value ? el.value.toLowerCase() : '';
-    this.setState({ query }, () => {
-      this.setState({ projectsFiltered: this.filterProjects() });
-    });
+    this.updateUrl(this.state.category, query);
   };
 
   isSelected = (path: string) => {
@@ -64,14 +89,8 @@ class ProjectList extends Component<
 
   selectCategory = (event: React.MouseEvent): void => {
     const category = (event.currentTarget as HTMLTextAreaElement).getAttribute('data-category') || '';
-    this.setState({ category }, () => {
-      this.setState({ projectsFiltered: this.filterProjects() });
-    });
+    this.updateUrl(category, this.state.query);
   };
-
-  getFolder(path: string) {
-    return path.slice(0, path.lastIndexOf('/'));
-  }
 
   render() {
     return (
@@ -87,6 +106,7 @@ class ProjectList extends Component<
             <input
               className={styles.pluginsSearch}
               placeholder="Filter by keyword"
+              type="search"
               value={this.state.query}
               onChange={this.handleChange}
             />
@@ -101,9 +121,9 @@ class ProjectList extends Component<
               {Object.keys(this.state.projectTypes).map((projectTypeKey: string, projectTypeIndex: number) => (
                 <li key={`${projectTypeKey}-${projectTypeIndex}`}>
                   <a
-                    data-category={this.state.projectTypes[projectTypeKey].ext}
+                    data-category={projectTypeKey}
                     onClick={this.selectCategory}
-                    className={this.isSelected(this.state.projectTypes[projectTypeKey].ext)}
+                    className={this.isSelected(projectTypeKey)}
                   >
                     {this.state.projectTypes[projectTypeKey].name}
                   </a>
@@ -112,12 +132,12 @@ class ProjectList extends Component<
             </ul>
           </div>
           <div className={styles.pluginsList}>
-            {this.state.projectsFiltered.map((project: ProjectLocal, projectIndex: number) => (
+            {this.state.projectsFiltered.map((project: ProjectVersionLocal, projectIndex: number) => (
               <GridItem
                 section="projects"
                 plugin={project}
                 pluginIndex={projectIndex}
-                key={`${project.repo}/${project.id}-${projectIndex}`}
+                key={`${project.id}-${projectIndex}`}
               ></GridItem>
             ))}
           </div>
@@ -126,29 +146,17 @@ class ProjectList extends Component<
     );
   }
 }
-export default ProjectList;
+export default withRouter(ProjectList);
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const projects = await projectsGetLocal();
-  const projectTypesFound: { [property: string]: boolean } = {};
-  projects.sort((a: ProjectLocal, b: ProjectLocal) => {
-    if (a.type?.ext) projectTypesFound[a.type?.ext] = true;
-    if (b.type?.ext) projectTypesFound[b.type?.ext] = true;
-    return a.date < b.date ? 1 : -1;
-  });
-  const projectTypesFiltered: { [property: string]: ProjectType } = {};
-  const projectTypes: ProjectTypes = configGet('projectTypes');
-  Object.keys(projectTypes).forEach((projectKey: string) => {
-    const projectType: ProjectType = projectTypes[projectKey as keyof ProjectTypes];
-    if (projectTypesFound[projectType.ext]) {
-      projectTypesFiltered[projectKey] = projectTypes[projectKey as keyof ProjectTypes];
-    }
+  let projects = await projectsGetLocal();
+  projects = projects.sort(function (a: ProjectVersionLocal, b: ProjectVersionLocal) {
+    return a.name.localeCompare(b.name);
   });
   return {
     props: {
       projects,
       projectsFiltered: projects,
-      projectTypes: projectTypesFiltered,
     },
   };
 };

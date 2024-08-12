@@ -54,8 +54,8 @@ class Settings extends Component<
       Object.keys(this.state.settingsFiltered).forEach((settingKey: string) => {
         promises.push(window.electronAPI.storeGet(settingKey));
       });
-      Promise.all(promises).then((responses) => {
-        responses.forEach((response) => {
+      Promise.all(promises).then(responses => {
+        responses.forEach(response => {
           console.log(response);
           this.state.settingsFiltered[response.key].value = response.value;
         });

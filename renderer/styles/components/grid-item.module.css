@@ -1,12 +1,19 @@
+.pluginLink,
+.pluginLink:hover {
+  border-bottom: none;
+  padding-bottom: 0;
+  transition: none;
+}
+
 .plugin {
   background-color: #111;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   max-height: 200px;
   overflow: hidden;
   padding: 1.5rem 1.5rem 0 1.5rem;
   margin-bottom: 1rem;
-  transition: background-color .25s ease-out;
+  transition: background-color 0.25s ease-out;
 }
 
 .plugin:hover {
@@ -30,12 +37,12 @@
 .pluginButton,
 .pluginButtonInstalled {
   background-color: #0d51ff;
-  border-radius: 100%;
+  border-radius: 4px;
   display: flex;
   flex-shrink: 0;
   height: 15px;
   justify-content: center;
-  margin-left: .5rem;
+  margin-left: 0.5rem;
   padding: 8px;
   width: 15px;
 }
@@ -50,13 +57,13 @@
 }
 
 .projectButton {
-  margin-left: .5rem;
+  margin-left: 0.5rem;
   width: 30px;
 }
 
 .pluginVersion {
   color: #666;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 .pluginTags {
@@ -67,12 +74,12 @@
 }
 
 .pluginIcon {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   width: 15px;
 }
 
 .pluginTag {
-  margin-right: .25rem;
+  margin-right: 0.25rem;
 }
 
 .pluginImage {
