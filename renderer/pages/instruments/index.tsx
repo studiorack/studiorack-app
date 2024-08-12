@@ -7,21 +7,20 @@ import GridItem from '../../components/grid-item';
 import { GetServerSideProps } from 'next';
 import {
   PluginCategory,
-  pluginInstalled,
-  PluginInterface,
-  pluginLatest,
-  PluginLocal,
+  PluginVersion,
   PluginPack,
   pluginsGet,
+  PluginVersionLocal,
+  pluginInstalled,
 } from '@studiorack/core';
-import { configDefaults } from '@studiorack/core/dist/config-defaults';
-import { filterPlugins } from '../../lib/plugin';
+import { configDefaults } from '../../../node_modules/@studiorack/core/build/config-defaults';
+import { filterPlugins, getPlugin } from '../../lib/plugin';
 
 type PluginListProps = {
   category: string;
   pluginTypes: { [property: string]: PluginCategory };
-  plugins: PluginInterface[];
-  pluginsFiltered: PluginInterface[];
+  plugins: PluginVersion[];
+  pluginsFiltered: PluginVersion[];
   query: string;
   router: Router;
 };
@@ -31,8 +30,8 @@ class PluginList extends Component<
   {
     category: string;
     pluginTypes: { [property: string]: PluginCategory };
-    plugins: PluginInterface[];
-    pluginsFiltered: PluginInterface[];
+    plugins: PluginVersion[];
+    pluginsFiltered: PluginVersion[];
     query: string;
     router: Router;
   }
@@ -41,7 +40,12 @@ class PluginList extends Component<
     super(props);
     const params = props.router.query;
     const category = (params.category as string) || 'all';
-    const pluginTypes = configDefaults('appFolder', 'pluginFolder', 'projectFolder').pluginInstrumentCategories;
+    const pluginTypes = configDefaults(
+      'appFolder',
+      'pluginFolder',
+      'presetFolder',
+      'projectFolder',
+    ).pluginInstrumentCategories;
     const plugins = props.plugins || [];
     const query = (params.query as string) || '';
     this.state = {
@@ -129,12 +133,12 @@ class PluginList extends Component<
             </ul>
           </div>
           <div className={styles.pluginsList}>
-            {this.state.pluginsFiltered.map((plugin: PluginInterface, pluginIndex: number) => (
+            {this.state.pluginsFiltered.map((plugin: PluginVersion, pluginIndex: number) => (
               <GridItem
                 section="instruments"
                 plugin={plugin}
                 pluginIndex={pluginIndex}
-                key={`${plugin.repo}/${plugin.id}-${pluginIndex}`}
+                key={`${plugin.id}-${pluginIndex}`}
               ></GridItem>
             ))}
           </div>
@@ -146,10 +150,10 @@ class PluginList extends Component<
 export default withRouter(PluginList);
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const plugins: PluginPack = await pluginsGet('instruments');
-  const list: PluginInterface[] = [];
-  for (const pluginId in plugins) {
-    const plugin: PluginLocal = pluginLatest(plugins[pluginId]) as PluginLocal;
+  const pluginPack: PluginPack = await pluginsGet('instruments');
+  const list: PluginVersion[] = [];
+  for (const pluginId in pluginPack) {
+    const plugin: PluginVersionLocal = getPlugin(pluginPack, pluginId) as PluginVersionLocal;
     plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
     list.push(plugin);
   }

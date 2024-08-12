@@ -1,3 +1,5 @@
+@import url('https://sfzlab.github.io/sfz-web-player/main.min.css');
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 70px;
@@ -46,12 +48,12 @@ h4 {
 }
 
 a {
-  border-bottom: 2px solid #0D51FF;
+  border-bottom: 2px solid #0d51ff;
   color: #fff;
   display: inline-block;
-  padding-bottom: .15rem;
+  padding-bottom: 0.15rem;
   text-decoration: none;
-  transition: border-bottom .25s ease-out;
+  transition: border-bottom 0.25s ease-out;
 }
 
 a:hover {
@@ -60,43 +62,43 @@ a:hover {
 
 button,
 .button {
-  background-color: #0D51FF;
+  background-color: #0d51ff;
   border: 0;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   color: #fff;
   cursor: pointer;
   display: inline-block;
   font-size: 1rem;
   font-weight: 400;
-  margin: 0 .5rem .5rem 0;
+  margin: 0 0.5rem 0.5rem 0;
   padding: 1rem 1.5rem;
   text-decoration: none;
-  transition: background-color .25s ease-out;
+  transition: background-color 0.25s ease-out;
 }
 
 button:hover,
 .button:hover {
-  background-color: #477BFF;
+  background-color: #477bff;
   border: 0;
 }
 
 .button-clear {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .button-clear:hover {
-  background: rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 button:disabled,
 .button:disabled {
   cursor: default;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 button:disabled:hover,
 .button:disabled:hover {
-  background-color: #0D51FF;
+  background-color: #0d51ff;
 }
 
 .button-clear:disabled:hover {
@@ -119,5 +121,21 @@ button:disabled:hover,
 }
 
 .active {
-  border-bottom-color:#fff !important;
+  border-bottom-color: #fff !important;
+}
+
+#sfzPlayer .player {
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out;
+}
+
+#sfzPlayer.open .player {
+  max-height: calc(100vh);
+}
+
+#sfzPlayer .editor {
+  flex-grow: 1;
 }

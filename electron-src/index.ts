@@ -6,8 +6,8 @@ import { parse } from 'url';
 import { BrowserWindow, app, dialog, session, ipcMain, IpcMainEvent, protocol } from 'electron';
 import fixPath from 'fix-path';
 import isDev from 'electron-is-dev';
-import { createServer } from 'http';
-import next from 'next';
+import { createServer as createServerHttp, IncomingMessage, ServerResponse } from 'http';
+import createServer from 'next/dist/server/next.js';
 
 // Ensure Electron apps subprocess on macOS and Linux inherit system $PATH
 fixPath();
@@ -15,7 +15,7 @@ fixPath();
 // custom code
 import {
   fileOpen,
-  PluginInterface,
+  PluginVersion,
   pluginGetLocal,
   pluginInstall,
   pluginsGetLocal,
@@ -25,6 +25,7 @@ import {
   configGet,
   ConfigInterface,
   configSet,
+  ProjectVersionPlugins,
 } from '@studiorack/core';
 
 const DEFAULT_PAGE = 'projects';
@@ -32,7 +33,8 @@ const DEFAULT_PAGE = 'projects';
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
   // Use server-side rendering for both dev and production builds
-  const nextApp = next({
+  // @ts-expect-error incorrect types returned
+  const nextApp = createServer({
     dev: isDev,
     dir: join(app.getAppPath(), 'renderer'),
   });
@@ -42,8 +44,8 @@ app.on('ready', async () => {
   await nextApp.prepare();
 
   // Create a new native HTTP server (which supports hot code reloading)
-  createServer((req: any, res: any) => {
-    const parsedUrl = parse(req.url, true);
+  createServerHttp((req: IncomingMessage, res: ServerResponse) => {
+    const parsedUrl = parse(req.url ? req.url : '', true);
     requestHandler(req, res, parsedUrl);
   }).listen(3000, () => {
     console.log('> Ready on http://localhost:3000');
@@ -68,13 +70,13 @@ app.on('ready', async () => {
         'Content-Security-Policy': [
           `
           default-src 'self' *.youtube.com;
-          connect-src 'self' *.github.io data: *.google-analytics.com;
+          connect-src 'self' github.com *.github.com *.github.io *.githubusercontent.com *.google-analytics.com *.doubleclick.net *.google.com *.googleapis.com data:;
           font-src 'self' fonts.gstatic.com;
-          img-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com *.youtube.com data: media:;
-          media-src 'self' github.com *.githubusercontent.com *.s3.amazonaws.com *.youtube.com media:;
+          img-src 'self' github.com *.github.com *.github.io *.githubusercontent.com *.s3.amazonaws.com *.youtube.com *.ytimg.com data: media:;
+          media-src 'self' github.com *.github.com *.github.io *.githubusercontent.com *.s3.amazonaws.com *.youtube.com media:;
           object-src 'none';
-          script-src 'self' 'unsafe-inline' 'unsafe-eval' *.doubleclick.net *.google.com *.gstatic.com *.googletagmanager.com *.google-analytics.com;
-          style-src 'self' 'unsafe-inline' fonts.googleapis.com
+          script-src 'self' 'unsafe-inline' 'unsafe-eval' github.com *.github.com *.github.io *.githubusercontent.com *.doubleclick.net *.google.com *.gstatic.com *.googletagmanager.com *.google-analytics.com;
+          style-src 'self' 'unsafe-inline' github.com *.github.com *.github.io *.githubusercontent.com fonts.googleapis.com
           `,
         ],
       },
@@ -85,7 +87,8 @@ app.on('ready', async () => {
     width: isDev ? 1024 + 445 : 1024,
     height: 768,
     webPreferences: {
-      preload: join(app.getAppPath(), 'main', 'preload.js'),
+      sandbox: false,
+      preload: join(app.getAppPath(), 'main', 'preload.mjs'),
     },
   });
 
@@ -101,7 +104,7 @@ app.on('ready', async () => {
 app.on('window-all-closed', app.quit);
 
 // Listen the channel `message` and resend the received message to the renderer process
-ipcMain.on('message', (event: IpcMainEvent, message: any) => {
+ipcMain.on('message', (event: IpcMainEvent, message: string | object) => {
   event.sender.send('message', message);
 });
 
@@ -118,17 +121,16 @@ ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
 });
 
 // Install plugin into root plugin folder locally
-ipcMain.handle('pluginInstall', async (_event, plugin: PluginInterface) => {
+ipcMain.handle('pluginInstall', async (_event, plugin: PluginVersion) => {
   console.log('pluginInstall index', plugin);
-  return await pluginInstall(`${plugin.repo}/${plugin.id}`, plugin.version);
+  return await pluginInstall(plugin.id || '', plugin.version);
 });
 
 // Install plugin into root plugin folder locally
-ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
+ipcMain.handle('pluginsInstall', async (_event, plugins: ProjectVersionPlugins) => {
   console.log('pluginsInstall', plugins);
   const promises = Object.keys(plugins).map((pluginId: string) => {
-    const plugin = plugins[pluginId];
-    return pluginInstall(`${plugin.repo}/${plugin.id}`, plugin.version);
+    return pluginInstall(pluginId, plugins[pluginId]);
   });
   return Promise.all(promises);
 });
@@ -136,7 +138,7 @@ ipcMain.handle('pluginsInstall', async (_event, plugins: any) => {
 // Uninstall plugin from root plugin folder locally
 ipcMain.handle('pluginUninstall', async (_event, plugin) => {
   console.log('pluginUninstall', plugin);
-  return await pluginUninstall(`${plugin.repo}/${plugin.id}`, plugin.version);
+  return await pluginUninstall(plugin.id || '', plugin.version);
 });
 
 // Get projects installed locally
@@ -178,7 +180,7 @@ ipcMain.handle('storeGet', async (_event, key: keyof ConfigInterface) => {
 });
 
 // Set user-specific setting
-ipcMain.handle('storeSet', async (_event, key: keyof ConfigInterface, val: any) => {
+ipcMain.handle('storeSet', async (_event, key: keyof ConfigInterface, val: string | object) => {
   console.log('storeSet', key, val);
   if (!key || !val) return;
   return configSet(key, val);

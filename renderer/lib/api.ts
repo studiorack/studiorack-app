@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import matter from 'gray-matter';
+import Doc from '../types/doc';
 
 const docsDirectory = join(process.cwd(), 'renderer/_docs');
 
@@ -14,19 +15,22 @@ export function getDocBySlug(slug: string, fields: string[]) {
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
 
-  const items: any = {};
+  const items: Doc = {
+    slug: '',
+    content: '',
+    title: '',
+  };
 
   // Ensure only the minimal needed data is exposed
-  fields.forEach((field) => {
+  fields.forEach(field => {
     if (field === 'slug') {
       items[field] = realSlug;
     }
     if (field === 'content') {
       items[field] = content;
     }
-
     if (data[field]) {
-      items[field] = data[field];
+      items[field as keyof Doc] = data[field];
     }
   });
 
@@ -35,6 +39,6 @@ export function getDocBySlug(slug: string, fields: string[]) {
 
 export function getAllDocs(fields: string[]) {
   const slugs = getDocSlugs();
-  const docs = slugs.map((slug) => getDocBySlug(slug, fields));
+  const docs = slugs.map(slug => getDocBySlug(slug, fields));
   return docs;
 }

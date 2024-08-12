@@ -10,7 +10,7 @@
 }
 
 .sidebar h4 {
-  margin: 0 0 .5rem;
+  margin: 0 0 0.5rem;
 }
 
 .sidebar ul {
@@ -20,7 +20,7 @@
 
 .sidebar a {
   border-bottom: 2px solid transparent;
-  margin: .5rem;
+  margin: 0.5rem;
 }
 
 .sidebar a:hover {

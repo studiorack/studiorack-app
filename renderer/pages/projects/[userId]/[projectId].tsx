@@ -1,18 +1,19 @@
-import { Component, SyntheticEvent } from 'react';
-import Layout from '../../../../components/layout';
+import { Component } from 'react';
+import Layout from '../../../components/layout';
 import Link from 'next/link';
 import Head from 'next/head';
-import styles from '../../../../styles/plugin.module.css';
-import stylesPlugin from '../../../../styles/plugins.module.css';
-import { GetServerSideProps } from 'next';
+import styles from '../../../styles/plugin.module.css';
+import stylesPlugin from '../../../styles/plugins.module.css';
 import { withRouter, Router } from 'next/router';
-import { pluginGet, pluginInstalled, PluginLocal, projectGetLocal, ProjectLocal } from '@studiorack/core';
-import { idToSlug, slugToId } from '@studiorack/core/dist/utils';
-import { Params } from 'next/dist/server/router';
+import { PluginVersionLocal } from '../../../../node_modules/@studiorack/core/build/types/plugin';
+import { ProjectVersionLocal } from '../../../../node_modules/@studiorack/core/build/types/project';
+import { pluginGet, pluginInstalled } from '../../../../node_modules/@studiorack/core/build/plugin';
+import { projectGetLocal } from '../../../../node_modules/@studiorack/core/build/project';
+import { slugToId } from '../../../../node_modules/@studiorack/core/build/utils';
 
 type ProjectProps = {
-  pluginsFiltered: PluginLocal[];
-  project: ProjectLocal;
+  pluginsFiltered: PluginVersionLocal[];
+  project: ProjectVersionLocal;
   router: Router;
 };
 
@@ -21,8 +22,8 @@ class ProjectPage extends Component<
   {
     isDisabled: boolean;
     isPlaying: boolean;
-    pluginsFiltered: PluginLocal[];
-    project: ProjectLocal;
+    pluginsFiltered: PluginVersionLocal[];
+    project: ProjectVersionLocal;
     router: Router;
   }
 > {
@@ -40,7 +41,7 @@ class ProjectPage extends Component<
     // If project is not found in registry, fallback to auto-generated local metadata
     if (!props.project.name && window.electronAPI) {
       const projectId: string = slugToId(props.router.query.slug as string);
-      window.electronAPI.projectGetLocal(projectId).then((project: ProjectLocal) => {
+      window.electronAPI.projectGetLocal(projectId).then((project: ProjectVersionLocal) => {
         console.log('pluginGetLocal', project);
         this.setState({ project });
       });
@@ -51,7 +52,7 @@ class ProjectPage extends Component<
     console.log('install', this.state.project);
     if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
-      window.electronAPI.pluginsInstall(this.state.project.plugins).then((pluginsInstalled: PluginLocal[]) => {
+      window.electronAPI.pluginsInstall(this.state.project.plugins).then((pluginsInstalled: PluginVersionLocal[]) => {
         console.log('pluginsInstall response', pluginsInstalled);
         this.setState({
           isDisabled: false,
@@ -65,7 +66,7 @@ class ProjectPage extends Component<
     console.log('open', this.state.project);
     if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
-      window.electronAPI.projectOpen(path).then((projectOpened: Buffer) => {
+      window.electronAPI.projectOpen(path).then((projectOpened: ProjectVersionLocal) => {
         console.log('projectOpen response', projectOpened);
         this.setState({
           isDisabled: false,
@@ -174,15 +175,6 @@ class ProjectPage extends Component<
     return path.slice(0, path.lastIndexOf('/'));
   }
 
-  imageError = (event: SyntheticEvent) => {
-    const el = event.target as HTMLImageElement;
-    const fallback = `${this.state.router.basePath}/images/plugin.png`;
-    if (el.getAttribute('src') !== fallback) {
-      el.setAttribute('src', fallback);
-    }
-    return undefined;
-  };
-
   render() {
     return (
       <Layout>
@@ -262,23 +254,22 @@ class ProjectPage extends Component<
                       {this.state.project.tags &&
                         this.state.project.tags.map((tag: string, tagIndex: number) => (
                           <li className={styles.tag} key={`${tag}-${tagIndex}`}>
-                            {tag},
+                            {tag}
+                            {tagIndex !== this.state.project.tags.length - 1 ? ',' : ''}
                           </li>
                         ))}
                     </ul>
                   </div>
                   <button
                     className="button"
-                    onClick={() =>
-                      this.open(`${this.state.project.path}/${this.state.project.name}.${this.state.project.type.ext}`)
-                    }
+                    onClick={() => this.open(this.state.project.path)}
                     disabled={this.state.isDisabled}
                   >
                     Open project
                   </button>
                   <button
                     className="button"
-                    onClick={() => this.open(this.state.project.path)}
+                    onClick={() => this.open(this.getFolder(this.state.project.path))}
                     disabled={this.state.isDisabled}
                   >
                     Open folder
@@ -321,19 +312,15 @@ class ProjectPage extends Component<
                     Install all
                   </button>
                 ) : (
-                  <Link href={`${this.state.router.basePath}/plugins`}>
-                    <a className="button">Browse plugins</a>
+                  <Link href={`${this.state.router.basePath}/instruments`} className="button">
+                    Browse plugins
                   </Link>
                 )}
               </div>
             </div>
             <div className={stylesPlugin.pluginsList}>
               {this.state.pluginsFiltered.map((plugin, pluginIndex) => (
-                <Link
-                  href="/plugins/[slug]"
-                  as={`/plugins/${idToSlug(plugin.repo + '/' + plugin.id)}`}
-                  key={`${idToSlug(plugin.repo + '/' + plugin.id)}-${pluginIndex}`}
-                >
+                <Link href="/plugins/[slug]" as={`/plugins/${plugin.id}`} key={`${plugin.id}-${pluginIndex}`}>
                   <div className={stylesPlugin.plugin}>
                     <div className={stylesPlugin.pluginDetails}>
                       <div className={stylesPlugin.pluginHead}>
@@ -377,9 +364,8 @@ class ProjectPage extends Component<
                     {plugin.files.image && plugin.files.image.size ? (
                       <img
                         className={stylesPlugin.pluginImage}
-                        src={`https://github.com/${plugin.repo}/releases/download/${plugin.release}/${plugin.files.image.name}`}
+                        src={plugin.files.image.url}
                         alt={plugin.name}
-                        onError={this.imageError}
                         loading="lazy"
                       />
                     ) : (
@@ -387,7 +373,6 @@ class ProjectPage extends Component<
                         className={stylesPlugin.pluginImage}
                         src={`${this.state.router.basePath}/images/plugin.png`}
                         alt={plugin.name}
-                        onError={this.imageError}
                         loading="lazy"
                       />
                     )}
@@ -403,21 +388,28 @@ class ProjectPage extends Component<
 }
 export default withRouter(ProjectPage);
 
-export const getServerSideProps: GetServerSideProps = async ({ params }: Params) => {
-  console.log(`${params.userId}/${params.repoId}/${params.pluginId}`);
-  const project = await projectGetLocal(`${params.userId}/${params.repoId}/${params.pluginId}`);
-  console.log(project);
-  const promises = Object.keys(project.plugins).map(async (pluginId) => {
-    const pluginLocal: PluginLocal = (await pluginGet(pluginId)) as PluginLocal;
-    pluginLocal.status = pluginInstalled(pluginLocal) ? 'installed' : 'available';
-    return pluginLocal;
+type Params = {
+  params: {
+    userId: string;
+    projectId: string;
+  };
+};
+
+export async function getServerSideProps({ params }: Params) {
+  console.log('projectId', `${params.userId}/${params.projectId}`);
+  const project = await projectGetLocal(`${params.userId}/${params.projectId}`);
+  console.log('project', project);
+  const promises = Object.keys(project.plugins).map(async pluginId => {
+    const PluginVersionLocal: PluginVersionLocal = (await pluginGet(pluginId)) as PluginVersionLocal;
+    PluginVersionLocal.status = pluginInstalled(PluginVersionLocal) ? 'installed' : 'available';
+    return PluginVersionLocal;
   });
-  const pluginsFiltered: PluginLocal[] = await Promise.all(promises);
-  console.log(pluginsFiltered);
+  const pluginsFiltered: PluginVersionLocal[] = await Promise.all(promises);
+  console.log('pluginsFiltered', pluginsFiltered);
   return {
     props: {
       project,
       pluginsFiltered,
     },
   };
-};
+}

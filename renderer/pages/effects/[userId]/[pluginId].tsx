@@ -1,16 +1,17 @@
 import { Component } from 'react';
-import Crumb from '../../../../components/crumb';
-import Layout from '../../../../components/layout';
+import Crumb from '../../../components/crumb';
+import Layout from '../../../components/layout';
 import Head from 'next/head';
-import styles from '../../../../styles/plugin.module.css';
+import styles from '../../../styles/plugin.module.css';
 import { withRouter, Router } from 'next/router';
-import { PluginLocal, pluginGet, pluginInstalled } from '@studiorack/core';
-import { pluginFileUrl } from '@studiorack/core/dist/utils';
-import Dependency from '../../../../components/dependency';
-import Downloads from '../../../../components/download';
+import { PluginVersionLocal, pluginGet, pluginInstalled } from '@studiorack/core';
+import { pluginFileUrl } from '../../../../node_modules/@studiorack/core/build/utils';
+import Dependency from '../../../components/dependency';
+import Downloads from '../../../components/download';
+import { pluginLicense } from '../../../lib/plugin';
 
 type PluginProps = {
-  plugin: PluginLocal;
+  plugin: PluginVersionLocal;
   router: Router;
 };
 
@@ -20,7 +21,7 @@ class PluginPage extends Component<
     isDisabled: boolean;
     isPlaying: boolean;
     router: Router;
-    plugin: PluginLocal;
+    plugin: PluginVersionLocal;
   }
 > {
   constructor(props: PluginProps) {
@@ -37,7 +38,7 @@ class PluginPage extends Component<
     console.log('install', this.state.plugin);
     if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
-      window.electronAPI.pluginInstall(this.state.plugin).then((pluginInstalled: PluginLocal) => {
+      window.electronAPI.pluginInstall(this.state.plugin).then((pluginInstalled: PluginVersionLocal) => {
         console.log('pluginInstall response', pluginInstalled);
         this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;
@@ -53,7 +54,7 @@ class PluginPage extends Component<
     console.log('uninstall', this.state.plugin);
     if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
-      window.electronAPI.pluginUninstall(this.state.plugin).then((pluginInstalled: PluginLocal) => {
+      window.electronAPI.pluginUninstall(this.state.plugin).then((pluginInstalled: PluginVersionLocal) => {
         console.log('pluginUninstall response', pluginInstalled);
         this.state.plugin.paths = pluginInstalled.paths;
         this.state.plugin.status = pluginInstalled.status;
@@ -172,7 +173,11 @@ class PluginPage extends Component<
           <div className={styles.header}>
             <div className={styles.headerInner2}>
               <Crumb
-                items={['effects', this.state.plugin.repo.split('/')[0], this.state.plugin.repo.split('/')[1]]}
+                items={[
+                  'effects',
+                  this.state.plugin.id?.split('/')[0] || '',
+                  this.state.plugin.id?.split('/')[1] || '',
+                ]}
               ></Crumb>
             </div>
             <div className={styles.headerInner}>
@@ -230,8 +235,8 @@ class PluginPage extends Component<
                       loading="lazy"
                     />{' '}
                     {this.state.plugin.license ? (
-                      <a href={this.state.plugin.license.url} target="_blank">
-                        {this.state.plugin.license.name}
+                      <a href={pluginLicense(this.state.plugin.license).url} target="_blank">
+                        {pluginLicense(this.state.plugin.license).name}
                       </a>
                     ) : (
                       'none'
@@ -247,20 +252,26 @@ class PluginPage extends Component<
                     <ul className={styles.tags}>
                       {this.state.plugin.tags.map((tag: string, tagIndex: number) => (
                         <li className={styles.tag} key={`${tag}-${tagIndex}`}>
-                          {tag},
+                          {tag}
+                          {tagIndex !== this.state.plugin.tags.length - 1 ? ',' : ''}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  {this.state.plugin.status !== 'installed' ? (
-                    <button className={styles.button} onClick={this.install} disabled={this.state.isDisabled}>
-                      Install<span className={styles.progress}>ing...</span>
-                    </button>
-                  ) : (
-                    <button className="button button" onClick={this.uninstall} disabled={this.state.isDisabled}>
-                      Uninstall
-                    </button>
-                  )}
+                  <div className={styles.metadataFooter}>
+                    {this.state.plugin.status !== 'installed' ? (
+                      <button className={styles.button} onClick={this.install} disabled={this.state.isDisabled}>
+                        Install<span className={styles.progress}>ing...</span>
+                      </button>
+                    ) : (
+                      <button className="button button" onClick={this.uninstall} disabled={this.state.isDisabled}>
+                        Uninstall
+                      </button>
+                    )}
+                    <a href={this.state.plugin.homepage} target="_blank">
+                      <button className="button button-clear">View source</button>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -280,9 +291,7 @@ class PluginPage extends Component<
                   :
                 </p>
                 <Dependency plugin={this.state.plugin} />
-                <pre className={styles.codeBox}>
-                  studiorack plugin install {this.state.plugin.repo}/{this.state.plugin.id}
-                </pre>
+                <pre className={styles.codeBox}>studiorack plugin install {this.state.plugin.id}</pre>
               </div>
             </div>
           </div>
@@ -296,14 +305,14 @@ export default withRouter(PluginPage);
 type Params = {
   params: {
     pluginId: string;
-    repoId: string;
     userId: string;
   };
 };
 
 export async function getServerSideProps({ params }: Params) {
-  const plugin: PluginLocal = (await pluginGet(`${params.userId}/${params.repoId}/${params.pluginId}`)) as PluginLocal;
+  const plugin: PluginVersionLocal = (await pluginGet(`${params.userId}/${params.pluginId}`)) as PluginVersionLocal;
   plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
+  console.log(plugin);
   return {
     props: {
       plugin,

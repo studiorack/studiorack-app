@@ -2,7 +2,11 @@
 title: 'Create a project config'
 ---
 
-You can create a new studiorack project .json file using:
+It is possible to install plugins by running `studiorack plugin install` commands directly. These will be shared system-wide.
+
+However to fully benefit from plugin management and versioning, it is recommended to use a `project.json` file, which tracks the plugin versions for each specific project.
+
+Create a new studiorack `project.json` file using:
 
     studiorack project create <project-id>
 
@@ -14,7 +18,6 @@ This will create a studiorack .json file with your configuration:
       "homepage": "https://studiorack.github.io/studiorack-site/",
       "name": "StudioRack Project",
       "description": "Created using StudioRack",
-      "repo": "songs/april",
       "tags": [
         "StudioRack"
       ],

@@ -1,8 +1,7 @@
 import styles from '../styles/components/grid-item.module.css';
 import Link from 'next/link';
 import { getBasePath } from '../lib/path';
-import { imageError } from '../lib/image';
-import { pluginFileUrl } from '../../node_modules/@studiorack/core/dist/utils';
+import { pluginFileUrl } from '../../node_modules/@studiorack/core/build/utils';
 
 type GridItemProps = {
   section: string;
@@ -11,14 +10,14 @@ type GridItemProps = {
 };
 
 const GridItem = ({ section, plugin, pluginIndex }: GridItemProps) => (
-  <Link href={`/${section}/[userId]/[repoId]/[pluginId]`} as={`/${section}/${plugin.repo}/${plugin.id}`}>
+  <Link href={`/${section}/[userId]/[pluginId]`} as={`/${section}/${plugin.id}`} className={styles.pluginLink}>
     <div className={styles.plugin}>
       <div className={styles.pluginDetails}>
         <div className={styles.pluginHead}>
           <h4 className={styles.pluginTitle}>
             {plugin.name} <span className={styles.pluginVersion}>v{plugin.version}</span>
           </h4>
-          { plugin.type && plugin.type.ext ? (
+          {section === 'projects' ? (
             <span className={styles.projectButton}>
               <img
                 className={styles.projectButtonIcon}
@@ -29,7 +28,7 @@ const GridItem = ({ section, plugin, pluginIndex }: GridItemProps) => (
             </span>
           ) : (
             <div>
-              { plugin.status === 'installed' ? (
+              {plugin.status === 'installed' ? (
                 <span className={styles.pluginButtonInstalled}>
                   <img
                     className={styles.pluginButtonIcon}
@@ -55,29 +54,23 @@ const GridItem = ({ section, plugin, pluginIndex }: GridItemProps) => (
           <img className={styles.pluginIcon} src={`${getBasePath()}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
           {plugin.tags.map((tag: string, tagIndex: number) => (
             <li className={styles.pluginTag} key={`${tag}-${tagIndex}-${pluginIndex}`}>
-              {tag},
+              {tag}
+              {tagIndex !== plugin.tags.length - 1 ? ',' : ''}
             </li>
           ))}
         </ul>
       </div>
-      { plugin.files.image && plugin.files.image.size ? (
+      {plugin.files.image && plugin.files.image.size ? (
         <div>
-          { section === 'projects' ? (
+          {section === 'projects' ? (
             <img
               className={styles.pluginImage}
-              src={`media://${plugin.path}/${plugin.files.image.name}`}
+              src={`media://${plugin.files.image.url}`}
               alt={plugin.name}
-              onError={imageError}
               loading="lazy"
             />
           ) : (
-            <img
-              className={styles.pluginImage}
-              src={pluginFileUrl(plugin, 'image')}
-              alt={plugin.name}
-              onError={imageError}
-              loading="lazy"
-            />
+            <img className={styles.pluginImage} src={pluginFileUrl(plugin, 'image')} alt={plugin.name} loading="lazy" />
           )}
         </div>
       ) : (
@@ -85,7 +78,6 @@ const GridItem = ({ section, plugin, pluginIndex }: GridItemProps) => (
           className={styles.pluginImage}
           src={`${getBasePath()}/images/project.png`}
           alt={plugin.name}
-          onError={imageError}
           loading="lazy"
         />
       )}
