@@ -39,7 +39,7 @@ jobs:
             file_name: studiorack-win.exe
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup
         shell: bash
