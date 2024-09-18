@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "npm run build && electron .",
     "dev:next": "next dev ./renderer",
-    "dev:static": "serve ./renderer/out",
+    "dev:static": "serve ./main",
     "start": "electron .",
     "build-renderer": "next build renderer",
     "build-electron": "tsc -p tsconfig.json",
@@ -100,5 +100,8 @@
     "react-dom": "^18.3.1",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1"
+  },
+  "overrides": {
+    "path-to-regexp": "^8.1.0"
   }
 }
