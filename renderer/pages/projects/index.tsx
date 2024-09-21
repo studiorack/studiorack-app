@@ -125,7 +125,7 @@ class ProjectList extends Component<
                     onClick={this.selectCategory}
                     className={this.isSelected(projectTypeKey)}
                   >
-                    {this.state.projectTypes[projectTypeKey].name}
+                    {this.state.projectTypes[projectTypeKey as keyof ProjectTypes].name}
                   </a>
                 </li>
               ))}

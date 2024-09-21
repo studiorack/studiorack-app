@@ -1,3 +1,5 @@
+import { ELECTRON_APP } from './utils';
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 declare global {
   interface Window {
@@ -12,7 +14,7 @@ interface AnalyticsProps {
   value: string;
 }
 
-export const GA_TRACKING_ID = 'G-70BC3S1DBZ';
+export const GA_TRACKING_ID = ELECTRON_APP ? 'G-70BC3S1DBZ' : 'G-8XFFV4K2XH';
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: string) => {

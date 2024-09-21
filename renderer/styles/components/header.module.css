@@ -1,0 +1,20 @@
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.headerTitle {
+  margin-bottom: 1rem;
+}
+
+.headerCount {
+  color: #666;
+  font-size: 1rem;
+}
+
+@media (min-width: 48rem) {
+  .headerCount {
+    font-size: 1.4rem;
+  }
+}

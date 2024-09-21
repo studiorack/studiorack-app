@@ -2,29 +2,50 @@
   padding: 1.5rem;
 }
 
-.sidebar {
+.subnavSidebar {
   border-bottom: 1px solid #333;
   margin: 0 0 2rem 0;
   min-width: 200px;
   padding-bottom: 1rem;
 }
 
-.sidebar h4 {
+.subnavSidebar h4 {
   margin: 0 0 0.5rem;
 }
 
-.sidebar ul {
+.subnavSidebar ul {
   margin: 0 0 1rem;
   padding: 0 0 0 1.25rem;
 }
 
-.sidebar a {
+.subnavSidebar a {
   border-bottom: 2px solid transparent;
   margin: 0.5rem;
 }
 
-.sidebar a:hover {
+.subnavSidebar a:hover {
   border-bottom: 2px solid #fff;
+}
+
+.subnavContent {
+  overflow: auto;
+  width: 100%;
+}
+
+.subnavContent h1 {
+  font-size: 42px;
+}
+
+.subnavContent h2 {
+  font-size: 32px;
+}
+
+.subnavContent h3 {
+  font-size: 28px;
+}
+
+.subnavContent h4 {
+  font-size: 24px;
 }
 
 @media (min-width: 48rem) {
@@ -34,7 +55,7 @@
     max-width: 1024px;
   }
 
-  .sidebar {
+  .subnavSidebar {
     border: 0;
     margin-right: 6rem;
   }

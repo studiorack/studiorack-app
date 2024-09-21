@@ -1,11 +1,10 @@
 import { Component } from 'react';
 import Head from 'next/head';
-import Crumb from '../../../components/crumb';
-import Layout, { siteTitle } from '../../../components/layout';
-import styles from '../../../styles/plugins.module.css';
-import GridItem from '../../../components/grid-item';
-import { PluginVersion, PluginPack, pluginsGet, PluginVersionLocal, pluginInstalled } from '@studiorack/core';
+import Layout from '../../../components/layout';
+import { PluginVersion, PluginPack, pluginsGet } from '@studiorack/core';
 import { getPlugin } from '../../../lib/plugin';
+import { pageTitle } from '../../../lib/utils';
+import List from '../../../components/list';
 
 type PluginListProps = {
   plugins: PluginVersion[];
@@ -33,22 +32,9 @@ class PluginList extends Component<
     return (
       <Layout>
         <Head>
-          <title>{siteTitle}</title>
+          <title>{pageTitle(['Instruments', this.state.userId])}</title>
         </Head>
-        <section className={styles.plugins}>
-          <Crumb items={['instruments']}></Crumb>
-          <h2>{this.state.userId}</h2>
-          <div className={styles.pluginsList}>
-            {this.state.pluginsFiltered.map((plugin: PluginVersion, pluginIndex: number) => (
-              <GridItem
-                section="instruments"
-                plugin={plugin}
-                pluginIndex={pluginIndex}
-                key={`${plugin.id}-${pluginIndex}`}
-              ></GridItem>
-            ))}
-          </div>
-        </section>
+        <List filters={false} plugins={this.state.pluginsFiltered} type="instruments" title={this.state.userId} />
       </Layout>
     );
   }
@@ -63,18 +49,15 @@ type Params = {
 
 export async function getServerSideProps({ params }: Params) {
   const pluginPack: PluginPack = await pluginsGet('instruments');
-  const list: PluginVersion[] = [];
+  const plugins: PluginVersion[] = [];
   for (const pluginId in pluginPack) {
-    const plugin: PluginVersionLocal = getPlugin(pluginPack, pluginId) as PluginVersionLocal;
-    plugin.status = pluginInstalled(plugin) ? 'installed' : 'available';
-    console.log(plugin.id?.split('/')[0], params.userId);
-    if (plugin.id?.split('/')[0] === params.userId) {
-      list.push(plugin);
+    if (pluginId.split('/')[0] === params.userId) {
+      plugins.push(getPlugin(pluginPack, pluginId));
     }
   }
   return {
     props: {
-      plugins: list,
+      plugins,
       userId: params.userId,
     },
   };

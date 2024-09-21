@@ -9,7 +9,7 @@
   padding: 0;
 }
 
-.crumbList li:first-child {
+.crumbItem:first-child {
   display: none;
 }
 

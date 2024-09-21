@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "lib": ["dom", "dom.iterable", "es2020"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "esnext",
+    "target": "es2022",
+    "strict": true,
     "esModuleInterop": true,
-    "module": "es2020",
+    "skipLibCheck": true,
     "moduleResolution": "node",
+    "outDir": "build",
+    "declaration": true,
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true
+    "jsx": "preserve"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["tests/**/*.ts", "node_modules"]
 }

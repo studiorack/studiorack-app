@@ -1,0 +1,20 @@
+.code {
+  margin-bottom: 1.5rem;
+}
+
+.codeLine {
+  background-color: #111;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  padding: 1rem 1.5rem;
+  white-space: normal;
+}
+
+@media (min-width: 48rem) {
+  .code {
+    border-left: 1px solid #666;
+    flex: 1;
+    padding-left: 2rem;
+  }
+}

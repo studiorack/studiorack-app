@@ -6,6 +6,7 @@ import { getAllDocs } from '../../lib/api';
 import Head from 'next/head';
 import Doc from '../../types/doc';
 import { withRouter, Router } from 'next/router';
+import { pageTitle } from '../../lib/utils';
 
 type DocListProps = {
   allDocs: Doc[];
@@ -32,7 +33,7 @@ class DocList extends Component<
       <>
         <Layout>
           <Head>
-            <title>Documentation</title>
+            <title>{pageTitle(['Docs'])}</title>
           </Head>
           <SubNav docs={this.state.allDocs}>
             <h1>Getting started</h1>

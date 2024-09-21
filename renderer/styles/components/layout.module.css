@@ -1,5 +1,5 @@
-.header {
-  background-color: #000;
+.layoutHeader {
+  background-color: #111;
   min-height: 70px;
   position: fixed;
   top: 0;
@@ -7,7 +7,7 @@
   z-index: 2;
 }
 
-.headerLink {
+.layoutLink {
   align-items: center;
   border: 0;
   display: flex;
@@ -15,25 +15,25 @@
   padding: 1.1rem 1.5rem;
 }
 
-.headerLink:hover {
+.layoutLink:hover {
   border: 0;
 }
 
-.logoText {
+.layoutLogo {
   font-size: 24px;
   margin: 0 0 0 1rem;
   text-transform: uppercase;
 }
 
-.logoTextBold {
+.layoutLogoBold {
   font-weight: 700;
 }
 
 @media (min-width: 64rem) {
-  .headerLink {
+  .layoutLink {
     padding: 1rem 1.5rem;
   }
-  .logoText {
+  .layoutLogo {
     font-size: 30px;
     margin: 0 0 0 1rem;
     text-transform: uppercase;

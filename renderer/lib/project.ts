@@ -9,7 +9,7 @@ export function filterProjects(
   console.log('filterProjects', category, projectTypes, query);
   return projects.filter((project: ProjectVersionLocal) => {
     if (
-      (category === 'all' || project.type.ext === projectTypes[category]?.ext) &&
+      (category === 'all' || project.type?.ext === projectTypes[category as keyof ProjectTypes]?.ext) &&
       (project.author.toLowerCase().indexOf(query) !== -1 ||
         project.id?.toLowerCase().indexOf(query) !== -1 ||
         project.name.toLowerCase().indexOf(query) !== -1 ||

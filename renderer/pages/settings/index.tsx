@@ -5,7 +5,7 @@ import styles from '../../styles/settings.module.css';
 import { GetServerSideProps } from 'next';
 
 declare module 'react' {
-  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+  interface HTMLAttributes<T> {
     // extends React's HTMLAttributes
     webkitdirectory?: string;
   }

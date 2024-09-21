@@ -7,6 +7,8 @@ import markdownStyles from '../../styles/doc.module.css';
 import { remark } from 'remark';
 import html from 'remark-html';
 import { withRouter, Router } from 'next/router';
+import Head from 'next/head';
+import { pageTitle } from '../../lib/utils';
 
 type DocProps = {
   allDocs: Doc[];
@@ -46,6 +48,9 @@ class DocPage extends Component<
     );
     return (
       <Layout>
+        <Head>
+          <title>{pageTitle(['Docs', this.state.doc.title])}</title>
+        </Head>
         <SubNav docs={this.state.allDocs}>
           <h1>{this.state.doc.title}</h1>
           <div className={markdownStyles.markdown} dangerouslySetInnerHTML={{ __html: content }} />
