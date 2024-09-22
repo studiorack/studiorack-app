@@ -1,28 +1,38 @@
 import styles from '../styles/components/list.module.css';
-import { PluginVersion, PluginVersionLocal, ProjectVersion, ProjectVersionLocal } from '@studiorack/core';
+import {
+  PluginVersion,
+  PluginVersionLocal,
+  PluginTypes,
+  ProjectTypes,
+  ProjectVersion,
+  ProjectVersionLocal,
+} from '@studiorack/core';
 import Header from './header';
 import Card from './card';
 import Filters from './filters';
 import Crumb from './crumb';
+import Tabs from './tabs';
 
 type ListProps = {
   filters?: boolean;
-  plugins: PluginVersion[] | PluginVersionLocal[] | ProjectVersion[] | ProjectVersionLocal[];
+  items: ListItem[];
   type: string;
+  tabs?: PluginTypes | ProjectTypes;
   title: string;
 };
 
-const List = ({ filters = true, plugins, type, title }: ListProps) => (
+type ListItem = PluginVersion | PluginVersionLocal | ProjectVersion | ProjectVersionLocal;
+
+const List = ({ filters = true, items, type, tabs, title }: ListProps) => (
   <section className={styles.list}>
     <Crumb items={[type]}></Crumb>
-    <Header title={title} count={plugins.length} />
+    <Header title={title} count={items.length} />
     {filters ? <Filters section={type} /> : ''}
+    {tabs ? <Tabs items={tabs} /> : ''}
     <div className={styles.listGrid}>
-      {plugins.map(
-        (plugin: PluginVersion | PluginVersionLocal | ProjectVersion | ProjectVersionLocal, pluginIndex: number) => (
-          <Card section={type} plugin={plugin} pluginIndex={pluginIndex} key={`${plugin.id}-${pluginIndex}`}></Card>
-        ),
-      )}
+      {items.map((item: ListItem, index: number) => (
+        <Card section={type} item={item} index={index} key={`${item.id}-${index}`}></Card>
+      ))}
     </div>
   </section>
 );

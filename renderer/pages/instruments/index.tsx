@@ -22,7 +22,7 @@ const Instruments = ({ plugins }: InstrumentsProps) => {
       <Head>
         <title>{pageTitle(['Instruments'])}</title>
       </Head>
-      <List plugins={pluginsFiltered} type="instruments" title="Instruments" />
+      <List items={pluginsFiltered} type="instruments" title="Instruments" />
     </Layout>
   );
 };

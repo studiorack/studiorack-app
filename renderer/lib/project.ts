@@ -1,23 +1,19 @@
-import { ProjectTypes, ProjectVersionLocal } from '@studiorack/core';
+import { ProjectTypes, ProjectVersion } from '@studiorack/core';
+import { NextRouter } from 'next/router';
 
-export function filterProjects(
-  category: string,
-  projects: ProjectVersionLocal[],
-  projectTypes: ProjectTypes,
-  query: string,
-): ProjectVersionLocal[] {
-  console.log('filterProjects', category, projectTypes, query);
-  return projects.filter((project: ProjectVersionLocal) => {
+export function filterProjects(projectTypes: ProjectTypes, projects: ProjectVersion[], router: NextRouter) {
+  const category: string = (router.query['category'] as string) || 'all';
+  const search: string = router.query['search'] as string;
+  return projects.filter((project: ProjectVersion) => {
+    if (category !== 'all' && project.type?.ext !== projectTypes[category as keyof ProjectTypes]?.ext) return false;
     if (
-      (category === 'all' || project.type?.ext === projectTypes[category as keyof ProjectTypes]?.ext) &&
-      (project.author.toLowerCase().indexOf(query) !== -1 ||
-        project.id?.toLowerCase().indexOf(query) !== -1 ||
-        project.name.toLowerCase().indexOf(query) !== -1 ||
-        project.description.toLowerCase().indexOf(query) !== -1 ||
-        project.tags.includes(query))
-    ) {
-      return project;
-    }
-    return false;
+      search &&
+      project.id?.toLowerCase().indexOf(search.toLowerCase()) === -1 &&
+      project.name?.toLowerCase().indexOf(search.toLowerCase()) === -1 &&
+      project.description?.toLowerCase().indexOf(search.toLowerCase()) === -1 &&
+      project.tags?.indexOf(search.toLowerCase()) === -1
+    )
+      return false;
+    return project;
   });
 }

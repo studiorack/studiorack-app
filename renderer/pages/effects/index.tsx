@@ -22,7 +22,7 @@ const Effects = ({ plugins }: EffectsProps) => {
       <Head>
         <title>{pageTitle(['Effects'])}</title>
       </Head>
-      <List plugins={pluginsFiltered} type="effects" title="Effects" />
+      <List items={pluginsFiltered} type="effects" title="Effects" />
     </Layout>
   );
 };

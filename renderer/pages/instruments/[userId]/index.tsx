@@ -34,7 +34,7 @@ class PluginList extends Component<
         <Head>
           <title>{pageTitle(['Instruments', this.state.userId])}</title>
         </Head>
-        <List filters={false} plugins={this.state.pluginsFiltered} type="instruments" title={this.state.userId} />
+        <List items={this.state.pluginsFiltered} type="instruments" title={this.state.userId} filters={false} />
       </Layout>
     );
   }

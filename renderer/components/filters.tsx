@@ -10,7 +10,7 @@ type FiltersProps = {
 
 const Filters = ({ section }: FiltersProps) => {
   const router = useRouter();
-  const search: string = router.query['search'] as string;
+  const search: string = (router.query['search'] as string) || '';
 
   const onSearch = (event: ChangeEvent) => {
     const el: HTMLInputElement = event.target as HTMLInputElement;
