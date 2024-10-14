@@ -12,5 +12,5 @@
     "isolatedModules": false
   },
   "include": ["electron-src/**/*.ts"],
-  "exclude": ["tests/**/*.ts", "node_modules"]
+  "exclude": ["coverage", "build", "main", "node_modules", "tests"]
 }
