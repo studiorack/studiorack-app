@@ -5,6 +5,7 @@ import styles from '../../styles/settings.module.css';
 import { GetServerSideProps } from 'next';
 
 declare module 'react' {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   interface HTMLAttributes<T> {
     // extends React's HTMLAttributes
     webkitdirectory?: string;

@@ -1,6 +1,5 @@
 import { ELECTRON_APP } from './utils';
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 declare global {
   interface Window {
     gtag: any;

@@ -21,7 +21,7 @@ const Player = ({ plugin }: PlayerProps) => {
     const id = (event.currentTarget as HTMLTextAreaElement).getAttribute('data-id') || '';
     console.log('loadSfzPlayer', name, id);
     el.innerHTML = '';
-    const player = new window.Sfz.Player('sfzPlayer', {
+    new window.Sfz.Player('sfzPlayer', {
       audio: {},
       instrument: { name, id },
       interface: {},

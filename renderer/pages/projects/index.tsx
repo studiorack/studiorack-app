@@ -1,4 +1,4 @@
-import { configDefaults, ConfigList, projectsGetLocal, ProjectVersion, ProjectVersionLocal } from '@studiorack/core';
+import { configDefaults, projectsGetLocal, ProjectVersion, ProjectVersionLocal } from '@studiorack/core';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layout';
 import Head from 'next/head';

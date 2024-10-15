@@ -2,7 +2,7 @@ import { Component } from 'react';
 import Layout from '../../../components/layout';
 import Head from 'next/head.js';
 import { withRouter, Router } from 'next/router.js';
-import { PluginVersion, PluginPack, pluginFileUrl, pluginGet, pluginsGet } from '@studiorack/core';
+import { PluginVersion, pluginFileUrl, pluginGet } from '@studiorack/core';
 import { pageTitle } from '../../../lib/utils';
 import Details from '../../../components/details';
 
