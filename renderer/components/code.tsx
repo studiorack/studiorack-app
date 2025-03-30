@@ -1,11 +1,12 @@
+import { PackageInterface, PackageVersion } from '@open-audio-stack/core';
 import styles from '../styles/components/code.module.css';
-import { PluginVersion } from '@studiorack/core';
 
 type CodeProps = {
-  plugin: PluginVersion;
+  pkg: PackageInterface;
+  pkgVersion: PackageVersion;
 };
 
-const Code = ({ plugin }: CodeProps) => (
+const Code = ({ pkg, pkgVersion }: CodeProps) => (
   <div className={`${styles.code}`}>
     <p>
       Install via{' '}
@@ -13,18 +14,18 @@ const Code = ({ plugin }: CodeProps) => (
         StudioRack CLI
       </a>
     </p>
-    {plugin.tags.includes('sfz') ? (
+    {pkgVersion.tags.includes('sfz') ? (
       <span>
         <pre className={styles.codeLine}>studiorack plugin install sfztools/sfizz</pre>
-        <pre className={styles.codeLine}>studiorack plugin install {plugin.id}</pre>
+        <pre className={styles.codeLine}>studiorack plugin install {pkg.slug}</pre>
       </span>
-    ) : plugin.tags.includes('sf2') ? (
+    ) : pkgVersion.tags.includes('sf2') ? (
       <span>
-        <pre className={styles.codeLine}>studiorack plugin install studiorack/juicysf</pre>
-        <pre className={styles.codeLine}>studiorack plugin install {plugin.id}</pre>
+        <pre className={styles.codeLine}>studiorack plugin install birch-san/juicysfplugin</pre>
+        <pre className={styles.codeLine}>studiorack plugin install {pkg.slug}</pre>
       </span>
     ) : (
-      <pre className={styles.codeLine}>studiorack plugin install {plugin.id}</pre>
+      <pre className={styles.codeLine}>studiorack plugin install {pkg.slug}</pre>
     )}
   </div>
 );

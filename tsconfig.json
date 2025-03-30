@@ -7,10 +7,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16",
-    "outDir": "main",
-    "declaration": true,
-    "isolatedModules": false
+    "outDir": "build",
+    "declaration": true
   },
   "include": ["electron-src/**/*.ts"],
-  "exclude": ["coverage", "build", "main", "node_modules", "tests"]
+  "exclude": ["build", "coverage", ".next", "node_modules", "tests"]
 }

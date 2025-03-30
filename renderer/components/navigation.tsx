@@ -1,6 +1,7 @@
 import styles from '../styles/components/navigation.module.css';
 import { getBasePath, isSelected } from '../lib/path';
 import { ELECTRON_APP } from '../lib/utils';
+import { RegistryType } from '@open-audio-stack/core';
 
 const Navigation = () => (
   <div>
@@ -9,28 +10,28 @@ const Navigation = () => (
       <span className={styles.navMenuNavIcn}></span>
     </label>
     <ul className={styles.navMenu}>
-      {ELECTRON_APP ? (
-        <li>
-          <a href={`${getBasePath()}/projects`} className={`${styles.navItem} ${isSelected('/projects')}`}>
-            Projects
-          </a>
-        </li>
-      ) : (
-        <li>
-          <a href={`${getBasePath()}/`} className={`${styles.navItem} ${isSelected('/')}`}>
-            Tools
-          </a>
-        </li>
-      )}
-
       <li>
-        <a href={`${getBasePath()}/instruments`} className={`${styles.navItem} ${isSelected('/instruments')}`}>
-          Instruments
+        <a
+          href={`${getBasePath()}/${RegistryType.Plugins}`}
+          className={`${styles.navItem} ${isSelected(`/${RegistryType.Plugins}`)}`}
+        >
+          Plugins
         </a>
       </li>
       <li>
-        <a href={`${getBasePath()}/effects`} className={`${styles.navItem} ${isSelected('/effects')}`}>
-          Effects
+        <a
+          href={`${getBasePath()}/${RegistryType.Presets}`}
+          className={`${styles.navItem} ${isSelected(`/${RegistryType.Presets}`)}`}
+        >
+          Presets
+        </a>
+      </li>
+      <li>
+        <a
+          href={`${getBasePath()}/${RegistryType.Projects}`}
+          className={`${styles.navItem} ${isSelected(`/${RegistryType.Projects}`)}`}
+        >
+          Projects
         </a>
       </li>
       {ELECTRON_APP ? (

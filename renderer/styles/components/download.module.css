@@ -2,22 +2,72 @@
   margin-bottom: 1.5rem;
 }
 
-.downloadButton {
-  margin-right: 0.5rem;
+.downloadSystem {
+  background-color: #111;
+  border-radius: 0.25rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
 }
 
-.downloadButton .progress {
+.downloadSystemName {
+  padding: 0.41rem 0.5rem 0.5rem 1.75rem;
+}
+
+.downloadSystemArch {
+  color: #999;
+  font-size: 0.75rem;
+}
+
+.downloadButton {
+  font-size: 0.9rem;
+  height: 1rem;
+  margin: 0 0 0 0.5rem;
+  padding: 0.5rem;
+}
+
+.installer {
+  margin-right: .5rem;
+}
+
+.installButton .progress {
   display: none;
 }
 
-.downloadButton:disabled .progress {
+.installButton:disabled .progress {
   display: inline;
+}
+
+.downloadFile {
+  text-align: right;
+  margin-bottom: 0.5rem;
+}
+
+.downloadFile:last-child {
+  margin-bottom: 0;
 }
 
 .downloadButtonIcon {
   margin-left: 0.5rem;
   vertical-align: middle;
-  width: 14px;
+  width: 0.75rem;
+}
+
+.iconAll {
+  background: url(../../public/images/icon-all.svg) no-repeat 0 0.41rem;
+}
+
+.icon-linux {
+  background: url(../../public/images/icon-linux.svg) no-repeat 0 0.41rem;
+}
+
+.icon-mac {
+  background: url(../../public/images/icon-mac.svg) no-repeat 0 0.41rem;
+}
+
+.icon-win {
+  background: url(../../public/images/icon-win.svg) no-repeat 0 0.41rem;
 }
 
 @media (min-width: 48rem) {

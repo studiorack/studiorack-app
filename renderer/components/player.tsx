@@ -1,10 +1,10 @@
 import styles from '../styles/components/player.module.css';
-import { PluginVersion } from '@studiorack/core';
 import Script from 'next/script';
 import { getBasePath } from '../lib/path';
+import { PackageVersion } from '@open-audio-stack/core';
 
 type PlayerProps = {
-  plugin: PluginVersion;
+  plugin: PackageVersion;
 };
 
 const Player = ({ plugin }: PlayerProps) => {
@@ -36,7 +36,7 @@ const Player = ({ plugin }: PlayerProps) => {
       <img
         className={styles.player}
         data-name={plugin.name}
-        data-id={plugin.id}
+        data-id={plugin.name}
         src={`${getBasePath()}/images/sfz-player.png`}
         alt="open in sfz player"
         loading="lazy"

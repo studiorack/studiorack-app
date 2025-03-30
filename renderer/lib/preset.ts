@@ -4,26 +4,26 @@ import {
   packageCompatibleFiles,
   PackageInterface,
   PackageVersion,
+  pluginCategoryInstruments,
+  PluginCategoryOption,
   RegistryPackages,
   SystemType,
 } from '@open-audio-stack/core';
 import { getParam } from './plugin';
 
-export function fileContains(pkgVersion: PackageVersion, categories: string[]) {
-  return (
-    pkgVersion.files.filter(file => {
-      return (
-        file.contains.filter(format => {
-          return categories.includes(format);
-        }).length > 0
-      );
-    }).length > 0
-  );
-}
-
-export function filterProjects(router: NextRouter, packages: RegistryPackages) {
+export function filterPresets(router: NextRouter, packages: RegistryPackages) {
   const type = getParam(router, 'type');
   const category = getParam(router, 'category');
+  let categoryTags: string[] = [];
+  if (category) {
+    category.forEach(cat => {
+      let catOption: PluginCategoryOption | undefined;
+      pluginCategoryInstruments.forEach(pluginCategoryInstrument => {
+        if (pluginCategoryInstrument.value === cat) catOption = pluginCategoryInstrument;
+      });
+      if (catOption) categoryTags = categoryTags.concat(catOption.tags.map(tag => tag.toLowerCase()));
+    });
+  }
   const license = getParam(router, 'license');
   const system = getParam(router, 'system');
   const search = getParam(router, 'search');
@@ -32,8 +32,9 @@ export function filterProjects(router: NextRouter, packages: RegistryPackages) {
     const pkg: PackageInterface = packages[slug];
     const pkgVersion: PackageVersion | undefined = pkg.versions[pkg.version];
     if (pkgVersion) {
+      const tagsLower: string[] = pkgVersion.tags.map(tag => tag.toLowerCase());
       if (type && !type.includes(pkgVersion.type)) continue;
-      if (category && !fileContains(pkgVersion, category)) continue;
+      if (category && categoryTags.filter(categoryTag => tagsLower.includes(categoryTag)).length === 0) continue;
       if (license && !license.includes(pkgVersion.license)) continue;
       if (system && packageCompatibleFiles(pkgVersion, [Architecture.X64], system as SystemType[]).length === 0)
         continue;

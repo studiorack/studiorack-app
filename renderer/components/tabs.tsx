@@ -1,22 +1,20 @@
+import { PluginFormatOption, PresetFormatOption, ProjectFormatOption } from '@open-audio-stack/core';
 import styles from '../styles/components/tabs.module.css';
-import { PluginType, PluginTypes, ProjectType, ProjectTypes } from '@studiorack/core';
 import { useRouter } from 'next/router';
 import { ChangeEvent } from 'react';
+import { getParam } from '../lib/plugin';
 
 type TabsProps = {
-  items: PluginTypes | ProjectTypes;
+  items: PluginFormatOption[] | PresetFormatOption[] | ProjectFormatOption[];
 };
-
-type TabsItem = PluginType | ProjectType;
-type TabsKey = keyof PluginTypes & keyof ProjectTypes;
 
 const Tabs = ({ items }: TabsProps) => {
   const router = useRouter();
-  let category: string = (router.query['category'] as string) || 'all';
-  const search: string = (router.query['search'] as string) || '';
+  const category = getParam(router, 'category');
+  const search = getParam(router, 'search');
 
   const isSelected = (path: string) => {
-    return category === path ? 'selected' : '';
+    return category && category[0] === path ? 'selected' : '';
   };
 
   const onSearch = (event: ChangeEvent) => {
@@ -29,8 +27,7 @@ const Tabs = ({ items }: TabsProps) => {
   };
 
   const selectCategory = (event: any) => {
-    category = (event.target as HTMLTextAreaElement).getAttribute('data-category') || '';
-    router.query['category'] = category || '';
+    router.query['category'] = (event.target as HTMLTextAreaElement).getAttribute('data-category') || '';
     router.push({
       pathname: router.pathname,
       query: router.query,
@@ -45,10 +42,10 @@ const Tabs = ({ items }: TabsProps) => {
             All
           </a>
         </li>
-        {Object.keys(items).map((key: string, index: number) => (
-          <li key={`${key}-${index}`}>
-            <a data-category={key} onClick={selectCategory} className={isSelected(key)}>
-              {(items[key as TabsKey] as TabsItem).name}
+        {items.map((item, index: number) => (
+          <li key={`${item.value}-${index}`}>
+            <a data-category={item.value} onClick={selectCategory} className={isSelected(item.value)}>
+              {item.name}
             </a>
           </li>
         ))}

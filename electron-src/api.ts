@@ -1,40 +1,40 @@
+import { Package, PackageInterface, PackageVersion, ProjectInterface, ProjectPlugins } from '@open-audio-stack/core';
 import { ipcRenderer } from 'electron';
-import { PluginVersion, PluginVersionLocal, ProjectVersionLocal, ProjectVersionPlugins } from '@studiorack/core';
 
 function message(val: string | object) {
   return ipcRenderer.send('message', val);
 }
 
-async function pluginsGetLocal(): Promise<PluginVersionLocal[]> {
+async function pluginsGetLocal(): Promise<Package[]> {
   return ipcRenderer.invoke('pluginsGetLocal');
 }
 
-async function pluginGetLocal(id: string): Promise<PluginVersionLocal> {
+async function pluginGetLocal(id: string): Promise<Package[]> {
   return ipcRenderer.invoke('pluginGetLocal', id);
 }
 
-async function pluginInstall(plugin: PluginVersion): Promise<PluginVersionLocal> {
+async function pluginInstall(plugin: PackageInterface): Promise<PackageVersion> {
   console.log('pluginInstall api', plugin);
   return ipcRenderer.invoke('pluginInstall', plugin);
 }
 
-async function pluginsInstall(plugins: ProjectVersionPlugins): Promise<PluginVersionLocal[]> {
+async function pluginsInstall(plugins: ProjectPlugins): Promise<ProjectPlugins[]> {
   return ipcRenderer.invoke('pluginsInstall', plugins);
 }
 
-async function pluginUninstall(plugin: PluginVersion): Promise<PluginVersionLocal> {
+async function pluginUninstall(plugin: PackageInterface): Promise<PackageVersion> {
   return ipcRenderer.invoke('pluginUninstall', plugin);
 }
 
-async function projectsGetLocal(): Promise<ProjectVersionLocal[]> {
+async function projectsGetLocal(): Promise<Package[]> {
   return ipcRenderer.invoke('projectsGetLocal');
 }
 
-async function projectGetLocal(id: string): Promise<ProjectVersionLocal> {
+async function projectGetLocal(id: string): Promise<ProjectInterface> {
   return ipcRenderer.invoke('projectGetLocal', id);
 }
 
-async function projectOpen(path: string): Promise<ProjectVersionLocal> {
+async function projectOpen(path: string): Promise<ProjectInterface> {
   return ipcRenderer.invoke('projectOpen', path);
 }
 
