@@ -15,7 +15,6 @@ import {
   isTests,
   ManagerLocal,
   Package,
-  ProjectPlugins,
   RegistryType,
 } from '@open-audio-stack/core';
 
@@ -116,89 +115,65 @@ app.on('ready', async () => {
 app.on('window-all-closed', app.quit);
 
 const config: ConfigLocal = new ConfigLocal(isTests() ? CONFIG_LOCAL_TEST : undefined);
+config.logEnable();
+console.log('appDir', config.get('appDir'));
+console.log('pluginsDir', config.get('pluginsDir'));
+console.log('presetsDir', config.get('presetsDir'));
+console.log('projectsDir', config.get('projectsDir'));
 
-// Setup a plugin manager.
-const manager: ManagerLocal = new ManagerLocal(RegistryType.Plugins, isTests() ? CONFIG_LOCAL_TEST : undefined);
-await manager.sync();
-manager.scan();
-
-// Setup a project manager.
-const managerProjects: ManagerLocal = new ManagerLocal(
-  RegistryType.Projects,
-  isTests() ? CONFIG_LOCAL_TEST : undefined,
-);
-await managerProjects.sync();
-managerProjects.scan();
+// Dynamically setup each registry type.
+const managers: Record<string, ManagerLocal> = {};
+const types = [RegistryType.Plugins, RegistryType.Presets, RegistryType.Projects];
+for (const type of types) {
+  const manager: ManagerLocal = new ManagerLocal(type as RegistryType, isTests() ? CONFIG_LOCAL_TEST : undefined);
+  manager.logEnable();
+  await manager.sync();
+  manager.scan();
+  managers[type] = manager;
+}
 
 // Listen the channel `message` and resend the received message to the renderer process
 ipcMain.on('message', (event: IpcMainEvent, message: string | object) => {
   event.sender.send('message', message);
 });
 
-// Get plugins installed locally
-ipcMain.handle('pluginsGetLocal', async () => {
-  console.log('pluginsGetLocal');
-  return manager.listPackages(true);
+// Install package locally
+ipcMain.handle('install', async (_event, type: RegistryType, pkg: Package) => {
+  console.log('install', type, pkg.slug, pkg.version);
+  return await managers[type].install(pkg.slug, pkg.version);
 });
 
-// Get plugin installer locally by path
-ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
-  console.log('pluginGetLocal', id);
-  return manager.getPackage(id);
+// Uninstall package locally
+ipcMain.handle('uninstall', async (_event, type: RegistryType, pkg: Package) => {
+  console.log('uninstall', type, pkg.slug, pkg.version);
+  return await managers[type].uninstall(pkg.slug, pkg.version);
 });
 
-// Install plugin into root plugin folder locally
-ipcMain.handle('pluginInstall', async (_event, plugin: Package) => {
-  console.log('pluginInstall', plugin);
-  return await manager.install(plugin.slug, plugin.version);
-});
-
-// Install plugin into root plugin folder locally
-ipcMain.handle('pluginsInstall', async (_event, plugins: ProjectPlugins) => {
-  console.log('pluginsInstall', plugins);
-  const promises = Object.keys(plugins).map((pluginId: string) => {
-    return manager.install(pluginId, plugins[pluginId]);
-  });
-  return Promise.all(promises);
-});
-
-// Uninstall plugin from root plugin folder locally
-ipcMain.handle('pluginUninstall', async (_event, plugin: Package) => {
-  console.log('pluginUninstall', plugin);
-  return await manager.uninstall(plugin.slug, plugin.version);
-});
-
-// Get projects installed locally
-ipcMain.handle('projectsGetLocal', async () => {
-  console.log('projectsGetLocal');
-  return await managerProjects.listPackages(true);
-});
-
-// Get projects installer locally by path
-ipcMain.handle('projectGetLocal', async (_event, id: string) => {
-  console.log('projectGetLocal', id);
-  return await managerProjects.getPackage(id);
+// Install package locally
+ipcMain.handle('installDependencies', async (_event, filePath: string, type = RegistryType.Plugins) => {
+  console.log('installDependencies', filePath, type);
+  return await managers[type].installDependencies(filePath, type);
 });
 
 // Open project
-ipcMain.handle('projectOpen', async (_event, path: string) => {
-  console.log('projectOpen', path);
-  return fileOpen(path);
+ipcMain.handle('open', (_event, filePath: string) => {
+  console.log('open', filePath);
+  return fileOpen(filePath);
 });
 
 // Select folder
-ipcMain.handle('folderSelect', async (_event, path: string) => {
-  console.log('folderSelect');
+ipcMain.handle('select', (_event, filePath: string) => {
+  console.log('select');
   if (!path) return;
   return dialog.showOpenDialog({
-    defaultPath: path,
+    defaultPath: filePath,
     properties: ['openDirectory'],
   });
 });
 
 // Get user-specific setting
-ipcMain.handle('storeGet', async (_event, key: keyof ConfigInterface) => {
-  console.log('storeGet', key, config.get(key));
+ipcMain.handle('get', (_event, key: keyof ConfigInterface) => {
+  console.log('get', key, config.get(key));
   if (!key) return;
   return {
     key,
@@ -207,8 +182,8 @@ ipcMain.handle('storeGet', async (_event, key: keyof ConfigInterface) => {
 });
 
 // Set user-specific setting
-ipcMain.handle('storeSet', async (_event, key: keyof ConfigInterface, val: string | object) => {
-  console.log('storeSet', key, val);
+ipcMain.handle('set', (_event, key: keyof ConfigInterface, val: string | object) => {
+  console.log('set', key, val);
   if (!key || !val) return;
   return config.set(key, val);
 });

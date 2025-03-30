@@ -13,6 +13,7 @@
     "build-renderer": "next build ./renderer",
     "build-electron": "tsc -p tsconfig.json",
     "build": "npm run build-renderer && npm run build-electron && npm run copy",
+    "check": "npm run format && npm run lint && npm run build",
     "copy": "cp -rf ./electron-src/*.mjs ./build",
     "format": "prettier . --write",
     "lint": "eslint .",

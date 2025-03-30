@@ -87,7 +87,7 @@ const Details = ({ downloads, pkg, pkgVersion, type }: DetailsProps) => (
               </ul>
             </div>
             <div className={styles.metadataFooter}>
-              <Installer pkg={pkg} pkgVersion={pkgVersion} />
+              <Installer pkg={pkg} pkgVersion={pkgVersion} type={type} />
               <a href={pkgVersion.url} target="_blank">
                 <button className="button button-clear">View source</button>
               </a>

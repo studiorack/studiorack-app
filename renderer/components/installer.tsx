@@ -1,22 +1,26 @@
+import { useState } from 'react';
 import styles from '../styles/components/download.module.css';
-import { PackageInterface, PackageVersion } from '@open-audio-stack/core';
+import { PackageInterface, PackageVersion, RegistryType } from '@open-audio-stack/core';
 
 type InstallerProps = {
   pkg: PackageInterface;
   pkgVersion: PackageVersion;
+  type: RegistryType;
 };
 
-const Installer = ({ pkg, pkgVersion }: InstallerProps) => {
-  let isDisabled: boolean = false;
+const Installer = ({ pkg, pkgVersion, type }: InstallerProps) => {
+  const [isDisabled, setDisabled] = useState(false);
+  const [, setPkVersion] = useState(pkgVersion);
 
   const install = () => {
     console.log('install', pkgVersion);
     if (typeof window !== 'undefined' && window.electronAPI) {
-      isDisabled = true;
-      window.electronAPI.pluginInstall(pkg).then((pluginInstalled: PackageVersion) => {
-        console.log('pluginInstall response', pluginInstalled);
-        pkgVersion.installed = true;
-        isDisabled = false;
+      setDisabled(true);
+      window.electronAPI.install(type, pkg).then((pkgResponse: PackageVersion) => {
+        console.log('install response', pkgResponse);
+        pkgVersion.installed = pkgResponse.installed;
+        setPkVersion(pkgVersion);
+        setDisabled(false);
       });
     }
   };
@@ -24,11 +28,12 @@ const Installer = ({ pkg, pkgVersion }: InstallerProps) => {
   const uninstall = () => {
     console.log('uninstall', pkgVersion);
     if (typeof window !== 'undefined' && window.electronAPI) {
-      isDisabled = true;
-      window.electronAPI.pluginUninstall(pkg).then((pluginInstalled: PackageVersion) => {
-        console.log('pluginUninstall response', pluginInstalled);
-        pkgVersion.installed = false;
-        isDisabled = false;
+      setDisabled(true);
+      window.electronAPI.uninstall(type, pkg).then((pkgResponse: PackageVersion) => {
+        console.log('uninstall response', pkgResponse);
+        pkgVersion.installed = pkgResponse.installed;
+        setPkVersion(pkgVersion);
+        setDisabled(false);
       });
     }
   };
