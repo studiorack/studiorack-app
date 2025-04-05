@@ -2,9 +2,11 @@
 
 ![Release](https://github.com/studiorack/studiorack-app/workflows/Release/badge.svg)
 
-Audio plugin app, searchable list of plugins to install and share.
+StudioRack audio plugin manager app. Search, view, download and install audio plugins.
 
 ![StudioRack App](/screenshot.jpg)
+
+<a href="https://github.com/open-audio-stack" target="_blank"><img src="https://raw.githubusercontent.com/open-audio-stack/open-audio-stack-registry/refs/heads/main/src/assets/powered-by-open-audio-stack.svg" alt="Powered by Open Audio Stack"></a>
 
 ## Installation
 
@@ -22,7 +24,7 @@ StudioRack App was built using:
 - TypeScript 5.x
 - NextJS 14.x
 - React 18.x
-- Electron
+- Electron 31.x
 
 ## Installation
 
