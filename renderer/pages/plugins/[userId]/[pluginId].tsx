@@ -5,7 +5,6 @@ import { withRouter, Router } from 'next/router.js';
 import { pageTitle } from '../../../lib/utils';
 import Details from '../../../components/details';
 import {
-  ManagerLocal,
   Package,
   PackageFileMap,
   packageFileMap,
@@ -13,6 +12,7 @@ import {
   PackageVersion,
   RegistryType,
 } from '@open-audio-stack/core';
+import { managers } from '../../../lib/managers';
 
 declare global {
   interface Window {
@@ -74,7 +74,7 @@ type Params = {
 };
 
 export async function getServerSideProps({ params }: Params) {
-  const manager = new ManagerLocal(RegistryType.Plugins);
+  const manager = managers[RegistryType.Plugins];
   await manager.sync();
   manager.scan();
   const pkg: Package | undefined = manager.getPackage(`${params.userId}/${params.pluginId}`);

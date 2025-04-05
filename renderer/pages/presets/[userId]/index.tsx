@@ -3,7 +3,8 @@ import Head from 'next/head';
 import Layout from '../../../components/layout';
 import { pageTitle } from '../../../lib/utils';
 import List from '../../../components/list';
-import { ManagerLocal, PackageInterface, RegistryPackages, RegistryType } from '@open-audio-stack/core';
+import { PackageInterface, RegistryPackages, RegistryType } from '@open-audio-stack/core';
+import { managers } from '../../../lib/managers';
 
 type PluginListProps = {
   packagesFiltered: PackageInterface[];
@@ -52,7 +53,7 @@ type Params = {
 };
 
 export async function getServerSideProps({ params }: Params) {
-  const manager = new ManagerLocal(RegistryType.Presets);
+  const manager = managers[RegistryType.Presets];
   await manager.sync();
   manager.scan();
   const packages: RegistryPackages = manager.toJSON();

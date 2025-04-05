@@ -91,7 +91,7 @@
     "vitest": "^3.0.9"
   },
   "dependencies": {
-    "@open-audio-stack/core": "^0.1.27",
+    "@open-audio-stack/core": "^0.1.29",
     "electron-is-dev": "^2.0.0",
     "electron-next": "^3.1.5",
     "fix-path": "^4.0.0",

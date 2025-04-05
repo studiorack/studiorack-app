@@ -5,7 +5,8 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { pageTitle } from '../../lib/utils';
 import List from '../../components/list';
-import { ManagerLocal, PackageInterface, RegistryPackages, RegistryType } from '@open-audio-stack/core';
+import { PackageInterface, RegistryPackages, RegistryType } from '@open-audio-stack/core';
+import { managers } from '../../lib/managers';
 
 type ProjectsProps = {
   packages: RegistryPackages;
@@ -27,7 +28,7 @@ const Projects = ({ packages }: ProjectsProps) => {
 export default Projects;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const manager = new ManagerLocal(RegistryType.Projects);
+  const manager = managers[RegistryType.Projects];
   await manager.sync();
   manager.scan();
   return {

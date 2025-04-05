@@ -18,7 +18,7 @@ const Installer = ({ pkg, pkgVersion, type }: InstallerProps) => {
       setDisabled(true);
       window.electronAPI.install(type, pkg).then((pkgResponse: PackageVersion) => {
         console.log('install response', pkgResponse);
-        pkgVersion.installed = pkgResponse.installed;
+        pkgVersion.installed = true;
         setPkVersion(pkgVersion);
         setDisabled(false);
       });
@@ -31,7 +31,7 @@ const Installer = ({ pkg, pkgVersion, type }: InstallerProps) => {
       setDisabled(true);
       window.electronAPI.uninstall(type, pkg).then((pkgResponse: PackageVersion) => {
         console.log('uninstall response', pkgResponse);
-        pkgVersion.installed = pkgResponse.installed;
+        pkgVersion.installed = false;
         setPkVersion(pkgVersion);
         setDisabled(false);
       });

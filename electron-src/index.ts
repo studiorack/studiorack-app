@@ -8,15 +8,8 @@ import fixPath from 'fix-path';
 import isDev from 'electron-is-dev';
 import { createServer as createServerHttp, IncomingMessage, ServerResponse } from 'http';
 import createServer from 'next/dist/server/next.js';
-import {
-  ConfigInterface,
-  ConfigLocal,
-  fileOpen,
-  isTests,
-  ManagerLocal,
-  Package,
-  RegistryType,
-} from '@open-audio-stack/core';
+import { ConfigInterface, fileOpen, Package, RegistryType } from '@open-audio-stack/core';
+import { config, managers } from '../renderer/lib/managers.js';
 
 // Ensure Electron apps subprocess on macOS and Linux inherit system $PATH
 fixPath();
@@ -95,8 +88,8 @@ app.on('ready', async () => {
   });
 
   const mainWindow = new BrowserWindow({
-    width: isDev ? 1024 + 445 : 1024,
-    height: 768,
+    width: isDev ? 1280 + 445 : 1280,
+    height: 800,
     webPreferences: {
       sandbox: false,
       preload: join(app.getAppPath(), 'build', 'preload.mjs'),
@@ -114,24 +107,6 @@ app.on('ready', async () => {
 // Quit the app once all windows are closed
 app.on('window-all-closed', app.quit);
 
-const config: ConfigLocal = new ConfigLocal(isTests() ? CONFIG_LOCAL_TEST : undefined);
-config.logEnable();
-console.log('appDir', config.get('appDir'));
-console.log('pluginsDir', config.get('pluginsDir'));
-console.log('presetsDir', config.get('presetsDir'));
-console.log('projectsDir', config.get('projectsDir'));
-
-// Dynamically setup each registry type.
-const managers: Record<string, ManagerLocal> = {};
-const types = [RegistryType.Plugins, RegistryType.Presets, RegistryType.Projects];
-for (const type of types) {
-  const manager: ManagerLocal = new ManagerLocal(type as RegistryType, isTests() ? CONFIG_LOCAL_TEST : undefined);
-  manager.logEnable();
-  await manager.sync();
-  manager.scan();
-  managers[type] = manager;
-}
-
 // Listen the channel `message` and resend the received message to the renderer process
 ipcMain.on('message', (event: IpcMainEvent, message: string | object) => {
   event.sender.send('message', message);
@@ -140,18 +115,21 @@ ipcMain.on('message', (event: IpcMainEvent, message: string | object) => {
 // Install package locally
 ipcMain.handle('install', async (_event, type: RegistryType, pkg: Package) => {
   console.log('install', type, pkg.slug, pkg.version);
+  managers[type].scan();
   return await managers[type].install(pkg.slug, pkg.version);
 });
 
 // Uninstall package locally
 ipcMain.handle('uninstall', async (_event, type: RegistryType, pkg: Package) => {
   console.log('uninstall', type, pkg.slug, pkg.version);
+  managers[type].scan();
   return await managers[type].uninstall(pkg.slug, pkg.version);
 });
 
 // Install package locally
 ipcMain.handle('installDependencies', async (_event, filePath: string, type = RegistryType.Plugins) => {
   console.log('installDependencies', filePath, type);
+  managers[type].scan();
   return await managers[type].installDependencies(filePath, type);
 });
 
