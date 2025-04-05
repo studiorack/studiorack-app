@@ -1,66 +1,38 @@
+import { ConfigInterface, Package, PackageVersion, RegistryType } from '@open-audio-stack/core';
 import { ipcRenderer } from 'electron';
-import { PluginVersion, PluginVersionLocal, ProjectVersionLocal, ProjectVersionPlugins } from '@studiorack/core';
 
-function message(val: string | object) {
+export function message(val: string | object) {
   return ipcRenderer.send('message', val);
 }
 
-async function pluginsGetLocal(): Promise<PluginVersionLocal[]> {
-  return ipcRenderer.invoke('pluginsGetLocal');
+export async function install(type: RegistryType, pkg: Package): Promise<PackageVersion> {
+  console.log('install api', type, pkg);
+  return ipcRenderer.invoke('install', type, pkg);
 }
 
-async function pluginGetLocal(id: string): Promise<PluginVersionLocal> {
-  return ipcRenderer.invoke('pluginGetLocal', id);
+export async function uninstall(type: RegistryType, pkg: Package): Promise<PackageVersion> {
+  console.log('uninstall api', type, pkg);
+  return ipcRenderer.invoke('uninstall', type, pkg);
 }
 
-async function pluginInstall(plugin: PluginVersion): Promise<PluginVersionLocal> {
-  console.log('pluginInstall api', plugin);
-  return ipcRenderer.invoke('pluginInstall', plugin);
+export async function installDependencies(filePath: string, type = RegistryType.Plugins): Promise<any> {
+  return ipcRenderer.invoke('installDependencies', filePath, type);
 }
 
-async function pluginsInstall(plugins: ProjectVersionPlugins): Promise<PluginVersionLocal[]> {
-  return ipcRenderer.invoke('pluginsInstall', plugins);
+export async function open(filePath: string): Promise<Buffer> {
+  return ipcRenderer.invoke('open', filePath);
 }
 
-async function pluginUninstall(plugin: PluginVersion): Promise<PluginVersionLocal> {
-  return ipcRenderer.invoke('pluginUninstall', plugin);
+export async function select(filePath: string): Promise<Electron.OpenDialogReturnValue> {
+  return ipcRenderer.invoke('select', filePath);
 }
 
-async function projectsGetLocal(): Promise<ProjectVersionLocal[]> {
-  return ipcRenderer.invoke('projectsGetLocal');
+export async function get(key: keyof ConfigInterface): Promise<string> {
+  console.log('get api', key);
+  return ipcRenderer.invoke('get', key);
 }
 
-async function projectGetLocal(id: string): Promise<ProjectVersionLocal> {
-  return ipcRenderer.invoke('projectGetLocal', id);
+export async function set(key: keyof ConfigInterface, val: string | object): Promise<void> {
+  console.log('set api', key, val);
+  return ipcRenderer.invoke('set', key, val);
 }
-
-async function projectOpen(path: string): Promise<ProjectVersionLocal> {
-  return ipcRenderer.invoke('projectOpen', path);
-}
-
-async function folderSelect(path: string): Promise<Electron.OpenDialogReturnValue> {
-  return ipcRenderer.invoke('folderSelect', path);
-}
-
-async function storeGet(key: string): Promise<string> {
-  return ipcRenderer.invoke('storeGet', key);
-}
-
-async function storeSet(key: string, val: string | object): Promise<string> {
-  return ipcRenderer.invoke('storeSet', key, val);
-}
-
-export default {
-  message,
-  pluginsGetLocal,
-  pluginGetLocal,
-  pluginInstall,
-  pluginsInstall,
-  pluginUninstall,
-  projectsGetLocal,
-  projectGetLocal,
-  projectOpen,
-  folderSelect,
-  storeGet,
-  storeSet,
-};

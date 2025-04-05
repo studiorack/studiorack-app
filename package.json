@@ -4,16 +4,17 @@
   "productName": "StudioRack App",
   "description": "Audio plugin app, searchable list of plugins to install and share",
   "type": "module",
-  "main": "main/index.js",
+  "main": "build/index.js",
   "scripts": {
     "dev": "npm run build && electron .",
     "dev:next": "next dev ./renderer",
-    "dev:static": "serve ./main",
+    "dev:static": "serve ./build",
     "start": "electron .",
-    "build-renderer": "next build renderer",
+    "build-renderer": "next build ./renderer",
     "build-electron": "tsc -p tsconfig.json",
     "build": "npm run build-renderer && npm run build-electron && npm run copy",
-    "copy": "cp -rf ./electron-src/*.mjs ./main",
+    "check": "npm run format && npm run lint && npm run build",
+    "copy": "cp -rf ./electron-src/*.mjs ./build",
     "format": "prettier . --write",
     "lint": "eslint .",
     "pack-app": "npm run build && electron-builder --dir",
@@ -44,7 +45,7 @@
       "node_modules"
     ],
     "files": [
-      "main",
+      "build",
       "renderer"
     ],
     "directories": {
@@ -76,7 +77,7 @@
     "@testing-library/react": "^16.0.0",
     "@types/node": "20.14.8",
     "@types/react": "18.3.3",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "electron": "^31.2.1",
     "electron-builder": "^24.13.3",
     "eslint": "^9.12.0",
@@ -84,13 +85,13 @@
     "jsdom": "^24.1.0",
     "prettier": "^3.2.5",
     "serve": "^14.2.3",
-    "tsx": "^4.10.1",
+    "tsx": "^4.19.3",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.9.0",
-    "vitest": "^1.6.0"
+    "vitest": "^3.0.9"
   },
   "dependencies": {
-    "@studiorack/core": "^2.0.16",
+    "@open-audio-stack/core": "^0.1.29",
     "electron-is-dev": "^2.0.0",
     "electron-next": "^3.1.5",
     "fix-path": "^4.0.0",

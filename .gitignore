@@ -12,10 +12,8 @@ coverage
 # Transpiled files
 build/
 dist/
-main/
 out/
 .next/
-test/tool
 
 # VS Code
 .vscode
@@ -32,3 +30,4 @@ test/tool
 
 # Misc
 .DS_Store
+test/*

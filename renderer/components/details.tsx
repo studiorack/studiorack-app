@@ -1,33 +1,35 @@
 import styles from '../styles/components/details.module.css';
 import { getBasePath } from '../lib/path';
 import Crumb from './crumb';
-import { pluginGetOrgId, pluginGetPluginId, timeSince } from '../lib/utils';
-import { pluginFileUrl, PluginVersion, PluginVersionLocal } from '@studiorack/core';
+import { timeSince } from '../lib/utils';
 import Audio from './audio';
 import Player from './player';
 import Dependency from './dependency';
 import Downloads from './download';
 import Code from './code';
-import { pluginLicense } from '../lib/plugin';
+import Installer from './installer';
+import { licenses, PackageFileMap, PackageInterface, PackageVersion, RegistryType } from '@open-audio-stack/core';
 
 type DetailsProps = {
-  plugin: PluginVersion | PluginVersionLocal;
-  type: string;
+  downloads: PackageFileMap;
+  pkg: PackageInterface;
+  pkgVersion: PackageVersion;
+  type: RegistryType;
 };
 
-const Details = ({ plugin, type }: DetailsProps) => (
+const Details = ({ downloads, pkg, pkgVersion, type }: DetailsProps) => (
   <article>
     <div className={styles.header}>
       <div className={styles.headerInner2}>
-        <Crumb items={[type, pluginGetOrgId(plugin), pluginGetPluginId(plugin)]}></Crumb>
+        <Crumb items={[type, pkg.slug.split('/')[0], pkg.slug.split('/')[1]]}></Crumb>
       </div>
       <div className={styles.headerInner}>
         <div className={styles.media}>
           <div className={styles.imageContainer}>
-            {plugin.files.audio ? <Audio file={plugin.files.audio} /> : ''}
-            {plugin.tags.includes('sfz') ? <Player plugin={plugin} /> : ''}
-            {plugin.files.image ? (
-              <img className={styles.image} src={pluginFileUrl(plugin, 'image')} alt={plugin.name || ''} />
+            {pkgVersion.audio ? <Audio file={pkgVersion.audio} /> : ''}
+            {pkgVersion.tags.includes('sfz') ? <Player plugin={pkgVersion} /> : ''}
+            {pkgVersion.image ? (
+              <img className={styles.image} src={pkgVersion.image} alt={pkgVersion.name || ''} />
             ) : (
               ''
             )}
@@ -35,17 +37,17 @@ const Details = ({ plugin, type }: DetailsProps) => (
         </div>
         <div className={styles.details}>
           <h3 className={styles.title}>
-            {plugin.name || ''} <span className={styles.version}>v{plugin.version}</span>
+            {pkgVersion.name || ''} <span className={styles.version}>v{pkg.version}</span>
           </h3>
           <p className={styles.author}>
             By{' '}
-            <a href={plugin.homepage} target="_blank">
-              {plugin.author}
+            <a href={pkgVersion.url} target="_blank">
+              {pkgVersion.author}
             </a>
           </p>
           <p>
-            {plugin.description}
-            <Dependency plugin={plugin} />
+            {pkgVersion.description}
+            <Dependency plugin={pkgVersion} />
           </p>
           <div className={styles.metadataList}>
             {/* <div className={styles.metadata}><img className={styles.icon} src={`${getBasePath()}/images/icon-filesize.svg`} alt="Filesize" loading="lazy" /> {formatBytes(plugin.files.linux.size)}</div> */}
@@ -56,7 +58,7 @@ const Details = ({ plugin, type }: DetailsProps) => (
                 alt="Date updated"
                 loading="lazy"
               />{' '}
-              {timeSince(plugin.date)} ago
+              {timeSince(pkgVersion.date)} ago
             </div>
             <div className={styles.metadata}>
               <img
@@ -65,9 +67,9 @@ const Details = ({ plugin, type }: DetailsProps) => (
                 alt="License"
                 loading="lazy"
               />{' '}
-              {plugin.license ? (
-                <a href={pluginLicense(plugin.license).url} target="_blank">
-                  {pluginLicense(plugin.license).name}
+              {pkgVersion.license ? (
+                <a href={`https://choosealicense.com/licenses/${pkgVersion.license}`} target="_blank">
+                  {licenses.filter(license => pkgVersion.license === license.value)[0].name}
                 </a>
               ) : (
                 'none'
@@ -76,16 +78,17 @@ const Details = ({ plugin, type }: DetailsProps) => (
             <div className={styles.metadata}>
               <img className={styles.icon} src={`${getBasePath()}/images/icon-tag.svg`} alt="Tags" loading="lazy" />
               <ul className={styles.tags}>
-                {plugin.tags.map((tag: string, tagIndex: number) => (
+                {pkgVersion.tags.map((tag: string, tagIndex: number) => (
                   <li className={styles.tag} key={`${tag}-${tagIndex}`}>
                     {tag}
-                    {tagIndex !== plugin.tags.length - 1 ? ',' : ''}
+                    {tagIndex !== pkgVersion.tags.length - 1 ? ',' : ''}
                   </li>
                 ))}
               </ul>
             </div>
             <div className={styles.metadataFooter}>
-              <a href={plugin.homepage} target="_blank">
+              <Installer pkg={pkg} pkgVersion={pkgVersion} type={type} />
+              <a href={pkgVersion.url} target="_blank">
                 <button className="button button-clear">View source</button>
               </a>
             </div>
@@ -96,8 +99,8 @@ const Details = ({ plugin, type }: DetailsProps) => (
     <div id="sfzPlayer"></div>
     <div className={styles.options}>
       <div className={styles.row}>
-        <Downloads plugin={plugin} />
-        <Code plugin={plugin} />
+        <Downloads downloads={downloads} />
+        <Code pkg={pkg} pkgVersion={pkgVersion} />
       </div>
     </div>
   </article>

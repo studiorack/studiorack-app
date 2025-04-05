@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { filterProjects } from '../../lib/project';
+import { filterPresets } from '../../lib/preset';
 import Layout from '../../components/layout';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
@@ -8,27 +8,27 @@ import List from '../../components/list';
 import { PackageInterface, RegistryPackages, RegistryType } from '@open-audio-stack/core';
 import { managers } from '../../lib/managers';
 
-type ProjectsProps = {
+type PresetsProps = {
   packages: RegistryPackages;
 };
 
-const Projects = ({ packages }: ProjectsProps) => {
+const Presets = ({ packages }: PresetsProps) => {
   const router = useRouter();
-  const packagesFiltered: PackageInterface[] = filterProjects(router, packages);
+  const packagesFiltered: PackageInterface[] = filterPresets(router, packages);
   return (
     <Layout>
       <Head>
-        <title>{pageTitle(['Projects'])}</title>
+        <title>{pageTitle(['Presets'])}</title>
       </Head>
-      <List items={packagesFiltered} type={RegistryType.Projects} title="Projects" />
+      <List items={packagesFiltered} type={RegistryType.Presets} title="Presets" />
     </Layout>
   );
 };
 
-export default Projects;
+export default Presets;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const manager = managers[RegistryType.Projects];
+  const manager = managers[RegistryType.Presets];
   await manager.sync();
   manager.scan();
   return {

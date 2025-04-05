@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { getBasePath } from '../lib/path';
 import styles from '../styles/components/audio.module.css';
-import { PluginFile } from '@studiorack/core';
 
 type AudioProps = {
-  file: PluginFile;
+  file: string;
 };
 
 const Audio = ({ file }: AudioProps) => {
@@ -40,7 +39,7 @@ const Audio = ({ file }: AudioProps) => {
       ) : (
         <img className={styles.audio} src={`${getBasePath()}/images/icon-play.svg`} alt="Play" onClick={play} />
       )}
-      <audio src={file.url} id="audio">
+      <audio src={file} id="audio">
         Your browser does not support the audio element.
       </audio>
     </div>

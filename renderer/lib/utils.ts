@@ -1,6 +1,5 @@
 import slugify from 'slugify';
 import { siteTitle } from '../components/layout';
-import { PluginVersion, PluginVersionLocal } from '@studiorack/core';
 
 export const ELECTRON_APP: boolean = true;
 
@@ -43,14 +42,6 @@ export function includesValue(items: string | string[] | undefined, values: stri
       });
     });
   }
-}
-
-export function pluginGetOrgId(plugin: PluginVersion | PluginVersionLocal) {
-  return plugin.id?.split('/')[0] || '';
-}
-
-export function pluginGetPluginId(plugin: PluginVersion | PluginVersionLocal) {
-  return plugin.id?.split('/')[1] || '';
 }
 
 export function timeSince(date: string) {

@@ -1,5 +1,5 @@
 // Native
-import { join } from 'path';
+import path, { join } from 'path';
 import { parse } from 'url';
 
 // Packages
@@ -8,27 +8,31 @@ import fixPath from 'fix-path';
 import isDev from 'electron-is-dev';
 import { createServer as createServerHttp, IncomingMessage, ServerResponse } from 'http';
 import createServer from 'next/dist/server/next.js';
+import { ConfigInterface, fileOpen, Package, RegistryType } from '@open-audio-stack/core';
+import { config, managers } from '../renderer/lib/managers.js';
 
 // Ensure Electron apps subprocess on macOS and Linux inherit system $PATH
 fixPath();
 
-// custom code
-import {
-  fileOpen,
-  PluginVersion,
-  pluginGetLocal,
-  pluginInstall,
-  pluginsGetLocal,
-  pluginUninstall,
-  projectGetLocal,
-  projectsGetLocal,
-  configGet,
-  ConfigInterface,
-  configSet,
-  ProjectVersionPlugins,
-} from '@studiorack/core';
-
 const DEFAULT_PAGE = 'projects';
+
+export const CONFIG: ConfigInterface = {
+  registries: [
+    {
+      name: 'Open Audio Registry',
+      url: 'https://open-audio-stack.github.io/open-audio-stack-registry',
+    },
+  ],
+  version: '1.0.0',
+};
+
+export const CONFIG_LOCAL_TEST: ConfigInterface = {
+  ...CONFIG,
+  appDir: 'test',
+  pluginsDir: path.join('test', 'installed', 'plugins'),
+  presetsDir: path.join('test', 'installed', 'presets'),
+  projectsDir: path.join('test', 'installed', 'projects'),
+};
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
@@ -59,7 +63,7 @@ app.on('ready', async () => {
 
   // Dock is only available on MacOS
   if (app.dock) {
-    app.dock.setIcon(join(app.getAppPath(), 'renderer', 'public', 'icons', 'icon.png'));
+    app.dock.setIcon(join(app.getAppPath(), 'renderer', 'public', 'icons', 'android-chrome-512x512.png'));
   }
 
   // enable more secure http header
@@ -84,11 +88,11 @@ app.on('ready', async () => {
   });
 
   const mainWindow = new BrowserWindow({
-    width: isDev ? 1024 + 445 : 1024,
-    height: 768,
+    width: isDev ? 1280 + 445 : 1280,
+    height: 800,
     webPreferences: {
       sandbox: false,
-      preload: join(app.getAppPath(), 'main', 'preload.mjs'),
+      preload: join(app.getAppPath(), 'build', 'preload.mjs'),
     },
   });
 
@@ -108,80 +112,56 @@ ipcMain.on('message', (event: IpcMainEvent, message: string | object) => {
   event.sender.send('message', message);
 });
 
-// Get plugins installed locally
-ipcMain.handle('pluginsGetLocal', async () => {
-  console.log('pluginsGetLocal');
-  return await pluginsGetLocal();
+// Install package locally
+ipcMain.handle('install', async (_event, type: RegistryType, pkg: Package) => {
+  console.log('install', type, pkg.slug, pkg.version);
+  managers[type].scan();
+  return await managers[type].install(pkg.slug, pkg.version);
 });
 
-// Get plugin installer locally by path
-ipcMain.handle('pluginGetLocal', async (_event, id: string) => {
-  console.log('pluginGetLocal', id);
-  return await pluginGetLocal(id);
+// Uninstall package locally
+ipcMain.handle('uninstall', async (_event, type: RegistryType, pkg: Package) => {
+  console.log('uninstall', type, pkg.slug, pkg.version);
+  managers[type].scan();
+  return await managers[type].uninstall(pkg.slug, pkg.version);
 });
 
-// Install plugin into root plugin folder locally
-ipcMain.handle('pluginInstall', async (_event, plugin: PluginVersion) => {
-  console.log('pluginInstall index', plugin);
-  return await pluginInstall(plugin.id || '', plugin.version);
-});
-
-// Install plugin into root plugin folder locally
-ipcMain.handle('pluginsInstall', async (_event, plugins: ProjectVersionPlugins) => {
-  console.log('pluginsInstall', plugins);
-  const promises = Object.keys(plugins).map((pluginId: string) => {
-    return pluginInstall(pluginId, plugins[pluginId]);
-  });
-  return Promise.all(promises);
-});
-
-// Uninstall plugin from root plugin folder locally
-ipcMain.handle('pluginUninstall', async (_event, plugin) => {
-  console.log('pluginUninstall', plugin);
-  return await pluginUninstall(plugin.id || '', plugin.version);
-});
-
-// Get projects installed locally
-ipcMain.handle('projectsGetLocal', async () => {
-  console.log('projectsGetLocal');
-  return await projectsGetLocal();
-});
-
-// Get projects installer locally by path
-ipcMain.handle('projectGetLocal', async (_event, id: string) => {
-  console.log('projectGetLocal', id);
-  return await projectGetLocal(id);
+// Install package locally
+ipcMain.handle('installDependencies', async (_event, filePath: string, type = RegistryType.Plugins) => {
+  console.log('installDependencies', filePath, type);
+  managers[type].scan();
+  return await managers[type].installDependencies(filePath, type);
 });
 
 // Open project
-ipcMain.handle('projectOpen', async (_event, path: string) => {
-  console.log('projectOpen', path);
-  return fileOpen(path);
+ipcMain.handle('open', (_event, filePath: string) => {
+  console.log('open', filePath);
+  return fileOpen(filePath);
 });
 
 // Select folder
-ipcMain.handle('folderSelect', async (_event, path: string) => {
-  console.log('folderSelect');
+ipcMain.handle('select', (_event, filePath: string) => {
+  console.log('select');
   if (!path) return;
   return dialog.showOpenDialog({
-    defaultPath: path,
+    defaultPath: filePath,
     properties: ['openDirectory'],
   });
 });
 
 // Get user-specific setting
-ipcMain.handle('storeGet', async (_event, key: keyof ConfigInterface) => {
-  console.log('storeGet', key, configGet(key));
+ipcMain.handle('get', (_event, key: keyof ConfigInterface) => {
+  console.log('get', key, config.get(key));
   if (!key) return;
   return {
     key,
-    value: configGet(key),
+    value: config.get(key),
   };
 });
 
 // Set user-specific setting
-ipcMain.handle('storeSet', async (_event, key: keyof ConfigInterface, val: string | object) => {
-  console.log('storeSet', key, val);
+ipcMain.handle('set', (_event, key: keyof ConfigInterface, val: string | object) => {
+  console.log('set', key, val);
   if (!key || !val) return;
-  return configSet(key, val);
+  return config.set(key, val);
 });

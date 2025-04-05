@@ -34,12 +34,12 @@ class Settings extends Component<
     this.state = {
       isDisabled: false,
       settingsFiltered: {
-        projectFolder: {
+        projectsDir: {
           name: 'Project directory',
           description: 'Path to a folder containing your music project files.',
           value: '',
         },
-        pluginFolder: {
+        pluginsDir: {
           name: 'Plugin directory',
           description: 'Path to a folder used to install your plugins.',
           value: '',
@@ -49,19 +49,25 @@ class Settings extends Component<
       value: '',
     };
 
+    console.log('settingsFiltered', this.state.settingsFiltered);
+
     // Prototype, find better way to do this
-    if (typeof window !== 'undefined' && window.electronAPI) {
-      const promises: Promise<any>[] = [];
-      Object.keys(this.state.settingsFiltered).forEach((settingKey: string) => {
-        promises.push(window.electronAPI.storeGet(settingKey));
-      });
-      Promise.all(promises).then(responses => {
-        responses.forEach(response => {
-          console.log(response);
-          this.state.settingsFiltered[response.key].value = response.value;
+    // window.electronAPI is not available at first load.
+    if (typeof window !== 'undefined') {
+      window.setTimeout(() => {
+        if (!window.electronAPI) return;
+        const promises: Promise<any>[] = [];
+        Object.keys(this.state.settingsFiltered).forEach((settingKey: string) => {
+          promises.push(window.electronAPI.get(settingKey));
         });
-        this.setState({ settingsFiltered: this.state.settingsFiltered });
-      });
+        Promise.all(promises).then(responses => {
+          responses.forEach(response => {
+            console.log(response);
+            this.state.settingsFiltered[response.key].value = response.value;
+          });
+          this.setState({ settingsFiltered: this.state.settingsFiltered });
+        });
+      }, 500);
     }
   }
 
@@ -69,18 +75,18 @@ class Settings extends Component<
     if (typeof window !== 'undefined' && window.electronAPI) {
       this.setState({ isDisabled: true });
       window.electronAPI
-        .folderSelect(this.state.settingsFiltered[settingKey].value)
+        .select(this.state.settingsFiltered[settingKey].value)
         .then((response: Electron.OpenDialogReturnValue) => {
-          console.log('folderSelect response', response);
+          console.log('select response', response);
           if (!response || !response.filePaths[0]) return this.setState({ isDisabled: false });
           this.state.settingsFiltered[settingKey].value = response.filePaths[0];
           this.setState({
             isDisabled: false,
             settingsFiltered: this.state.settingsFiltered,
           });
-          window.electronAPI.storeSet(settingKey, response.filePaths[0]).then((response: any) => {
+          window.electronAPI.set(settingKey, response.filePaths[0]).then((response: any) => {
             if (!response) return;
-            console.log('storeSet', settingKey, response);
+            console.log('set', settingKey, response);
           });
         });
     }
