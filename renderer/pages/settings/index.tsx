@@ -34,14 +34,19 @@ class Settings extends Component<
     this.state = {
       isDisabled: false,
       settingsFiltered: {
-        projectsDir: {
-          name: 'Project directory',
-          description: 'Path to a folder containing your music project files.',
-          value: '',
-        },
         pluginsDir: {
           name: 'Plugin directory',
-          description: 'Path to a folder used to install your plugins.',
+          description: 'Folder to install plugin files into.',
+          value: '',
+        },
+        presetsDir: {
+          name: 'Preset directory',
+          description: 'Folder to install preset files into.',
+          value: '',
+        },
+        projectsDir: {
+          name: 'Project directory',
+          description: 'Folder to install project files into.',
           value: '',
         },
       },
