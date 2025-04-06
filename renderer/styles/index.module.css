@@ -23,6 +23,17 @@
   margin: 0 0 0 auto;
 }
 
+.openAudioStack,
+.openAudioStack:hover {
+  border-bottom: 0;
+  margin-left: 3.5rem;
+  vertical-align: middle;
+}
+
+.openAudioStack img {
+  width: 7rem;
+}
+
 @media (min-width: 48rem) {
   .containerCols {
     display: flex;

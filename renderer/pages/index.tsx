@@ -13,12 +13,19 @@ const Home = () => (
             alt="Open source"
             loading="lazy"
           />
-          <h2 className={styles.title}>An open-source audio plugin ecosystem</h2>
+          <h2 className={styles.title}>An open-source audio plugin manager</h2>
           <p>
-            Our tools are built using GitHub and open-source libraries, ensuring you will always be able to access them.
+            Our tools implement the Open Audio Stack specification and are built using GitHub, ensuring they will always
+            be available.
           </p>
           <a className="button" href={`${getBasePath()}/plugins`}>
             Browse plugins
+          </a>
+          <a className={styles.openAudioStack} href="https://github.com/open-audio-stack" target="_blank">
+            <img
+              src="https://raw.githubusercontent.com/open-audio-stack/open-audio-stack-registry/refs/heads/main/src/assets/powered-by-open-audio-stack.svg"
+              alt="Powered by Open Audio Stack"
+            />
           </a>
         </div>
         <div className={`${styles.inner} ${styles.innerCol}`}>
