@@ -1,6 +1,6 @@
 {
   "name": "studiorack-app",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "productName": "StudioRack App",
   "description": "Audio plugin app, searchable list of plugins to install and share",
   "type": "module",
