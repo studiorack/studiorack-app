@@ -29,14 +29,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-13, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-13, windows-latest]
         include:
           - os: ubuntu-latest
             file_name: studiorack-linux.AppImage
           - os: macos-13
             file_name: studiorack-mac.dmg
-          - os: macos-latest
-            file_name: studiorack-mac-arm.dmg
           - os: windows-latest
             file_name: studiorack-win.exe
     steps:
