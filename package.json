@@ -61,6 +61,9 @@
     },
     "win": {
       "target": "nsis"
+    },
+    "extraMetadata": {
+      "main": "build/index.js"
     }
   },
   "author": "kmturley",
