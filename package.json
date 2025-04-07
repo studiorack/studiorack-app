@@ -20,7 +20,7 @@
     "pack-app": "npm run build && electron-builder --dir",
     "pack": "electron-builder --help",
     "test": "vitest run ./tests",
-    "dist": "npm run build && electron-builder --publish never",
+    "dist": "npm run build && DEBUG=electron-builder electron-builder --publish never",
     "type-check": "tsc"
   },
   "repository": {
