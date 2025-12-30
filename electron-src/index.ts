@@ -92,7 +92,7 @@ app.on('ready', async () => {
     height: 800,
     webPreferences: {
       sandbox: false,
-      preload: join(app.getAppPath(), 'build', 'preload.mjs'),
+      preload: join(app.getAppPath(), 'build', 'electron-src', 'preload.mjs'),
     },
   });
 
