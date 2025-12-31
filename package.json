@@ -1,7 +1,7 @@
 {
   "name": "studiorack-app",
   "version": "3.0.3",
-  "productName": "StudioRack App",
+  "productName": "StudioRack",
   "description": "Audio plugin app, searchable list of plugins to install and share",
   "type": "module",
   "main": "build/electron-src/index.js",
@@ -21,6 +21,7 @@
     "pack": "electron-builder --help",
     "test": "vitest run ./tests",
     "dist": "npm run build && DEBUG=electron-builder electron-builder --publish never",
+    "dist-debug": "'./dist/mac/StudioRack.app/Contents/MacOS/StudioRack' --remote-debugging-port=8315",
     "type-check": "tsc"
   },
   "repository": {
@@ -38,7 +39,7 @@
   ],
   "build": {
     "appId": "io.github.studiorack",
-    "productName": "StudioRack App",
+    "productName": "StudioRack",
     "artifactName": "studiorack-${os}.${ext}",
     "asar": true,
     "asarUnpack": [
