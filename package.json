@@ -4,7 +4,7 @@
   "productName": "StudioRack",
   "description": "Audio plugin app, searchable list of plugins to install and share",
   "type": "module",
-  "main": "build/electron-src/index.js",
+  "main": "build/index.js",
   "scripts": {
     "dev": "npm run build && electron .",
     "dev:next": "next dev ./renderer",
@@ -14,7 +14,7 @@
     "build-electron": "tsc -p tsconfig.json",
     "build": "npm run build-renderer && npm run build-electron && npm run copy",
     "check": "npm run format && npm run lint && npm run build",
-    "copy": "cp -rf ./electron-src/*.mjs ./build/electron-src",
+    "copy": "cp -rf ./electron-src/*.mjs ./build",
     "format": "prettier . --write",
     "lint": "eslint .",
     "pack-app": "npm run build && electron-builder --dir",
@@ -64,7 +64,7 @@
       "target": "nsis"
     },
     "extraMetadata": {
-      "main": "build/electron-src/index.js"
+      "main": "build/index.js"
     }
   },
   "author": "kmturley",
@@ -86,7 +86,7 @@
     "electron-builder": "^26.0.12",
     "eslint": "^9.39.2",
     "globals": "^16.5.0",
-    "jsdom": "^27.4.0",
+    "happy-dom": "^20.0.11",
     "prettier": "^3.7.4",
     "serve": "^14.2.5",
     "tsx": "^4.21.0",

@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es2023",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["es2023", "dom", "dom.iterable"],
     "module": "esnext",
     "target": "es2022",
     "strict": true,
@@ -20,16 +16,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "build",
-    "coverage",
-    ".next",
-    "node_modules",
-    "tests"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["build", "dist", "coverage", ".next", "node_modules", "tests"]
 }
