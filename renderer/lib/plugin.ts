@@ -68,6 +68,8 @@ export function filterPlugins(router: NextRouter, packages: RegistryPackages) {
     }
   }
   return packagesFiltered.sort((a: PackageInterface, b: PackageInterface) => {
+    const downloadsDiff = (b.downloads || 0) - (a.downloads || 0);
+    if (downloadsDiff !== 0) return downloadsDiff;
     return a.versions[a.version].name.localeCompare(b.versions[b.version].name);
   });
 }
