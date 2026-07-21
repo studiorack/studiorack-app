@@ -6,6 +6,7 @@ import {
   PackageInterface,
   PackageVersion,
   pluginCategoryInstruments,
+  pluginCategoryEffects,
   PluginCategoryOption,
   RegistryPackages,
   SystemType,
@@ -34,8 +35,9 @@ export function filterPlugins(router: NextRouter, packages: RegistryPackages) {
   if (category) {
     category.forEach(cat => {
       let catOption: PluginCategoryOption | undefined;
-      pluginCategoryInstruments.forEach(pluginCategoryInstrument => {
-        if (pluginCategoryInstrument.value === cat) catOption = pluginCategoryInstrument;
+      const allCategories = pluginCategoryInstruments.concat(pluginCategoryEffects);
+      allCategories.forEach(pluginCategory => {
+        if (pluginCategory.value === cat) catOption = pluginCategory;
       });
       if (catOption) categoryTags = categoryTags.concat(catOption.tags.map(tag => tag.toLowerCase()));
     });

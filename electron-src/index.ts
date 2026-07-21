@@ -9,7 +9,7 @@ import isDev from 'electron-is-dev';
 import { createServer as createServerHttp, IncomingMessage, ServerResponse } from 'http';
 import createServer from 'next/dist/server/next.js';
 import { ConfigInterface, fileOpen, Package, RegistryType } from '@open-audio-stack/core';
-import { config, managers } from '../renderer/lib/managers.js';
+import { config, managers } from './managers.js';
 
 // Ensure Electron apps subprocess on macOS and Linux inherit system $PATH
 fixPath();

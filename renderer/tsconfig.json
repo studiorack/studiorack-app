@@ -20,16 +20,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "build",
-    "coverage",
-    ".next",
-    "node_modules",
-    "tests"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["build", "dist", "coverage", ".next", "node_modules", "tests"]
 }

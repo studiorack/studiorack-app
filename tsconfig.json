@@ -11,5 +11,5 @@
     "declaration": true
   },
   "include": ["electron-src/**/*.ts"],
-  "exclude": ["build", "coverage", ".next", "node_modules", "tests"]
+  "exclude": ["build", "coverage", "dist", ".next", "node_modules", "tests"]
 }
