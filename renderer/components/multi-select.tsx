@@ -4,13 +4,13 @@ import styles from '../styles/components/multi-select.module.css';
 import {
   ArchitectureOption,
   LicenseOption,
+  PluginCategoryOption,
   PluginTypeOption,
   PresetTypeOption,
   ProjectFormatOption,
   ProjectTypeOption,
   SystemTypeOption,
 } from '@open-audio-stack/core';
-import { PluginCategoryOption } from '@open-audio-stack/core/build/types/PluginCategory';
 
 type MultiSelectProps = {
   label: string;
