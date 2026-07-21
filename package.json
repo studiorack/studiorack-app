@@ -107,6 +107,7 @@
     "slugify": "^1.6.6"
   },
   "overrides": {
-    "path-to-regexp": "^8.1.0"
+    "path-to-regexp": "^8.1.0",
+    "postcss": "^8.5.10"
   }
 }
